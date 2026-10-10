@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { JobCard } from "@/features/jobs/job-card";
@@ -29,45 +29,35 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="border-b-2">
-        <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 lg:grid-cols-[1.3fr_0.7fr] lg:px-8 lg:py-24">
+      <section className="border-b bg-muted/25">
+        <div className="mx-auto grid max-w-[1360px] gap-12 px-5 py-16 lg:grid-cols-[1.3fr_0.7fr] lg:px-8 lg:py-24">
           <div>
-            <Badge className="rounded-none border-2 border-foreground bg-primary px-3 py-1 font-ui tracking-[0.12em] text-foreground uppercase">
+            <Badge variant="secondary" className="px-3 py-1 text-xs">
               Practice over theory
             </Badge>
-            <h1 className="mt-7 max-w-4xl font-display text-6xl leading-[0.92] uppercase sm:text-7xl lg:text-8xl">
+            <h1 className="mt-6 max-w-4xl text-5xl font-semibold leading-[1.04] tracking-[-0.05em] sm:text-6xl lg:text-7xl">
               Praca dla ludzi, którzy dowożą z AI.
             </h1>
-            <p className="mt-8 max-w-2xl text-xl leading-relaxed sm:text-2xl">
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
               Wyselekcjonowane role, w których AI jest częścią odpowiedzialności, decyzji i wyniku
               pracy — nie dopiskiem w employer brandingu.
             </p>
-            <div className="mt-9 flex flex-wrap gap-4">
-              <Link
-                href="/oferty"
-                className={cn(
-                  buttonVariants({ size: "lg" }),
-                  "h-12 rounded-none border-2 px-5 font-ui font-bold tracking-[0.08em] uppercase shadow-[4px_4px_0_var(--foreground)]",
-                )}
-              >
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="/oferty" className={cn(buttonVariants({ size: "lg" }), "h-11 px-5")}>
                 Zobacz oferty <ArrowRight />
               </Link>
               <Link
                 href="/metodologia"
-                className={cn(
-                  buttonVariants({ size: "lg", variant: "outline" }),
-                  "h-12 rounded-none border-2 px-5 font-ui font-bold tracking-[0.08em] uppercase",
-                )}
+                className={cn(buttonVariants({ size: "lg", variant: "outline" }), "h-11 px-5")}
               >
                 Jak wybieramy role
               </Link>
             </div>
           </div>
-          <aside className="self-end border-2 bg-secondary p-6 shadow-[8px_8px_0_var(--accent)] lg:p-8">
-            <p className="font-ui text-sm font-bold tracking-[0.12em] uppercase">
-              Nie szukamy operatorów narzędzi
-            </p>
-            <p className="mt-5 text-2xl leading-snug">
+          <aside className="self-end rounded-xl border bg-background p-6 shadow-sm lg:p-8">
+            <CheckCircle2 className="size-6 text-primary" />
+            <p className="mt-5 text-sm font-semibold">Nie szukamy operatorów narzędzi</p>
+            <p className="mt-3 text-base leading-relaxed text-muted-foreground">
               Szukamy ról dla osób, które potrafią znaleźć wartościowe zastosowanie AI, wdrożyć je i
               połączyć z mierzalnym efektem.
             </p>
@@ -75,21 +65,23 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-24">
-        <p className="font-ui text-sm font-bold tracking-[0.12em] uppercase">
-          01 // Trzy sposoby pracy z AI
+      <section className="mx-auto max-w-[1360px] px-5 py-16 lg:px-8 lg:py-20">
+        <p className="text-xs font-medium tracking-[0.1em] text-muted-foreground uppercase">
+          Trzy sposoby pracy z AI
         </p>
-        <h2 className="mt-4 font-display text-5xl uppercase sm:text-6xl">Build. Apply. Lead.</h2>
-        <div className="mt-10 grid gap-5 md:grid-cols-3">
+        <h2 className="mt-3 text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">
+          Build. Apply. Lead.
+        </h2>
+        <div className="mt-8 grid gap-5 md:grid-cols-3">
           {categories.map((category, index) => (
-            <article key={category.slug} className="border-2 bg-card p-6">
-              <span className="font-ui text-xs font-bold tracking-[0.12em] uppercase">
-                0{index + 1}
-              </span>
-              <h3 className="mt-2 font-display text-4xl uppercase">{category.label}</h3>
-              <p className="mt-4 text-lg leading-relaxed">{category.description}</p>
+            <article key={category.slug} className="rounded-xl border bg-card p-6 shadow-xs">
+              <span className="text-xs font-medium text-muted-foreground">0{index + 1}</span>
+              <h3 className="mt-3 text-xl font-semibold">{category.label}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                {category.description}
+              </p>
               <Link
-                className="mt-6 inline-flex items-center gap-2 font-ui text-sm font-bold tracking-[0.08em] uppercase underline decoration-2 underline-offset-4"
+                className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
                 href={`/oferty?category=${category.slug}`}
               >
                 Przeglądaj role <ArrowRight className="size-4" />
@@ -99,23 +91,25 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="border-t-2 bg-muted">
-        <div className="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-20">
+      <section className="border-t bg-muted/25">
+        <div className="mx-auto max-w-[1360px] px-5 py-16 lg:px-8 lg:py-20">
           <div className="flex flex-wrap items-end justify-between gap-5">
             <div>
-              <p className="font-ui text-sm font-bold tracking-[0.12em] uppercase">
-                02 // Aktualne role
+              <p className="text-xs font-medium tracking-[0.1em] text-muted-foreground uppercase">
+                Aktualne role
               </p>
-              <h2 className="mt-3 font-display text-5xl uppercase sm:text-6xl">Najnowsze oferty</h2>
+              <h2 className="mt-3 text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">
+                Najnowsze oferty
+              </h2>
             </div>
             <Link
-              className="inline-flex items-center gap-2 font-ui font-bold uppercase underline decoration-2 underline-offset-4"
+              className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
               href="/oferty"
             >
               Wszystkie oferty <ArrowRight className="size-4" />
             </Link>
           </div>
-          <div className="mt-9 grid gap-6 lg:grid-cols-2">
+          <div className="mt-8 border-t">
             {latestJobs.map((job) => (
               <JobCard key={job.id} job={job} />
             ))}

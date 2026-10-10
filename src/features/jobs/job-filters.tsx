@@ -1,4 +1,16 @@
 import Link from "next/link";
+import {
+  BarChart3,
+  BriefcaseBusiness,
+  Building2,
+  ChevronDown,
+  FileText,
+  Grid2X2,
+  RotateCcw,
+  Search,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import type { JobFilters } from "@/features/jobs/types";
 import {
   categoryLabels,
@@ -8,59 +20,72 @@ import {
   seniorityLabels,
 } from "@/features/jobs/presentation";
 
+const filterIcons = {
+  category: Grid2X2,
+  function: Building2,
+  remote: BriefcaseBusiness,
+  seniority: BarChart3,
+  contract: FileText,
+} as const;
+
 export function JobFiltersForm({ filters }: { filters: JobFilters }) {
   return (
-    <form
-      className="grid gap-3 border-2 bg-secondary p-4 md:grid-cols-3 lg:grid-cols-7"
-      action="/oferty"
-    >
-      <label className="md:col-span-3 lg:col-span-2">
-        <span className="font-ui text-xs font-bold tracking-[0.08em] uppercase">Szukaj</span>
-        <input
-          className="mt-1 h-11 w-full border-2 bg-card px-3 font-ui outline-none focus:ring-4 focus:ring-primary"
-          name="query"
-          defaultValue={filters.query}
-          placeholder="Rola albo firma"
+    <form className="border-b pb-6" action="/oferty">
+      <div className="flex rounded-lg border bg-background p-1 shadow-xs focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/20">
+        <label className="relative min-w-0 flex-1">
+          <span className="sr-only">Szukaj</span>
+          <Search
+            aria-hidden="true"
+            className="absolute top-1/2 left-4 size-5 -translate-y-1/2 text-muted-foreground"
+          />
+          <Input
+            className="h-12 border-0 bg-transparent pr-3 pl-12 text-base shadow-none focus-visible:border-transparent focus-visible:ring-0"
+            name="query"
+            defaultValue={filters.query}
+            placeholder="Szukaj po stanowisku, firmie lub słowach kluczowych..."
+          />
+        </label>
+        <Button aria-label="Szukaj / Filtruj" className="h-12 px-6 text-sm sm:px-9" type="submit">
+          Szukaj
+        </Button>
+      </div>
+
+      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-[repeat(5,minmax(0,1fr))_auto]">
+        <FilterSelect
+          name="category"
+          label="Kategoria"
+          value={filters.category}
+          options={categoryLabels}
         />
-      </label>
-      <FilterSelect
-        name="category"
-        label="Kategoria"
-        value={filters.category}
-        options={categoryLabels}
-      />
-      <FilterSelect
-        name="function"
-        label="Funkcja"
-        value={filters.function}
-        options={functionLabels}
-      />
-      <FilterSelect
-        name="remote"
-        label="Tryb pracy"
-        value={filters.remote}
-        options={remoteLabels}
-      />
-      <FilterSelect
-        name="seniority"
-        label="Poziom"
-        value={filters.seniority}
-        options={seniorityLabels}
-      />
-      <FilterSelect
-        name="contract"
-        label="Umowa"
-        value={filters.contract}
-        options={contractLabels}
-      />
-      <div className="flex items-end gap-2 md:col-span-3 lg:col-span-7">
-        <button
-          className="h-11 border-2 bg-primary px-5 font-ui font-bold tracking-[0.08em] uppercase shadow-[3px_3px_0_var(--foreground)]"
-          type="submit"
+        <FilterSelect
+          name="function"
+          label="Funkcja"
+          value={filters.function}
+          options={functionLabels}
+        />
+        <FilterSelect
+          name="remote"
+          label="Tryb pracy"
+          value={filters.remote}
+          options={remoteLabels}
+        />
+        <FilterSelect
+          name="seniority"
+          label="Poziom"
+          value={filters.seniority}
+          options={seniorityLabels}
+        />
+        <FilterSelect
+          name="contract"
+          label="Umowa"
+          value={filters.contract}
+          options={contractLabels}
+        />
+        <Link
+          className="inline-flex h-14 items-center justify-center gap-2 px-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:col-span-2 lg:col-span-1"
+          href="/oferty"
         >
-          Filtruj
-        </button>
-        <Link className="px-3 py-2 font-ui text-sm font-bold underline" href="/oferty">
+          <RotateCcw className="size-4" />
           Wyczyść
         </Link>
       </div>
@@ -74,26 +99,35 @@ function FilterSelect({
   value,
   options,
 }: {
-  name: string;
+  name: keyof typeof filterIcons;
   label: string;
   value?: string;
   options: Record<string, string>;
 }) {
+  const Icon = filterIcons[name];
+
   return (
-    <label>
-      <span className="font-ui text-xs font-bold tracking-[0.08em] uppercase">{label}</span>
-      <select
-        className="mt-1 h-11 w-full border-2 bg-card px-2 font-ui outline-none focus:ring-4 focus:ring-primary"
-        name={name}
-        defaultValue={value ?? ""}
-      >
-        <option value="">Wszystkie</option>
-        {Object.entries(options).map(([optionValue, optionLabel]) => (
-          <option key={optionValue} value={optionValue}>
-            {optionLabel}
-          </option>
-        ))}
-      </select>
+    <label className="relative flex h-14 items-center gap-3 rounded-lg border bg-background px-3 transition-colors focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/20">
+      <Icon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+      <span className="min-w-0 flex-1">
+        <span className="block text-[11px] leading-4 text-muted-foreground">{label}</span>
+        <select
+          className="block w-full appearance-none bg-transparent pr-5 text-sm font-medium outline-none"
+          name={name}
+          defaultValue={value ?? ""}
+        >
+          <option value="">Wszystkie</option>
+          {Object.entries(options).map(([optionValue, optionLabel]) => (
+            <option key={optionValue} value={optionValue}>
+              {optionLabel}
+            </option>
+          ))}
+        </select>
+      </span>
+      <ChevronDown
+        aria-hidden="true"
+        className="pointer-events-none absolute right-3 bottom-[14px] size-3.5 text-muted-foreground"
+      />
     </label>
   );
 }

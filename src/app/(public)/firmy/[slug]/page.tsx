@@ -20,37 +20,43 @@ export default async function CompanyPage({ params }: Props) {
   const { company, jobs } = result;
 
   return (
-    <article className="mx-auto max-w-7xl px-5 py-14 lg:px-8 lg:py-20">
+    <article className="mx-auto max-w-[1360px] px-5 py-14 lg:px-8 lg:py-20">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(organizationJsonLd(company)).replace(/</g, "\\u003c"),
         }}
       />
-      <div className="grid gap-8 border-b-2 pb-12 lg:grid-cols-[1fr_320px]">
+      <div className="grid gap-8 border-b pb-12 lg:grid-cols-[1fr_320px]">
         <div>
-          <p className="font-ui text-sm font-bold tracking-[0.12em] uppercase">Firma</p>
-          <h1 className="mt-3 font-display text-6xl uppercase sm:text-7xl">{company.name}</h1>
-          <p className="mt-5 max-w-3xl text-2xl leading-relaxed">{company.summary}</p>
-          <p className="mt-6 max-w-3xl text-xl leading-relaxed">{company.description}</p>
+          <p className="text-xs font-medium tracking-[0.1em] text-muted-foreground uppercase">
+            Firma
+          </p>
+          <h1 className="mt-3 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">
+            {company.name}
+          </h1>
+          <p className="mt-5 max-w-3xl text-lg leading-relaxed">{company.summary}</p>
+          <p className="mt-5 max-w-3xl text-base leading-relaxed text-muted-foreground">
+            {company.description}
+          </p>
         </div>
-        <dl className="h-fit border-2 bg-secondary p-6 font-ui text-sm shadow-[5px_5px_0_var(--foreground)]">
+        <dl className="h-fit rounded-xl border bg-muted/35 p-6 text-sm">
           <div className="flex gap-2">
             <MapPin className="size-5" />
             <div>
-              <dt className="font-bold uppercase">Lokalizacja</dt>
-              <dd>{company.location}</dd>
+              <dt className="font-medium">Lokalizacja</dt>
+              <dd className="mt-1 text-muted-foreground">{company.location}</dd>
             </div>
           </div>
           <div className="mt-5 flex gap-2">
             <Users className="size-5" />
             <div>
-              <dt className="font-bold uppercase">Wielkość</dt>
-              <dd>{company.sizeLabel}</dd>
+              <dt className="font-medium">Wielkość</dt>
+              <dd className="mt-1 text-muted-foreground">{company.sizeLabel}</dd>
             </div>
           </div>
           <Link
-            className="mt-6 inline-flex items-center gap-2 font-bold underline"
+            className="mt-6 inline-flex items-center gap-2 font-medium text-primary hover:underline"
             href={company.websiteUrl}
           >
             Strona firmy <ArrowUpRight className="size-4" />
@@ -58,9 +64,9 @@ export default async function CompanyPage({ params }: Props) {
         </dl>
       </div>
       <section className="py-12">
-        <h2 className="font-display text-4xl uppercase">Otwarte role</h2>
+        <h2 className="text-2xl font-semibold">Otwarte role</h2>
         {jobs.length > 0 ? (
-          <div className="mt-7 grid gap-6 lg:grid-cols-2">
+          <div className="mt-7 border-t">
             {jobs.map((job) => (
               <JobCard key={job.id} job={job} />
             ))}

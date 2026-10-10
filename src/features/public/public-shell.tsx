@@ -7,32 +7,33 @@ import { cn } from "@/lib/utils";
 const navigation = [
   { href: "/oferty", label: "Oferty" },
   { href: "/metodologia", label: "Metodologia" },
+  { href: "/auth/sign-in?next=/app/oferty", label: "Dla firm" },
 ];
 
 export function PublicShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-dvh bg-background text-foreground">
       <a
-        className="fixed top-3 left-3 z-50 -translate-y-40 border-2 bg-primary px-4 py-3 font-ui font-bold focus:translate-y-0"
+        className="fixed top-3 left-3 z-50 -translate-y-40 rounded-md bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-sm focus:translate-y-0"
         href="#main"
       >
         Przejdź do treści
       </a>
-      <header className="border-b-2 bg-background">
-        <div className="mx-auto flex min-h-18 max-w-7xl items-center justify-between gap-4 px-5 py-3 lg:px-8">
+      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+        <div className="mx-auto flex h-16 max-w-[1360px] items-center justify-between gap-4 px-5 lg:px-8">
           <Link
-            className="flex items-center gap-3 font-ui font-bold"
+            className="flex items-center gap-2.5 text-base font-semibold tracking-[-0.02em]"
             href="/"
             aria-label="DoRoboty.ai — strona główna"
           >
             <BrandMark />
             <span>DoRoboty.ai</span>
           </Link>
-          <nav aria-label="Główna nawigacja" className="flex items-center gap-3 sm:gap-6">
+          <nav aria-label="Główna nawigacja" className="flex items-center gap-2 sm:gap-5">
             {navigation.map((item) => (
               <Link
                 key={item.href}
-                className="hidden font-ui text-sm font-semibold tracking-[0.08em] uppercase underline-offset-4 hover:underline sm:inline"
+                className="hidden text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:inline"
                 href={item.href}
               >
                 {item.label}
@@ -42,7 +43,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
               href="/auth/sign-in"
               className={cn(
                 buttonVariants({ variant: "outline", size: "lg" }),
-                "h-10 rounded-none border-2 bg-primary px-4 font-ui font-bold tracking-[0.06em] uppercase shadow-[4px_4px_0_var(--foreground)] hover:bg-secondary",
+                "h-9 px-4 text-sm font-medium",
               )}
             >
               Zaloguj się
@@ -51,18 +52,18 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
         </div>
       </header>
       <main id="main">{children}</main>
-      <footer className="border-t-2 bg-foreground text-background">
-        <div className="mx-auto grid max-w-7xl gap-10 px-5 py-12 sm:grid-cols-2 lg:px-8">
+      <footer className="border-t bg-muted/40 text-foreground">
+        <div className="mx-auto grid max-w-[1360px] gap-10 px-5 py-12 sm:grid-cols-2 lg:px-8">
           <div>
-            <p className="font-ui text-lg font-bold">DoRoboty.ai</p>
-            <p className="mt-3 max-w-lg text-lg leading-relaxed">
+            <p className="text-base font-semibold">DoRoboty.ai</p>
+            <p className="mt-3 max-w-lg text-sm leading-relaxed text-muted-foreground">
               Praca dla ludzi, którzy potrafią z AI zbudować coś wartościowego — nie tylko wpisać je
               do CV.
             </p>
           </div>
           <nav
             aria-label="Stopka"
-            className="flex flex-wrap content-start gap-x-6 gap-y-3 font-ui text-sm tracking-[0.08em] uppercase sm:justify-end"
+            className="flex flex-wrap content-start gap-x-6 gap-y-3 text-sm text-muted-foreground sm:justify-end"
           >
             <Link href="/oferty">Oferty</Link>
             <Link href="/metodologia">Metodologia</Link>
@@ -72,8 +73,8 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
             </Link>
           </nav>
         </div>
-        <div className="border-t border-background/30 px-5 py-4 font-ui text-xs tracking-[0.08em] uppercase lg:px-8">
-          <div className="mx-auto max-w-7xl">
+        <div className="border-t px-5 py-4 text-xs text-muted-foreground lg:px-8">
+          <div className="mx-auto max-w-[1360px]">
             © {new Date().getFullYear()} DoRoboty.ai — od Superhero.tech
           </div>
         </div>

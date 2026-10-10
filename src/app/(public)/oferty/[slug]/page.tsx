@@ -42,83 +42,80 @@ export default async function JobPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
-      <header className="border-b-2 bg-secondary">
+      <header className="border-b bg-muted/30">
         <div className="mx-auto max-w-5xl px-5 py-12 lg:px-8 lg:py-16">
           <Link
-            className="inline-flex items-center gap-2 font-ui text-sm font-bold uppercase underline"
+            className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
             href="/oferty"
           >
             <ArrowLeft className="size-4" /> Wszystkie oferty
           </Link>
           <div className="mt-8 flex flex-wrap gap-2">
-            <Badge className="rounded-none border-2 border-foreground bg-primary font-ui text-foreground">
-              {categoryLabels[job.category]}
-            </Badge>
+            <Badge variant="secondary">{categoryLabels[job.category]}</Badge>
             {job.verificationStatus === "employer_verified" && (
-              <Badge className="rounded-none border-2 border-foreground bg-card font-ui text-foreground">
+              <Badge variant="outline">
                 <BadgeCheck /> Zweryfikowana przez firmę
               </Badge>
             )}
           </div>
-          <h1 className="mt-5 font-display text-6xl leading-[0.95] uppercase sm:text-7xl">
+          <h1 className="mt-5 text-4xl font-semibold leading-tight tracking-[-0.04em] sm:text-5xl">
             {job.title}
           </h1>
           <Link
-            className="mt-4 inline-block font-ui text-xl font-bold underline decoration-2 underline-offset-4"
+            className="mt-4 inline-block text-lg font-medium text-primary hover:underline"
             href={`/firmy/${job.company.slug}`}
           >
             {job.company.name}
           </Link>
-          <p className="mt-6 max-w-3xl text-2xl leading-relaxed">{job.summary}</p>
+          <p className="mt-5 max-w-3xl text-lg leading-relaxed text-muted-foreground">
+            {job.summary}
+          </p>
         </div>
       </header>
       <div className="mx-auto grid max-w-5xl gap-10 px-5 py-12 lg:grid-cols-[1fr_300px] lg:px-8 lg:py-16">
         <div>
-          <h2 className="font-display text-4xl uppercase">O roli</h2>
-          <div className="mt-6 space-y-5 text-xl leading-relaxed">
+          <h2 className="text-2xl font-semibold">O roli</h2>
+          <div className="mt-5 max-w-2xl space-y-5 text-base leading-7 text-muted-foreground">
             {job.description.split("\n\n").map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
-          <div className="mt-12 border-2 bg-accent p-6">
-            <h2 className="font-display text-3xl uppercase">Chcesz aplikować?</h2>
-            <p className="mt-3 text-lg leading-relaxed">
+          <div className="mt-12 rounded-xl border bg-muted/40 p-6">
+            <h2 className="text-xl font-semibold">Chcesz aplikować?</h2>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
               Zaloguj się, uzupełnij profil i pokaż doświadczenie związane z tą rolą.
             </p>
             <Link
               href={`/auth/sign-in?next=/aplikuj/${job.slug}`}
-              className={cn(
-                buttonVariants({ size: "lg" }),
-                "mt-5 h-12 rounded-none border-2 px-5 font-ui font-bold uppercase shadow-[4px_4px_0_var(--foreground)]",
-              )}
+              className={cn(buttonVariants({ size: "lg" }), "mt-5 h-11 px-5")}
             >
               Aplikuj w DoRoboty.ai
             </Link>
           </div>
         </div>
-        <aside className="h-fit border-2 bg-card p-5 shadow-[5px_5px_0_var(--foreground)]">
-          <h2 className="font-display text-2xl uppercase">Konkrety</h2>
-          <dl className="mt-5 grid gap-5 font-ui text-sm">
+        <aside className="h-fit rounded-xl border bg-card p-5 shadow-xs">
+          <h2 className="text-lg font-semibold">Konkrety</h2>
+          <dl className="mt-5 grid gap-5 text-sm">
             <div>
-              <dt className="font-bold uppercase">Miejsce</dt>
-              <dd className="mt-1 flex gap-2">
+              <dt className="font-medium">Miejsce</dt>
+              <dd className="mt-1 flex gap-2 text-muted-foreground">
                 <MapPin className="size-4 shrink-0" /> {job.locations.join(" / ")} ·{" "}
                 {remoteLabels[job.remoteStatus]}
               </dd>
             </div>
             <div>
-              <dt className="font-bold uppercase">Poziom</dt>
-              <dd className="mt-1">{seniorityLabels[job.seniority]}</dd>
+              <dt className="font-medium">Poziom</dt>
+              <dd className="mt-1 text-muted-foreground">{seniorityLabels[job.seniority]}</dd>
             </div>
             <div>
-              <dt className="font-bold uppercase">Umowa</dt>
-              <dd className="mt-1 flex gap-2">
+              <dt className="font-medium">Umowa</dt>
+              <dd className="mt-1 flex gap-2 text-muted-foreground">
                 <BriefcaseBusiness className="size-4 shrink-0" /> {contractLabels[job.contract]}
               </dd>
             </div>
             <div>
-              <dt className="font-bold uppercase">Wynagrodzenie</dt>
-              <dd className="mt-1">{formatSalary(job)}</dd>
+              <dt className="font-medium">Wynagrodzenie</dt>
+              <dd className="mt-1 text-muted-foreground">{formatSalary(job)}</dd>
             </div>
           </dl>
         </aside>
