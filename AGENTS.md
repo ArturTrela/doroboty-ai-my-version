@@ -26,6 +26,8 @@ Useful commands:
 
 ## Standards
 
+- For UI work, follow `GUI.md` and use `graphical-ui`, `graphical-convert`, or `graphical-audit`
+  as appropriate.
 - Write code identifiers, authored documentation, comments, and commit messages in English.
   End-user UI is Polish. Preserve Polish wording in canonical AIPH3 source material.
 - Use npm and Node 24; maintain package-lock.json. Do not add a second package manager.
