@@ -1,24 +1,24 @@
 # AIPH3 case release candidate
 
-Recorded: **2026-10-06**
+Recorded: **2026-10-10**
 
 This is an evidence record for the current release candidate, not the final cohort release. It
 contains no credentials or participant data.
 
 ## Build identity
 
-- GitHub repository: `strzalex/doroboty-ai-case`
-- Pull request: `https://github.com/strzalex/doroboty-ai-case/pull/1`
-- Candidate commit: `7fb2ac05d529fbbc86bc9b3d8671eaae7de94de6`
+- GitHub repository: `superhero-tech/doroboty-ai`
+- Release branch: `main`
+- Candidate commit: `89e9ebc82731a9fb95ccceb19eeef22e29500eb0`
 - Vercel project: `wstrzalk-gmailcoms-projects/doroboty-ai-case`
 - Canonical deployment: `https://doroboty-ai-case.vercel.app`
-- Last known-good deployment: `dpl_8DYjNMyitUNoQUgUtjvQQF8Num67`
+- Last known-good deployment: `dpl_5cVaVPiNRsL5E7gVuBmbXNXimSLG`
 - Isolated Supabase project: `doroboty-ai-case` (`vgxoiljieuhvnpuojaet`, Frankfurt)
 
 ## Verified gates
 
-- GitHub Actions run `37515319288`: **Quality and demo** passed.
-- GitHub Actions run `37515319288`: **Supabase integration** passed.
+- GitHub Actions run `38062637255`: **Quality and demo** passed.
+- GitHub Actions run `38062637255`: **Supabase integration** passed.
 - Public HTTPS deployment smoke passed for homepage, marketplace, representative job, sign-in,
   robots, and sitemap.
 - Robots and sitemap use the canonical Vercel origin rather than localhost.
