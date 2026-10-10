@@ -29,7 +29,7 @@ export default async function CompanyPage({ params }: Props) {
       />
       <div className="grid gap-8 pb-12 shadow-[var(--gui-divider-bottom-shadow)] lg:grid-cols-[1fr_320px]">
         <div>
-          <p className="text-xs font-medium tracking-[var(--gui-tracking-xl)] text-muted-foreground uppercase">
+          <p className="text-xs font-medium tracking-[var(--gui-tracking-xl)] text-muted-foreground">
             Firma
           </p>
           <h1 className="mt-3 text-4xl font-semibold tracking-[var(--gui-tracking-s)] sm:text-5xl">
@@ -40,7 +40,7 @@ export default async function CompanyPage({ params }: Props) {
             {company.description}
           </p>
         </div>
-        <dl className="h-fit rounded-xl bg-muted/35 p-6 text-sm shadow-[var(--gui-edge-shadow)]">
+        <dl className="h-fit rounded-xl bg-muted/35 p-6 text-sm">
           <div className="flex gap-2">
             <MapPin className="size-5" />
             <div>

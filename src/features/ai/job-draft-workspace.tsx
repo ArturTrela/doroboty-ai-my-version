@@ -49,7 +49,7 @@ export function JobDraftWorkspace({
             action={action}
             className="form-stack h-fit rounded-xl bg-card p-6 shadow-[var(--gui-shadow-m)]"
           >
-            <h2 className="font-display text-3xl uppercase">Szkic z briefu</h2>
+            <h2>Szkic z briefu</h2>
             <p>
               Model widzi prywatny brief i kryteria decyzji. Wygenerowany tekst nie publikuje się
               automatycznie.
@@ -101,13 +101,10 @@ export function JobDraftWorkspace({
 function ApprovalForm({ state }: { state: ApprovedDraftState }) {
   const [approval, action, pending] = useActionState(approveJobDraft, initialState);
   return (
-    <form
-      action={action}
-      className="form-stack rounded-xl bg-secondary p-6 shadow-[var(--gui-edge-shadow)]"
-    >
+    <form action={action} className="form-stack rounded-xl bg-secondary p-6">
       <input type="hidden" name="jobId" value={state.jobId} />
       <input type="hidden" name="generationId" value={state.generationId} />
-      <h2 className="font-display text-3xl uppercase">Sprawdź i zatwierdź</h2>
+      <h2>Sprawdź i zatwierdź</h2>
       <div className="field">
         <Label htmlFor="draft-title">Tytuł</Label>
         <Input id="draft-title" name="title" defaultValue={state.title} required />

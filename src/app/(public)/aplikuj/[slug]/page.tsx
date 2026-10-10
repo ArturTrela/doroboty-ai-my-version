@@ -35,7 +35,7 @@ export default async function ApplyPage({ params }: { params: Promise<{ slug: st
   return (
     <section className="mx-auto grid max-w-5xl gap-10 px-5 py-14 lg:grid-cols-[0.7fr_1.3fr] lg:px-8 lg:py-20">
       <div>
-        <p className="text-xs font-medium tracking-[var(--gui-tracking-xl)] text-muted-foreground uppercase">
+        <p className="text-xs font-medium tracking-[var(--gui-tracking-xl)] text-muted-foreground">
           Aplikujesz na
         </p>
         <h1 className="mt-3 text-3xl font-semibold tracking-[var(--gui-tracking-s)] sm:text-4xl">
@@ -44,7 +44,7 @@ export default async function ApplyPage({ params }: { params: Promise<{ slug: st
         <p className="mt-3 font-medium text-[var(--gui-link)]">{job.company.name}</p>
         <p className="mt-5 text-base leading-relaxed text-muted-foreground">{job.summary}</p>
         {!profileReady && (
-          <div className="mt-6 rounded-lg bg-muted/40 p-4 shadow-[var(--gui-edge-shadow)]">
+          <div className="mt-6 rounded-lg bg-muted/40 p-4">
             <strong className="font-medium">Uzupełnij profil</strong>
             <p className="mt-2 text-sm text-muted-foreground">
               One-click będzie dostępny po dodaniu opisu i doświadczenia.

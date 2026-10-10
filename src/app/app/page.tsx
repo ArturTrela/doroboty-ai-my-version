@@ -20,14 +20,7 @@ export default async function WorkspaceHome() {
     <div>
       <div className="page-heading">
         <div>
-          <p className="font-ui text-xs font-semibold uppercase">
-            {isCandidate
-              ? "Strefa kandydata"
-              : profile.role === "employer"
-                ? "Strefa pracodawcy"
-                : "Strefa operatora"}
-          </p>
-          <h1 className="mt-2">Cześć{profile.display_name ? `, ${profile.display_name}` : ""}.</h1>
+          <h1>Cześć{profile.display_name ? `, ${profile.display_name}` : ""}.</h1>
           <p>
             {isCandidate
               ? "Pokaż konkretną pracę i aplikuj świadomie."
@@ -64,8 +57,8 @@ export default async function WorkspaceHome() {
         />
       </div>
       {profile.role === "operator" && (
-        <section className="mt-8 rounded-lg bg-secondary p-5 shadow-[var(--gui-edge-shadow)]">
-          <h2 className="font-display text-3xl uppercase">Stan środowiska</h2>
+        <section className="mt-8 rounded-[var(--gui-radius-m)] bg-secondary p-[var(--gui-space-l)]">
+          <h2>Stan środowiska</h2>
           <ul className="mt-4 grid gap-2 font-ui text-sm sm:grid-cols-3">
             <li>
               <strong>Supabase:</strong> podłączony
@@ -101,14 +94,13 @@ function DashboardCard({
   href: string;
 }) {
   return (
-    <article className="flex flex-col rounded-xl bg-card p-6 shadow-[var(--gui-shadow-m)]">
-      <Icon className="size-7" />
-      <h2 className="mt-5 font-display text-3xl uppercase">{title}</h2>
-      <p className="mt-3 grow text-lg leading-relaxed">{body}</p>
-      <Link
-        className="mt-6 inline-flex items-center gap-2 font-ui font-semibold uppercase underline"
-        href={href}
-      >
+    <article className="flex flex-col rounded-[var(--gui-radius-l)] bg-card p-[var(--gui-space-l)]">
+      <span className="flex size-10 items-center justify-center rounded-[var(--gui-radius-s)] bg-secondary">
+        <Icon className="size-5" aria-hidden="true" />
+      </span>
+      <h2 className="mt-[var(--gui-space-m)]">{title}</h2>
+      <p className="mt-[var(--gui-space-xs)] grow text-base text-muted-foreground">{body}</p>
+      <Link className="text-link mt-[var(--gui-space-l)] font-medium" href={href}>
         Przejdź <ArrowRight className="size-4" />
       </Link>
     </article>

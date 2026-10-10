@@ -45,13 +45,10 @@ export default async function CandidateProfilePage() {
       </div>
       <section className="mt-10 grid gap-6 lg:grid-cols-2">
         <div>
-          <h2 className="font-display text-3xl uppercase">Doświadczenia</h2>
+          <h2>Doświadczenia</h2>
           <div className="mt-4 grid gap-3">
             {(experiencesResult.data ?? []).map((item) => (
-              <article
-                key={item.id}
-                className="rounded-lg bg-card p-4 shadow-[var(--gui-edge-shadow)]"
-              >
+              <article key={item.id} className="rounded-lg bg-card p-4">
                 <h3 className="font-ui font-semibold">
                   {item.title} · {item.company_name}
                 </h3>
@@ -66,13 +63,10 @@ export default async function CandidateProfilePage() {
           </div>
         </div>
         <div>
-          <h2 className="font-display text-3xl uppercase">Próbki pracy</h2>
+          <h2>Próbki pracy</h2>
           <div className="mt-4 grid gap-3">
             {(samplesResult.data ?? []).map((item) => (
-              <article
-                key={item.id}
-                className="rounded-lg bg-card p-4 shadow-[var(--gui-edge-shadow)]"
-              >
+              <article key={item.id} className="rounded-lg bg-card p-4">
                 <h3 className="font-ui font-semibold">{item.title}</h3>
                 <p className="mt-2 leading-relaxed">{item.context}</p>
                 <p className="mt-2 bg-primary p-2 text-primary-foreground">

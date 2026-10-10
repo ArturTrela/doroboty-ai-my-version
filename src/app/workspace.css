@@ -19,14 +19,14 @@ h3,
   min-width: 0;
 }
 h1 {
-  font-size: clamp(var(--gui-text-l), 3vw, var(--gui-text-xl));
-  font-weight: 600;
+  font-size: var(--gui-text-xl);
+  font-weight: var(--weight-brand-heavy, 600);
   line-height: var(--gui-leading-xl);
   letter-spacing: var(--gui-tracking-s);
 }
 h2 {
   font-size: var(--gui-text-m);
-  font-weight: 600;
+  font-weight: var(--weight-brand-medium, 500);
   line-height: var(--gui-leading-m);
   letter-spacing: var(--gui-tracking-m);
 }
@@ -266,22 +266,19 @@ a {
   padding-left: 34px;
 }
 .native-select {
-  min-height: 32px;
+  min-height: 48px;
   border: 0;
   border-radius: var(--gui-radius-s);
   background: var(--gui-control);
   color: var(--foreground);
-  padding: var(--gui-space-xs) 32px var(--gui-space-xs) var(--gui-space-s);
+  padding: var(--gui-space-s) 32px var(--gui-space-s) var(--gui-space-s);
   font: inherit;
   width: 100%;
-  box-shadow: var(--gui-control-shadow);
   outline: none;
 }
-.native-select:hover {
-  box-shadow: var(--gui-control-hover-shadow);
-}
 .native-select:focus-visible {
-  box-shadow: var(--gui-control-focus-shadow);
+  outline: 2px solid var(--gui-focus);
+  outline-offset: 2px;
 }
 .filter-select {
   width: 185px;
@@ -495,6 +492,10 @@ code {
   }
 }
 @media (max-width: 767px) {
+  h1 {
+    font-size: var(--gui-text-l);
+    line-height: var(--gui-leading-l);
+  }
   .mobile-header {
     display: flex;
     height: 68px;
@@ -617,7 +618,7 @@ code {
 .dashboard-info > svg {
   flex-shrink: 0;
   margin-top: 2px;
-  color: var(--accent-foreground);
+  color: var(--gui-color-1);
 }
 .dashboard-info strong {
   font-weight: 600;
@@ -685,7 +686,7 @@ code {
 }
 .period-picker {
   display: flex;
-  box-shadow: var(--gui-edge-shadow);
+  background: var(--gui-surface-muted);
   border-radius: var(--gui-radius-m);
   padding: var(--gui-space-xxs);
 }
@@ -782,13 +783,6 @@ code {
 .documents-table tbody tr:hover,
 .documents-table tr[data-selected="true"] {
   background: var(--muted);
-}
-.documents-table input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  vertical-align: middle;
-  accent-color: var(--primary);
-  cursor: pointer;
 }
 .documents-table .numeric-cell {
   text-align: right;

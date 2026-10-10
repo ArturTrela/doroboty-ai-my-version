@@ -26,7 +26,7 @@ export default async function JobsPage({ searchParams }: Props) {
     <section className="mx-auto max-w-[1360px] px-5 py-9 lg:px-8">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-xs font-medium tracking-[var(--gui-tracking-xl)] text-muted-foreground uppercase">
+          <p className="text-xs font-medium tracking-[var(--gui-tracking-xl)] text-muted-foreground">
             Aktualne role
           </p>
           <h1 className="mt-3 text-4xl font-semibold tracking-[var(--gui-tracking-s)] sm:text-5xl">
@@ -71,7 +71,7 @@ export default async function JobsPage({ searchParams }: Props) {
           ))}
         </div>
       ) : (
-        <div className="mt-6 rounded-lg bg-muted/30 p-10 text-center shadow-[var(--gui-edge-shadow)]">
+        <div className="mt-6 rounded-lg bg-muted/30 p-10 text-center">
           <h2 className="text-xl font-semibold">Brak ofert dla tych filtrów</h2>
           <p className="mt-3 text-sm text-muted-foreground">
             Wyczyść część kryteriów i spróbuj ponownie.

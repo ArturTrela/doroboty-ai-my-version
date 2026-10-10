@@ -6,6 +6,7 @@ import { generateCandidateDraft } from "@/features/ai/actions";
 import { captureBrowserAnalytics } from "@/features/analytics/client-event";
 import { ExperimentExposure } from "@/features/experiments/exposure";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -64,10 +65,7 @@ export function ApplicationForm({
       <input type="hidden" name="jobId" value={jobId} />
       <input type="hidden" name="variant" value={variant} />
       <input type="hidden" name="aiGenerationId" value={generationId} />
-      <div
-        className="rounded-lg bg-secondary p-4 shadow-[var(--gui-edge-shadow)]"
-        onPointerDown={trackStart}
-      >
+      <div className="rounded-lg bg-secondary p-4" onPointerDown={trackStart}>
         <strong className="font-ui">
           {variant === "one_click" ? "Wariant: zapisany profil" : "Wariant: pełna odpowiedź"}
         </strong>
@@ -114,9 +112,9 @@ export function ApplicationForm({
           </p>
         )}
       </div>
-      <label className="flex gap-3 font-ui text-sm">
-        <input type="checkbox" name="confirmed" value="yes" required /> Potwierdzam wysłanie tej
-        aplikacji i zapisanego snapshotu profilu.
+      <label className="flex items-start gap-[var(--gui-space-xs)] font-ui text-base">
+        <Checkbox name="confirmed" value="yes" required />
+        <span>Potwierdzam wysłanie tej aplikacji i zapisanego snapshotu profilu.</span>
       </label>
       {state.message && (
         <p role="alert" className="error-message">

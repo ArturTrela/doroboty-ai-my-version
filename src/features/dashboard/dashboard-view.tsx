@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { documents, visitorDays } from "./data";
 
@@ -253,17 +254,16 @@ export function DashboardView() {
             <thead>
               <tr>
                 <th scope="col">
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     aria-label="Select documents on this page"
                     disabled={!visible.length}
                     checked={
                       visible.length > 0 &&
                       visible.every((document) => selected.includes(document.id))
                     }
-                    onChange={(event) =>
+                    onCheckedChange={(checked) =>
                       setSelected(
-                        event.target.checked
+                        checked
                           ? [...new Set([...selected, ...visible.map((document) => document.id)])]
                           : selected.filter(
                               (id) => !visible.some((document) => document.id === id),
@@ -288,13 +288,12 @@ export function DashboardView() {
               {visible.map((document) => (
                 <tr key={document.id} data-selected={selected.includes(document.id)}>
                   <td>
-                    <input
-                      type="checkbox"
+                    <Checkbox
                       aria-label={`Select: ${document.title}`}
                       checked={selected.includes(document.id)}
-                      onChange={(event) =>
+                      onCheckedChange={(checked) =>
                         setSelected(
-                          event.target.checked
+                          checked
                             ? [...selected, document.id]
                             : selected.filter((id) => id !== document.id),
                         )

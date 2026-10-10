@@ -1,4 +1,5 @@
 import { recordEmployerStage } from "@/features/applications/actions";
+import { buttonVariants } from "@/components/ui/button";
 import { requireProfile } from "@/features/auth/session";
 import { getSupabaseConfig } from "@/lib/env";
 
@@ -47,8 +48,8 @@ export default async function EmployerInboxPage({
           {profile.role === "operator" ? "Widok operatora" : "Widok pracodawcy"}
         </span>
       </div>
-      <form className="mb-6 flex flex-wrap items-end gap-2 rounded-xl bg-secondary p-4 shadow-[var(--gui-edge-shadow)]">
-        <label className="font-ui text-xs font-semibold uppercase">
+      <form className="mb-6 flex flex-wrap items-end gap-2 rounded-xl bg-secondary p-4">
+        <label className="font-ui text-base font-medium">
           Status
           <select
             className="native-select mt-1 block min-h-10 bg-[var(--gui-control)] px-2"
@@ -63,10 +64,7 @@ export default async function EmployerInboxPage({
             ))}
           </select>
         </label>
-        <button
-          className="min-h-10 rounded-md border-0 bg-primary px-4 font-ui text-xs font-medium text-primary-foreground outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--gui-focus)]"
-          type="submit"
-        >
+        <button className={buttonVariants({ size: "sm" })} type="submit">
           Filtruj
         </button>
       </form>
@@ -90,8 +88,8 @@ export default async function EmployerInboxPage({
               >
                 <div className="flex flex-wrap justify-between gap-4">
                   <div>
-                    <p className="font-ui text-xs font-semibold uppercase">{job?.title}</p>
-                    <h2 className="mt-1 font-display text-3xl uppercase">
+                    <p className="font-ui text-xs font-semibold">{job?.title}</p>
+                    <h2 className="mt-1">
                       {snapshot.profile?.displayName || "Kandydat / kandydatka"}
                     </h2>
                     <p className="mt-1">{snapshot.profile?.headline}</p>
@@ -102,13 +100,13 @@ export default async function EmployerInboxPage({
                 </div>
                 <div className="mt-5 grid gap-5 lg:grid-cols-2">
                   <section>
-                    <h3 className="font-ui font-semibold uppercase">Odpowiedź</h3>
+                    <h3 className="font-ui font-semibold">Odpowiedź</h3>
                     <p className="mt-2 whitespace-pre-wrap text-lg leading-relaxed">
                       {application.answer}
                     </p>
                   </section>
                   <section>
-                    <h3 className="font-ui font-semibold uppercase">Źródłowe doświadczenie</h3>
+                    <h3 className="font-ui font-semibold">Źródłowe doświadczenie</h3>
                     <ul className="mt-2 grid gap-2">
                       {(snapshot.experiences ?? []).map((experience, index) => (
                         <li
@@ -130,9 +128,7 @@ export default async function EmployerInboxPage({
                 >
                   <input type="hidden" name="applicationId" value={application.id} />
                   <label className="grow">
-                    <span className="font-ui text-xs font-semibold uppercase">
-                      Notatka (opcjonalnie)
-                    </span>
+                    <span className="font-ui text-base font-medium">Notatka (opcjonalnie)</span>
                     <input
                       className="native-select mt-1 min-h-10 w-full bg-[var(--gui-control)] px-2"
                       name="note"
@@ -142,7 +138,7 @@ export default async function EmployerInboxPage({
                   {actions.map(([stage, label]) => (
                     <button
                       key={stage}
-                      className="min-h-10 rounded-md border-0 bg-primary px-3 font-ui text-xs font-medium text-primary-foreground outline-none hover:bg-[var(--gui-neutral-9)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--gui-focus)]"
+                      className={buttonVariants({ size: "sm" })}
                       type="submit"
                       name="stage"
                       value={stage}

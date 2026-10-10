@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
 import { requireProfile } from "@/features/auth/session";
 import { calculateBusinessCase, type BusinessCaseInputs } from "@/features/case-data/business-case";
 import { getSupabaseConfig } from "@/lib/env";
@@ -59,14 +60,14 @@ export default async function PilotPage({
       </Link>
       <div className="page-heading">
         <div>
-          <p className="font-ui text-xs font-semibold uppercase">Pilot organizacyjny</p>
+          <p className="font-ui text-xs font-semibold">Pilot organizacyjny</p>
           <h1 className="mt-2">Business case</h1>
           <p>Wartość liczona od wyniku po rozmowie, nie od liczby aplikacji.</p>
         </div>
       </div>
       <form className="grid gap-3 rounded-xl bg-card p-5 shadow-[var(--gui-shadow-m)] md:grid-cols-2 xl:grid-cols-3">
         {Object.entries(labels).map(([key, label]) => (
-          <label key={key} className="font-ui text-xs font-semibold uppercase">
+          <label key={key} className="font-ui text-base font-medium">
             {label}
             <input
               className="native-select mt-1 min-h-10 w-full bg-[var(--gui-control)] px-2"
@@ -78,10 +79,7 @@ export default async function PilotPage({
             />
           </label>
         ))}
-        <button
-          className="rounded-md border-0 bg-primary px-4 py-2 font-ui font-medium text-primary-foreground outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--gui-focus)]"
-          type="submit"
-        >
+        <button className={buttonVariants({ size: "sm" })} type="submit">
           Przelicz
         </button>
       </form>
@@ -96,8 +94,8 @@ export default async function PilotPage({
         />
         <Result label="Break-even" value={result.breakEvenContinuations ?? "—"} />
       </section>
-      <div className="mt-8 rounded-xl bg-secondary p-5 shadow-[var(--gui-edge-shadow)]">
-        <h2 className="font-display text-3xl uppercase">Zasady decyzji</h2>
+      <div className="mt-8 rounded-xl bg-secondary p-5">
+        <h2>Zasady decyzji</h2>
         <p className="mt-2">
           Raportuj zakres i niepewność założeń. Ekspansja wymaga poprawy głównego wyniku oraz
           przejścia wszystkich guardrailów prywatności, jakości i czasu pracy.
@@ -118,10 +116,10 @@ function Result({
 }) {
   return (
     <article
-      className={`rounded-xl p-4 shadow-[var(--gui-edge-shadow)] ${primary ? "bg-primary text-primary-foreground" : "bg-card"}`}
+      className={`rounded-xl p-4 ${primary ? "bg-primary text-primary-foreground" : "bg-card"}`}
     >
-      <p className="font-ui text-xs font-semibold uppercase">{label}</p>
-      <strong className="mt-2 block font-display text-4xl">{value}</strong>
+      <p className="font-ui text-xs font-semibold">{label}</p>
+      <strong className="mt-2 block">{value}</strong>
     </article>
   );
 }

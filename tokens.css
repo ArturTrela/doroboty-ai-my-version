@@ -2,10 +2,33 @@
 :root {
   color-scheme: light;
 
+  --theme-name: "Untitled";
+  --theme-icon-family: "Lucide";
+  --theme-icon-style: "outlined";
+  --icon-light-display: none;
+  --icon-regular-display: inline;
+  --icon-bold-display: none;
+
   --gui-font-brand: "Timeless Grotesk", sans-serif;
   --gui-font-ui: "Timeless Grotesk", sans-serif;
   --gui-font-editorial: "Timeless Grotesk", sans-serif;
   --gui-font-data: "Timeless Grotesk", sans-serif;
+  --font-ui: var(--gui-font-ui);
+  --font-brand: var(--gui-font-brand);
+  --font-editorial: var(--gui-font-editorial);
+  --font-data: var(--gui-font-data);
+  --weight-ui-regular: 400;
+  --weight-ui-medium: 500;
+  --weight-ui-heavy: 600;
+  --weight-brand-regular: 400;
+  --weight-brand-medium: 500;
+  --weight-brand-heavy: 600;
+  --weight-editorial-regular: 400;
+  --weight-editorial-medium: 500;
+  --weight-editorial-heavy: 600;
+  --weight-data-regular: 400;
+  --weight-data-medium: 500;
+  --weight-data-heavy: 600;
   --font-body: var(--gui-font-ui);
   --font-display: var(--gui-font-brand);
   --font-interface: var(--gui-font-ui);
@@ -56,21 +79,34 @@
   --radius: var(--gui-radius-s);
 
   --gui-neutral-1: #ffffff;
+  --gui-neutral-1-transparent: #ffffff33;
   --gui-neutral-2: #fbfbfb;
+  --gui-neutral-2-transparent: #fbfbfb33;
   --gui-neutral-3: #f4f4f4;
+  --gui-neutral-3-transparent: #f4f4f433;
   --gui-neutral-4: #e7e7e7;
+  --gui-neutral-4-transparent: #e7e7e733;
   --gui-neutral-5: #cdcdcd;
+  --gui-neutral-5-transparent: #cdcdcd33;
   --gui-neutral-6: #a1a1a1;
+  --gui-neutral-6-transparent: #a1a1a133;
   --gui-neutral-7: #7d7d7d;
+  --gui-neutral-7-transparent: #7d7d7d33;
   --gui-neutral-8: #555555;
+  --gui-neutral-8-transparent: #55555533;
   --gui-neutral-9: #333333;
+  --gui-neutral-9-transparent: #33333333;
   --gui-neutral-10: #000000;
   --gui-color-1: #00afe8;
   --gui-color-2: #085e55;
+  --gui-color-2-transparent: #085e5533;
   --gui-color-3: #ffed9b;
+  --gui-color-3-transparent: #ffed9b33;
   --gui-color-4: #ffb5aa;
+  --gui-color-4-transparent: #ffb5aa33;
   --gui-success: #00906c;
   --gui-warning: #ffea00;
+  --gui-warning-transparent: #ffea0033;
   --gui-error: #fc032d;
   --gui-neutral-10-transparent: #00000033;
   --gui-backdrop: #00000033;
@@ -96,28 +132,104 @@
   --gui-control-readonly: var(--gui-neutral-2);
 
   --gui-shadow-none: none;
-  --gui-shadow-s: 0 0 0 1px transparent;
+  --gui-shadow-s: 0 2px 4px 0 #00000000;
   --gui-shadow-m: 0 2px 6px 0 #0000000d, 0 8px 24px 0 #00000013;
-  --gui-shadow-l: 0 0 0 1px transparent;
-  --gui-edge-shadow: inset 0 0 0 1px var(--gui-edge);
+  --gui-shadow-l: 0 16px 48px 0 #00000000;
+  /* Untitled has zero-width component borders. Dividers remain explicit one-sided rules. */
+  --gui-edge-shadow: none;
   --gui-divider-top-shadow: inset 0 1px var(--gui-edge);
   --gui-divider-bottom-shadow: inset 0 -1px var(--gui-edge);
   --gui-divider-inline-end-shadow: inset -1px 0 var(--gui-edge);
-  --gui-accent-edge-shadow: inset 0 0 0 1px var(--gui-color-1);
+  --gui-accent-edge-shadow: none;
   --gui-accent-bar-shadow: inset 4px 0 var(--gui-color-1);
   --gui-control-shadow: inset 0 0 0 0 transparent;
-  --gui-control-hover-shadow: inset 0 0 0 1px var(--gui-neutral-5);
-  --gui-control-focus-shadow:
-    inset 0 0 0 1px var(--gui-focus), 0 0 0 2px var(--gui-color-1-transparent);
-  --gui-control-invalid-shadow:
-    inset 0 0 0 1px var(--gui-error), 0 0 0 2px var(--gui-error-transparent);
-  --gui-control-valid-shadow:
-    inset 0 0 0 1px var(--gui-success), 0 0 0 2px var(--gui-success-transparent);
+  --gui-control-hover-shadow: none;
+  --gui-control-focus-shadow: none;
+  --gui-control-invalid-shadow: none;
+  --gui-control-valid-shadow: none;
 
-  --gui-motion-small: 400ms linear(0, 0.38, 0.68, 0.85, 0.94, 0.98, 1.01, 1.01, 1);
-  --gui-motion-large: 600ms linear(0, 0.29, 0.56, 0.75, 0.87, 0.94, 0.98, 1.01, 1.01, 1);
+  --gui-motion-small: 400ms
+    linear(
+      0,
+      0.2375,
+      0.5904,
+      0.8358,
+      0.9599,
+      1.0061,
+      1.0152,
+      1.0116,
+      1.0062,
+      1.0025,
+      1.0006,
+      0.9999,
+      1
+    );
+  --gui-motion-large: 600ms
+    linear(
+      0,
+      0.0846,
+      0.2691,
+      0.4778,
+      0.6674,
+      0.8179,
+      0.9249,
+      0.9926,
+      1.0293,
+      1.0442,
+      1.0452,
+      1.0388,
+      1.0296,
+      1.0202,
+      1.0121,
+      1.0061,
+      1.0019,
+      0.9995,
+      0.9983,
+      1
+    );
   --gui-scale-enter: 0.96;
   --gui-press-offset: 1px;
+  --motion-duration: 400ms;
+  --motion-easing: linear(
+    0,
+    0.2375,
+    0.5904,
+    0.8358,
+    0.9599,
+    1.0061,
+    1.0152,
+    1.0116,
+    1.0062,
+    1.0025,
+    1.0006,
+    0.9999,
+    1
+  );
+  --motion-large-duration: 600ms;
+  --motion-large-easing: linear(
+    0,
+    0.0846,
+    0.2691,
+    0.4778,
+    0.6674,
+    0.8179,
+    0.9249,
+    0.9926,
+    1.0293,
+    1.0442,
+    1.0452,
+    1.0388,
+    1.0296,
+    1.0202,
+    1.0121,
+    1.0061,
+    1.0019,
+    0.9995,
+    0.9983,
+    1
+  );
+  --motion-popup-scale: 0.96;
+  --motion-press-distance: 1px;
   --ease-out: linear(0, 0.38, 0.68, 0.85, 0.94, 0.98, 1.01, 1.01, 1);
   --ease-in: linear(0, 0.03, 0.09, 0.21, 0.4, 0.64, 0.84, 1);
   --ease-in-out: linear(0, 0.16, 0.43, 0.72, 0.9, 0.98, 1.01, 1);
@@ -163,14 +275,23 @@
 .dark {
   color-scheme: dark;
   --gui-neutral-1: #000000;
+  --gui-neutral-1-transparent: #00000033;
   --gui-neutral-2: #202020;
+  --gui-neutral-2-transparent: #20202033;
   --gui-neutral-3: #2b2b2b;
+  --gui-neutral-3-transparent: #2b2b2b33;
   --gui-neutral-4: #3d3d3d;
+  --gui-neutral-4-transparent: #3d3d3d33;
   --gui-neutral-5: #565656;
+  --gui-neutral-5-transparent: #56565633;
   --gui-neutral-6: #838383;
+  --gui-neutral-6-transparent: #83838333;
   --gui-neutral-7: #ababab;
+  --gui-neutral-7-transparent: #ababab33;
   --gui-neutral-8: #cfcfcf;
+  --gui-neutral-8-transparent: #cfcfcf33;
   --gui-neutral-9: #f4f4f4;
+  --gui-neutral-9-transparent: #f4f4f433;
   --gui-neutral-10: #ffffff;
   --gui-neutral-10-transparent: #ffffff33;
   --gui-canvas: var(--gui-neutral-1);

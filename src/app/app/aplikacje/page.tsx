@@ -60,13 +60,10 @@ export default async function ApplicationsPage({
           {(data ?? []).map((application) => {
             const job = Array.isArray(application.job) ? application.job[0] : application.job;
             return (
-              <article
-                key={application.id}
-                className="rounded-xl bg-card p-5 shadow-[var(--gui-edge-shadow)]"
-              >
+              <article key={application.id} className="rounded-xl bg-card p-5">
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div>
-                    <h2 className="font-display text-2xl uppercase">{job?.title ?? "Oferta"}</h2>
+                    <h2>{job?.title ?? "Oferta"}</h2>
                     <p className="mt-1 font-ui text-sm">
                       {application.variant === "one_click" ? "Zapisany profil" : "Pełna odpowiedź"}
                     </p>

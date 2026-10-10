@@ -31,7 +31,7 @@ const filterIcons = {
 export function JobFiltersForm({ filters }: { filters: JobFilters }) {
   return (
     <form className="pb-6 shadow-[var(--gui-divider-bottom-shadow)]" action="/oferty">
-      <div className="flex rounded-lg bg-background p-1 shadow-[var(--gui-edge-shadow)] focus-within:shadow-[var(--gui-control-focus-shadow)]">
+      <div className="flex rounded-lg bg-background p-1 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--gui-focus)]">
         <label className="relative min-w-0 flex-1">
           <span className="sr-only">Szukaj</span>
           <Search
@@ -39,7 +39,7 @@ export function JobFiltersForm({ filters }: { filters: JobFilters }) {
             className="absolute top-1/2 left-4 size-5 -translate-y-1/2 text-muted-foreground"
           />
           <Input
-            className="h-12 border-0 bg-transparent pr-3 pl-12 text-base shadow-none focus-visible:border-transparent focus-visible:ring-0"
+            className="h-12 border-0 bg-transparent pr-3 pl-12 text-base shadow-none focus-visible:outline-none"
             name="query"
             defaultValue={filters.query}
             placeholder="Szukaj po stanowisku, firmie lub słowach kluczowych..."
@@ -107,10 +107,10 @@ function FilterSelect({
   const Icon = filterIcons[name];
 
   return (
-    <label className="relative flex h-14 items-center gap-3 rounded-lg bg-[var(--gui-control)] px-3 shadow-[var(--gui-control-shadow)] transition-[background-color,box-shadow] focus-within:shadow-[var(--gui-control-focus-shadow)] hover:shadow-[var(--gui-control-hover-shadow)]">
+    <label className="relative flex h-14 items-center gap-3 rounded-lg bg-[var(--gui-control)] px-3 transition-colors focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--gui-focus)]">
       <Icon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
       <span className="min-w-0 flex-1">
-        <span className="block text-[11px] leading-4 text-muted-foreground">{label}</span>
+        <span className="block text-xs text-muted-foreground">{label}</span>
         <select
           className="block w-full appearance-none bg-transparent pr-5 text-sm font-medium outline-none"
           name={name}

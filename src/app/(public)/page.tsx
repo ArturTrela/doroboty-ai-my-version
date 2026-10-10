@@ -66,7 +66,7 @@ export default async function HomePage() {
       </section>
 
       <section className="mx-auto max-w-[1360px] px-5 py-16 lg:px-8 lg:py-20">
-        <p className="text-xs font-medium tracking-[var(--gui-tracking-xl)] text-muted-foreground uppercase">
+        <p className="text-xs font-medium tracking-[var(--gui-tracking-xl)] text-muted-foreground">
           Trzy sposoby pracy z AI
         </p>
         <h2 className="mt-3 text-3xl font-semibold tracking-[var(--gui-tracking-s)] sm:text-4xl">
@@ -74,10 +74,7 @@ export default async function HomePage() {
         </h2>
         <div className="mt-8 grid gap-5 md:grid-cols-3">
           {categories.map((category, index) => (
-            <article
-              key={category.slug}
-              className="rounded-xl bg-card p-6 shadow-[var(--gui-edge-shadow)]"
-            >
+            <article key={category.slug} className="rounded-xl bg-card p-6">
               <span className="text-xs font-medium text-muted-foreground">0{index + 1}</span>
               <h3 className="mt-3 text-xl font-semibold">{category.label}</h3>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
@@ -98,7 +95,7 @@ export default async function HomePage() {
         <div className="mx-auto max-w-[1360px] px-5 py-16 lg:px-8 lg:py-20">
           <div className="flex flex-wrap items-end justify-between gap-5">
             <div>
-              <p className="text-xs font-medium tracking-[var(--gui-tracking-xl)] text-muted-foreground uppercase">
+              <p className="text-xs font-medium tracking-[var(--gui-tracking-xl)] text-muted-foreground">
                 Aktualne role
               </p>
               <h2 className="mt-3 text-3xl font-semibold tracking-[var(--gui-tracking-s)] sm:text-4xl">

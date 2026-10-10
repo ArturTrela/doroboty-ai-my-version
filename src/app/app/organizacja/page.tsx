@@ -23,9 +23,9 @@ export default async function OrganizationPage() {
         </div>
       </div>
       {organization ? (
-        <div className="max-w-2xl rounded-xl bg-secondary p-6 shadow-[var(--gui-edge-shadow)]">
-          <p className="font-ui text-xs font-semibold uppercase">{data.role}</p>
-          <h2 className="mt-2 font-display text-4xl uppercase">{organization.name}</h2>
+        <div className="max-w-2xl rounded-xl bg-secondary p-6">
+          <p className="font-ui text-xs font-semibold">{data.role}</p>
+          <h2 className="mt-2">{organization.name}</h2>
           <p className="mt-2">
             Slug: <code>{organization.slug}</code>
           </p>

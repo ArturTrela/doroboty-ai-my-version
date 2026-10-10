@@ -7,6 +7,7 @@ import {
   MapPin,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { buttonVariants } from "@/components/ui/button";
 import type { JobWithCompany } from "@/features/jobs/types";
 import {
   categoryLabels,
@@ -16,6 +17,7 @@ import {
   remoteLabels,
   seniorityLabels,
 } from "@/features/jobs/presentation";
+import { cn } from "@/lib/utils";
 
 const relativeFormatter = new Intl.RelativeTimeFormat("pl", { numeric: "auto" });
 
@@ -36,7 +38,7 @@ export function JobCard({ job }: { job: JobWithCompany }) {
 
   return (
     <article className="group grid gap-5 py-5 shadow-[var(--gui-divider-bottom-shadow)] transition-colors hover:bg-muted/35 sm:grid-cols-[56px_minmax(0,1.35fr)_minmax(220px,0.8fr)_auto] sm:items-center sm:px-1">
-      <div className="flex size-14 items-center justify-center rounded-lg bg-muted text-sm font-semibold tracking-[var(--gui-tracking-xl)] text-foreground shadow-[var(--gui-edge-shadow)]">
+      <div className="flex size-14 items-center justify-center rounded-lg bg-muted text-sm font-semibold tracking-[var(--gui-tracking-xl)] text-foreground">
         {initials}
       </div>
 
@@ -87,7 +89,7 @@ export function JobCard({ job }: { job: JobWithCompany }) {
       <div className="flex items-center justify-between gap-4 sm:block sm:text-right">
         <p className="text-xs text-muted-foreground">{publishedLabel(job.publishedAt)}</p>
         <Link
-          className="mt-2 inline-flex min-h-10 items-center gap-2 rounded-md bg-background px-3 text-sm font-medium shadow-[var(--gui-edge-shadow)] transition-colors hover:bg-muted"
+          className={cn("mt-2", buttonVariants({ variant: "outline", size: "sm" }))}
           href={`/oferty/${job.slug}`}
         >
           Zobacz rolę{" "}

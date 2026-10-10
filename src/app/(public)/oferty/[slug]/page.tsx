@@ -80,7 +80,7 @@ export default async function JobPage({ params }: Props) {
               <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
-          <div className="mt-12 rounded-xl bg-muted/40 p-6 shadow-[var(--gui-edge-shadow)]">
+          <div className="mt-12 rounded-xl bg-muted/40 p-6">
             <h2 className="text-xl font-semibold">Chcesz aplikować?</h2>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
               Zaloguj się, uzupełnij profil i pokaż doświadczenie związane z tą rolą.

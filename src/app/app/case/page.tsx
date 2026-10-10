@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
 import { releaseCaseAction } from "@/features/case-data/actions";
 import { requireProfile } from "@/features/auth/session";
 import {
@@ -12,6 +13,7 @@ import {
   type CaseSegment,
 } from "@/features/case-data/generator";
 import { getSupabaseConfig } from "@/lib/env";
+import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -67,7 +69,7 @@ export default async function CaseOperationsPage({
     <div>
       <div className="page-heading">
         <div>
-          <p className="font-ui text-xs font-semibold uppercase">Narzędzia instruktora</p>
+          <p className="font-ui text-xs font-semibold">Narzędzia instruktora</p>
           <h1 className="mt-2">Case releases</h1>
           <p>Deterministyczny podgląd, segmentacja i bramka walidacji danych.</p>
         </div>
@@ -76,7 +78,10 @@ export default async function CaseOperationsPage({
         {caseReleaseKeys.map((key) => (
           <Link
             key={key}
-            className={`rounded-md px-3 py-2 font-ui text-xs font-medium shadow-[var(--gui-edge-shadow)] ${key === release ? "bg-primary text-primary-foreground" : "bg-card"}`}
+            className={buttonVariants({
+              variant: key === release ? "default" : "secondary",
+              size: "sm",
+            })}
             href={`/app/case?release=${key}`}
           >
             {labels[key]}
@@ -85,9 +90,9 @@ export default async function CaseOperationsPage({
       </nav>
       <form
         action={releaseCaseAction}
-        className="mt-4 flex flex-wrap items-end gap-3 rounded-xl bg-secondary p-4 shadow-[var(--gui-edge-shadow)]"
+        className="mt-4 flex flex-wrap items-end gap-3 rounded-xl bg-secondary p-4"
       >
-        <label className="font-ui text-xs font-semibold uppercase">
+        <label className="font-ui text-base font-medium">
           Aktywny etap
           <select
             name="release"
@@ -101,25 +106,19 @@ export default async function CaseOperationsPage({
             ))}
           </select>
         </label>
-        <button
-          className="min-h-10 rounded-md border-0 bg-primary px-4 font-ui text-xs font-medium text-primary-foreground outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--gui-focus)]"
-          type="submit"
-        >
+        <button className={buttonVariants({ size: "sm" })} type="submit">
           Ustaw i ukryj późniejsze etapy
         </button>
-        <p className="w-full font-ui text-xs font-semibold uppercase" aria-live="polite">
+        <p className="w-full font-ui text-xs font-semibold" aria-live="polite">
           Potwierdzony aktywny etap: {labels[(activeRelease ?? "baseline") as CaseReleaseKey]}
         </p>
       </form>
       {["post_ai", "pilot", "demo_day"].includes(release) && (
-        <div className="mt-6 rounded-xl bg-[var(--gui-color-1-transparent)] p-4 font-ui font-medium shadow-[var(--gui-accent-edge-shadow)]">
+        <div className="mt-6 rounded-xl bg-[var(--gui-color-1-transparent)] p-4 font-ui font-medium">
           Materiał późniejszego etapu — nie pokazuj uczestnikom przed decyzją w tygodniu 2.
         </div>
       )}
-      <form
-        className="mt-6 grid gap-3 rounded-xl bg-card p-4 shadow-[var(--gui-edge-shadow)] md:grid-cols-5"
-        action="/app/case"
-      >
+      <form className="mt-6 grid gap-3 rounded-xl bg-card p-4 md:grid-cols-5" action="/app/case">
         <input type="hidden" name="release" value={release} />
         <SegmentSelect
           name="jobFamily"
@@ -145,10 +144,7 @@ export default async function CaseOperationsPage({
           value={segment.languageBackground}
           options={segmentOptions.languageBackground}
         />
-        <button
-          className="rounded-md border-0 bg-primary px-4 py-2 font-ui font-medium text-primary-foreground outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--gui-focus)]"
-          type="submit"
-        >
+        <button className={buttonVariants({ size: "sm" })} type="submit">
           Zastosuj segment
         </button>
       </form>
@@ -163,7 +159,7 @@ export default async function CaseOperationsPage({
         <Metric label="Sygnał finalny" value={summary.averageFinalSignal ?? "—"} />
       </section>
       <section className="mt-8 overflow-x-auto rounded-xl bg-card p-5 shadow-[var(--gui-shadow-m)]">
-        <h2 className="font-display text-3xl uppercase">Proxy a wynik według ekspozycji</h2>
+        <h2>Proxy a wynik według ekspozycji</h2>
         <p className="mt-2 max-w-3xl">
           Fit i jakość tekstu są wskaźnikami pośrednimi. Decyzja po pierwszej rozmowie jest osobnym
           wynikiem. Tabela nie przesądza o przyczynowości.
@@ -198,9 +194,9 @@ export default async function CaseOperationsPage({
         </table>
       </section>
       <section
-        className={`mt-8 rounded-xl p-5 shadow-[var(--gui-edge-shadow)] ${errors.length ? "bg-[var(--gui-error-transparent)]" : "bg-secondary"}`}
+        className={`mt-8 rounded-xl p-5 ${errors.length ? "bg-[var(--gui-error-transparent)]" : "bg-secondary"}`}
       >
-        <h2 className="font-display text-3xl uppercase">Walidacja fixture</h2>
+        <h2>Walidacja fixture</h2>
         <p className="mt-2 font-ui">
           {errors.length
             ? errors.join(", ")
@@ -211,10 +207,7 @@ export default async function CaseOperationsPage({
         Pełny słownik: <code>docs/case/DATA_DICTIONARY.md</code>. Eksport:{" "}
         <code>npm run case:export -- {release}</code>.
       </p>
-      <Link
-        className="mt-6 inline-block rounded-md border-0 bg-primary px-4 py-3 font-ui font-medium text-primary-foreground outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--gui-focus)]"
-        href="/app/case/pilot"
-      >
+      <Link className={cn("mt-6", buttonVariants())} href="/app/case/pilot">
         Kalkulator pilota
       </Link>
     </div>
@@ -233,7 +226,7 @@ function SegmentSelect({
   options: Record<string, string>;
 }) {
   return (
-    <label className="font-ui text-xs font-semibold uppercase">
+    <label className="font-ui text-base font-medium">
       {label}
       <select
         className="native-select mt-1 min-h-10 w-full bg-[var(--gui-control)] px-2"
@@ -262,9 +255,9 @@ function Metric({
 }) {
   return (
     <article
-      className={`rounded-xl p-5 shadow-[var(--gui-edge-shadow)] ${primary ? "bg-primary text-primary-foreground" : "bg-card"}`}
+      className={`rounded-xl p-5 ${primary ? "bg-primary text-primary-foreground" : "bg-card"}`}
     >
-      <p className="font-ui text-xs font-semibold uppercase">{label}</p>
+      <p className="font-ui text-xs font-semibold">{label}</p>
       <strong className="mt-3 block font-display text-5xl">{value}</strong>
     </article>
   );

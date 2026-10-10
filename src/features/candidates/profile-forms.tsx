@@ -25,7 +25,7 @@ export function CandidateProfileForm({
       action={action}
       className="form-stack rounded-xl bg-card p-6 shadow-[var(--gui-shadow-m)]"
     >
-      <h2 className="font-display text-3xl">Profil kandydata</h2>
+      <h2>Profil kandydata</h2>
       <Field
         label="Imię lub nazwa zawodowa"
         name="displayName"
@@ -71,7 +71,7 @@ export function ExperienceForm() {
       action={action}
       className="form-stack rounded-xl bg-card p-6 shadow-[var(--gui-shadow-m)]"
     >
-      <h2 className="font-display text-3xl">Dodaj doświadczenie</h2>
+      <h2>Dodaj doświadczenie</h2>
       <Field id="experience-title" label="Rola" name="title" required />
       <Field id="experience-company" label="Firma lub projekt" name="companyName" required />
       <TextField
@@ -100,7 +100,7 @@ export function WorkSampleForm() {
       action={action}
       className="form-stack rounded-xl bg-card p-6 shadow-[var(--gui-shadow-m)]"
     >
-      <h2 className="font-display text-3xl">Dodaj próbkę pracy</h2>
+      <h2>Dodaj próbkę pracy</h2>
       <Field id="work-sample-title" label="Tytuł" name="title" required />
       <Field id="work-sample-url" label="Link HTTPS (opcjonalnie)" name="url" type="url" />
       <TextField id="work-sample-context" label="Kontekst" name="context" required />
