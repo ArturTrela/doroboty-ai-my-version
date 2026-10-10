@@ -359,11 +359,20 @@ a {
   color: var(--muted-foreground);
   font-size: var(--gui-text-xxs);
 }
-.job-map-popup > strong {
+.job-map-popup-title {
   padding-right: 18px;
+  color: var(--popover-foreground);
   font-size: var(--gui-text-s);
+  font-weight: 600;
 }
-.job-map-popup > a {
+.job-map-popup-title:hover {
+  color: var(--gui-link);
+}
+.job-map-popup-title:focus-visible {
+  outline: 2px solid var(--gui-focus);
+  outline-offset: 2px;
+}
+.job-map-popup-link {
   margin-top: 4px;
   color: var(--gui-link);
   font-weight: 600;

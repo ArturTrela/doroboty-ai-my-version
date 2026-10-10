@@ -45,7 +45,12 @@ export function JobCard({ job }: { job: JobWithCompany }) {
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-2">
           <h3 className="text-base font-semibold tracking-[var(--gui-tracking-s)] sm:text-lg">
-            {job.title}
+            <Link
+              className="rounded-sm transition-colors hover:text-[var(--gui-link)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--gui-focus)]"
+              href={`/oferty/${job.slug}`}
+            >
+              {job.title}
+            </Link>
           </h3>
           {job.verificationStatus === "employer_verified" && (
             <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">

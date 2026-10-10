@@ -9,7 +9,11 @@ test("public marketplace links homepage, jobs, company, and methodology", async 
   await page.getByRole("link", { name: "Zobacz oferty" }).click();
   await expect(page.getByRole("heading", { name: "Oferty pracy z AI" })).toBeVisible();
   await expect(page.getByRole("article")).toHaveCount(6);
-  await page.getByRole("link", { name: "Zobacz rolę" }).first().click();
+  await page
+    .getByRole("article")
+    .first()
+    .getByRole("link", { name: "AI Product Manager", exact: true })
+    .click();
   await expect(page.getByRole("heading", { name: "AI Product Manager" })).toBeVisible();
   await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(1);
   await page.getByRole("link", { name: "BrightLabs" }).click();
@@ -68,6 +72,9 @@ test("job map keeps an accessible result list", async ({ page }) => {
   await expect(map).toHaveAttribute("data-map-state", "ready");
   await expect(page.getByRole("heading", { name: "6 lokalizacji" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Zobacz rolę" })).toHaveCount(6);
+  await expect(
+    page.getByRole("link", { name: "AI Product Manager", exact: true }),
+  ).toHaveAttribute("href", "/oferty/ai-product-manager");
   expect(workerErrors).toEqual([]);
 });
 

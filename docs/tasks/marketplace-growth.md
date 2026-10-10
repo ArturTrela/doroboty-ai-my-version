@@ -58,3 +58,9 @@ authenticated screens.
   five-filter single row only when the content area is wide enough.
 - The clear action completes the last row at medium widths and retains a full-width position in
   the two-column layout.
+
+## Public job-title navigation
+
+- Job titles link to their detail route in the main results, map side list, and marker popup.
+- Title links retain semantic headings, keyboard focus, and the existing Graphical link color on
+  hover without removing the explicit `Zobacz rolę` actions.

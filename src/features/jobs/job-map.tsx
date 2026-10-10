@@ -55,11 +55,14 @@ export function JobMap({ jobs }: { jobs: JobWithCompany[] }) {
       popupContent.className = "job-map-popup";
       const company = document.createElement("span");
       company.textContent = job.company.name;
-      const title = document.createElement("strong");
+      const title = document.createElement("a");
+      title.className = "job-map-popup-title";
+      title.href = `/oferty/${job.slug}`;
       title.textContent = job.title;
       const location = document.createElement("span");
       location.textContent = job.locations.join(" / ");
       const link = document.createElement("a");
+      link.className = "job-map-popup-link";
       link.href = `/oferty/${job.slug}`;
       link.textContent = "Zobacz rolę →";
       popupContent.append(company, title, location, link);
@@ -90,7 +93,14 @@ export function JobMap({ jobs }: { jobs: JobWithCompany[] }) {
           {jobs.map((job) => (
             <article key={job.id} className="p-5 shadow-[var(--gui-divider-bottom-shadow)]">
               <p className="text-xs text-muted-foreground">{job.company.name}</p>
-              <h3 className="mt-1 text-base font-semibold">{job.title}</h3>
+              <h3 className="mt-1 text-base font-semibold">
+                <Link
+                  className="rounded-sm transition-colors hover:text-[var(--gui-link)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--gui-focus)]"
+                  href={`/oferty/${job.slug}`}
+                >
+                  {job.title}
+                </Link>
+              </h3>
               <p className="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">
                 <MapPin className="size-4" /> {job.locations.join(" / ")}
               </p>
