@@ -50,11 +50,25 @@ test("public pages remain within a mobile viewport", async ({ page }) => {
 });
 
 test("job map keeps an accessible result list", async ({ page }) => {
-  await page.route("https://tiles.openfreemap.org/**", (route) => route.abort());
+  const workerErrors: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error" && message.text().includes("Worker failed to load")) {
+      workerErrors.push(message.text());
+    }
+  });
+  await page.route("https://tiles.openfreemap.org/styles/positron", (route) =>
+    route.fulfill({
+      contentType: "application/json",
+      json: { version: 8, sources: {}, layers: [] },
+    }),
+  );
   await page.goto("/oferty?view=map");
-  await expect(page.getByRole("region", { name: "Interaktywna mapa ofert pracy" })).toBeVisible();
+  const map = page.getByRole("region", { name: "Interaktywna mapa ofert pracy" });
+  await expect(map).toBeVisible();
+  await expect(map).toHaveAttribute("data-map-state", "ready");
   await expect(page.getByRole("heading", { name: "6 lokalizacji" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Zobacz rolę" })).toHaveCount(6);
+  expect(workerErrors).toEqual([]);
 });
 
 test("unknown jobs return the Polish not-found state", async ({ page }) => {

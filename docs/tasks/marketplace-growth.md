@@ -43,3 +43,10 @@ authenticated screens.
 - Manual review: public map, employer job form, styled select labels, robot mark, and candidate
   CV panel were inspected locally on desktop. Mobile overflow and core accessibility are
   covered by Playwright.
+
+## Regression repair: MapLibre worker
+
+- Next.js with Turbopack must receive MapLibre's separate v6 worker through an explicit
+  `setWorkerUrl(new URL(..., import.meta.url))` call before a map is created.
+- The map E2E fixture serves a minimal style document, waits for MapLibre's real `load` event,
+  and fails when the browser reports a worker-load error.
