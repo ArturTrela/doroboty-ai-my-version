@@ -174,6 +174,55 @@ test("candidate CV storage and metadata stay private", async () => {
   expect((await other.client.storage.from("candidate-cv").download(path)).error).not.toBeNull();
 });
 
+test("an employer can open the CV only after the candidate applies to their organization", async () => {
+  const candidate = await confirmedAccount("cv-applicant");
+  const employer = await fixtureClient("employer@doroboty.local");
+  const otherEmployer = await fixtureClient("employer-other@doroboty.local");
+  const path = `${candidate.id}/cv.pdf`;
+  const file = new TextEncoder().encode("%PDF-1.4 applicant fixture");
+  expect(
+    (
+      await candidate.client.storage.from("candidate-cv").upload(path, file, {
+        contentType: "application/pdf",
+        upsert: true,
+      })
+    ).error,
+  ).toBeNull();
+  expect(
+    (
+      await candidate.client.from("candidate_documents").upsert({
+        user_id: candidate.id,
+        storage_path: path,
+        file_name: "applicant.pdf",
+        mime_type: "application/pdf",
+        size_bytes: file.byteLength,
+      })
+    ).error,
+  ).toBeNull();
+  const submitted = await candidate.client.rpc("submit_application_with_evidence", {
+    target_job_id: "20000000-0000-4000-8000-000000000001",
+    target_variant: "long_form",
+    final_answer:
+      "Prowadziłem discovery produktu i wdrożenie, które przyniosło mierzalny wynik operacyjny.",
+    target_generation_id: null,
+    source_snapshot: { fixture: true },
+    source_evidence_ids: [],
+    fit_version: "text-v1",
+    fit_components: { overlap: 0.5 },
+    fit_score: 0.5,
+  });
+  expect(submitted.error).toBeNull();
+  expect(
+    (await employer.from("candidate_documents").select("user_id").eq("user_id", candidate.id)).data,
+  ).toHaveLength(1);
+  expect(
+    (await otherEmployer.from("candidate_documents").select("user_id").eq("user_id", candidate.id))
+      .data,
+  ).toHaveLength(0);
+  expect((await employer.storage.from("candidate-cv").download(path)).error).toBeNull();
+  expect((await otherEmployer.storage.from("candidate-cv").download(path)).error).not.toBeNull();
+});
+
 test("employers create review jobs only for their organization", async () => {
   const employer = await fixtureClient("employer@doroboty.local");
   const otherEmployer = await fixtureClient("employer-other@doroboty.local");
@@ -211,6 +260,19 @@ test("employers create review jobs only for their organization", async () => {
   expect(
     (await candidate.rpc("create_employer_job", { ...input, job_slug: `${slug}-candidate` })).error,
   ).not.toBeNull();
+  const brief = await employer.rpc("save_employer_job_brief", {
+    target_job_id: id,
+    brief_source_text:
+      "Potrzebujemy osoby, która poprowadzi discovery i odpowie za mierzalny wynik wdrożenia.",
+    brief_decision_criteria: ["Jakość decyzji", "Mierzalny rezultat"],
+  });
+  expect(brief.error).toBeNull();
+  expect(
+    (await employer.from("employer_briefs").select("id").eq("id", brief.data)).data,
+  ).toHaveLength(1);
+  expect(
+    (await otherEmployer.from("employer_briefs").select("id").eq("id", brief.data)).data,
+  ).toHaveLength(0);
 });
 
 test("application submission is atomic, idempotent, and private", async () => {
@@ -474,11 +536,16 @@ test("candidate application and employer first-conversation decision work end to
     .filter({ has: page.getByRole("heading", { name: "Kandydat testowy" }) })
     .filter({ hasText: "AI Product Manager" });
   await application.getByRole("button", { name: "Oznacz jako przejrzaną" }).click();
-  await expect(application.getByText("in_review", { exact: true })).toBeVisible();
+  await expect(application.getByText("W przeglądzie", { exact: true })).toBeVisible();
   await application.getByRole("button", { name: "Zaproś na rozmowę" }).click();
-  await application.getByRole("button", { name: "Rozmowa odbyta" }).click();
-  await application.getByRole("button", { name: "Kontynuujemy" }).click();
-  await expect(application.getByText("continued", { exact: true })).toBeVisible();
+  await application.getByRole("button", { name: "Potwierdź odbytą rozmowę" }).click();
+  await application.getByRole("button", { name: "Przenieś do kolejnego etapu" }).click();
+  await expect(application.getByText("Kolejny etap", { exact: true })).toBeVisible();
+  await application.getByRole("link", { name: "Zobacz profil i CV" }).click();
+  await expect(page.getByRole("heading", { name: "CV", exact: true })).toBeVisible();
+  await expect(page.getByText("CV-candidate.pdf", { exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Otwórz CV w nowej karcie" })).toBeVisible();
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 });
 
 test("long-form application remains a complete browser journey", async ({ page }) => {
@@ -615,7 +682,7 @@ test("candidate and employer AI drafts require approval and preserve public sour
   await page.getByRole("button", { name: "Zaloguj się", exact: true }).click();
   await expect(page).toHaveURL(/\/app$/);
   await page.goto("/app/oferty");
-  await page.getByRole("combobox", { name: "Oferta" }).click();
+  await page.getByRole("combobox", { name: "Oferta do wygenerowania", exact: true }).click();
   await page.getByRole("option", { name: "AI Product Manager", exact: true }).click();
   await page.getByRole("button", { name: "Wygeneruj szkic" }).click();
   await expect(page.getByRole("status").filter({ hasText: "Szkic gotowy" })).toBeVisible();

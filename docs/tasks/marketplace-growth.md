@@ -64,3 +64,21 @@ authenticated screens.
 - Job titles link to their detail route in the main results, map side list, and marker popup.
 - Title links retain semantic headings, keyboard focus, and the existing Graphical link color on
   hover without removing the explicit `Zobacz rolę` actions.
+
+## Employer review workspace completion
+
+- Application statuses and process stages use Polish product copy instead of database values.
+- Each application exposes only the next valid primary action plus a separate process-ending
+  action, with visible success or error feedback after the mutation.
+- Employers can filter applications by job and status, open a complete candidate preview, and
+  access a signed CV only when the candidate applied to their organization.
+- Company job rows open an internal detail view with job settings, the private source brief, and
+  a direct link to candidates filtered for that job.
+- Employers can add or revise a private source brief and decision criteria before generating an
+  AI-assisted job draft. The brief remains private and publication remains a separate decision.
+- `npm run db:check` passed for 11 migrations and 21 RLS tables. `npm run test:integration`
+  passed 19 browser/database tests, including cross-organization CV access, the sequential
+  hiring workflow, and automated accessibility on the candidate preview. `./scripts/verify`
+  passed lint, 45 unit tests, and the production build.
+- Graphical audit: the new screens reuse the shared Base UI controls and Untitled tokens; an
+  invented status-badge edge was removed. No conversion gaps remain in the changed scope.

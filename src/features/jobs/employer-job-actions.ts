@@ -28,6 +28,8 @@ export async function createEmployerJob(
     salaryPeriod: formData.get("salaryPeriod") || undefined,
     salaryKind: formData.get("salaryKind") || undefined,
     expiryAt: formData.get("expiryAt") || "",
+    sourceBrief: formData.get("sourceBrief") || "",
+    decisionCriteria: formData.get("decisionCriteria") || "",
   });
   if (!parsed.success) {
     return { ok: false, message: parsed.error.issues[0]?.message ?? "Sprawdź formularz." };
@@ -35,7 +37,7 @@ export async function createEmployerJob(
 
   const input = parsed.data;
   const hasSalary = input.salaryMin !== undefined && input.salaryMax !== undefined;
-  const { data, error } = await client.rpc("create_employer_job", {
+  const { data, error } = await client.rpc("create_employer_job_with_brief", {
     job_slug: input.slug,
     job_title: input.title,
     job_summary: input.summary,
@@ -54,6 +56,8 @@ export async function createEmployerJob(
     job_expiry_at: input.expiryAt ? `${input.expiryAt}T23:59:59.000Z` : null,
     job_map_latitude: null,
     job_map_longitude: null,
+    job_source_text: input.sourceBrief ?? "",
+    job_decision_criteria: input.decisionCriteria ?? [],
   });
   if (error) {
     return {

@@ -43,6 +43,22 @@ export const employerJobSchema = z
     salaryPeriod: z.enum(["month", "year"]).optional(),
     salaryKind: z.enum(["gross", "net"]).optional(),
     expiryAt: z.union([z.literal(""), z.iso.date()]).optional(),
+    sourceBrief: z
+      .string()
+      .trim()
+      .max(10_000)
+      .transform((value) => value || undefined)
+      .optional(),
+    decisionCriteria: z
+      .string()
+      .transform((value) =>
+        value
+          .split("\n")
+          .map((item) => item.replace(/^[-•]\s*/, "").trim())
+          .filter(Boolean),
+      )
+      .pipe(z.array(z.string().min(3).max(300)).max(12))
+      .optional(),
   })
   .superRefine((value, context) => {
     const hasSalary = value.salaryMin !== undefined || value.salaryMax !== undefined;
@@ -56,6 +72,27 @@ export const employerJobSchema = z
       }
     } else if (hasSalary) {
       context.addIssue({ code: "custom", path: ["salaryMin"], message: "Podaj pełne widełki." });
+    }
+    if (value.sourceBrief && value.sourceBrief.length < 40) {
+      context.addIssue({
+        code: "custom",
+        path: ["sourceBrief"],
+        message: "Brief powinien mieć co najmniej 40 znaków.",
+      });
+    }
+    if (value.sourceBrief && !value.decisionCriteria?.length) {
+      context.addIssue({
+        code: "custom",
+        path: ["decisionCriteria"],
+        message: "Do briefu dodaj co najmniej jedno kryterium decyzji.",
+      });
+    }
+    if (!value.sourceBrief && value.decisionCriteria?.length) {
+      context.addIssue({
+        code: "custom",
+        path: ["sourceBrief"],
+        message: "Dodaj kontekst briefu albo usuń kryteria.",
+      });
     }
   });
 

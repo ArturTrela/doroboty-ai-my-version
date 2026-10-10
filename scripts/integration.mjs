@@ -17,6 +17,11 @@ const env = {
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: key,
   LOCAL_MAIL_URL: status.INBUCKET_URL ?? status.MAILPIT_URL ?? "http://127.0.0.1:54324",
 };
+const reset = spawnSync("npx", ["supabase", "db", "reset", "--local"], {
+  stdio: "inherit",
+  env,
+});
+if (reset.status !== 0) process.exit(reset.status ?? 1);
 for (const args of [
   ["run", "case:accounts"],
   ["run", "build"],

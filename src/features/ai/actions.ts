@@ -3,7 +3,12 @@
 import { revalidatePath } from "next/cache";
 import { requireProfile } from "@/features/auth/session";
 import { generateAiText } from "@/features/ai/provider";
-import { aiJobIdSchema, jobDraftApprovalSchema, jobDraftSchema } from "@/features/ai/schema";
+import {
+  aiJobIdSchema,
+  jobBriefSchema,
+  jobDraftApprovalSchema,
+  jobDraftSchema,
+} from "@/features/ai/schema";
 import { captureAnalytics } from "@/features/analytics/server";
 import { authorizeAiTreatment } from "@/features/experiments/server";
 
@@ -136,6 +141,32 @@ export type JobDraftState = {
   summary?: string;
   description?: string;
 };
+
+export type JobBriefState = { ok: boolean; message: string };
+
+export async function saveJobBrief(
+  _previous: JobBriefState,
+  formData: FormData,
+): Promise<JobBriefState> {
+  const { client } = await requireProfile(["employer", "operator"]);
+  const parsed = jobBriefSchema.safeParse({
+    jobId: formData.get("jobId"),
+    sourceText: formData.get("sourceText"),
+    decisionCriteria: formData.get("decisionCriteria"),
+  });
+  if (!parsed.success) {
+    return { ok: false, message: parsed.error.issues[0]?.message ?? "Sprawdź brief." };
+  }
+  const { error } = await client.rpc("save_employer_job_brief", {
+    target_job_id: parsed.data.jobId,
+    brief_source_text: parsed.data.sourceText,
+    brief_decision_criteria: parsed.data.decisionCriteria,
+  });
+  if (error) return { ok: false, message: "Nie udało się zapisać briefu źródłowego." };
+  revalidatePath("/app/oferty");
+  revalidatePath(`/app/oferty/${parsed.data.jobId}`);
+  return { ok: true, message: "Brief źródłowy został zapisany." };
+}
 
 export async function generateJobDraft(
   _previous: JobDraftState,

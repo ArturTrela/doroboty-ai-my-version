@@ -8,6 +8,7 @@ import { calculateTextFit } from "@/features/ai/text-fit";
 import { captureAnalytics } from "@/features/analytics/server";
 
 export type ApplicationActionState = { ok: boolean; message: string };
+export type EmployerStageActionState = { ok: boolean; message: string };
 
 export async function submitApplication(
   _previous: ApplicationActionState,
@@ -108,31 +109,36 @@ export async function submitApplication(
   redirect("/app/aplikacje?submitted=1");
 }
 
-export async function recordEmployerStage(formData: FormData) {
+export async function recordEmployerStage(
+  _previous: EmployerStageActionState,
+  formData: FormData,
+): Promise<EmployerStageActionState> {
   const { client } = await requireProfile(["employer", "operator"]);
   const parsed = employerStageSchema.safeParse({
     applicationId: formData.get("applicationId"),
     stage: formData.get("stage"),
     note: formData.get("note") || undefined,
   });
-  if (!parsed.success) throw new Error("Nieprawidłowa zmiana etapu.");
+  if (!parsed.success) return { ok: false, message: "Nieprawidłowa zmiana etapu." };
 
   const { data: application, error: readError } = await client
     .from("applications")
     .select("id, organization_id, job_id")
     .eq("id", parsed.data.applicationId)
     .single();
-  if (readError || !application) throw new Error("Brak dostępu do aplikacji.");
+  if (readError || !application) return { ok: false, message: "Brak dostępu do aplikacji." };
 
   const { error } = await client.rpc("record_application_stage", {
     target_application_id: application.id,
     next_stage: parsed.data.stage,
     event_note: parsed.data.note || null,
   });
-  if (error) throw new Error("Nie udało się zapisać etapu aplikacji.");
+  if (error) return { ok: false, message: "Nie udało się zapisać etapu aplikacji." };
   await captureAnalytics(application.organization_id, {
     event: "employer_reviewed",
     properties: { jobId: application.job_id, stage: parsed.data.stage },
   });
   revalidatePath("/app/kandydaci");
+  revalidatePath(`/app/kandydaci/${application.id}`);
+  return { ok: true, message: "Etap aplikacji został zapisany." };
 }

@@ -34,6 +34,21 @@ export const contractLabels = {
   mandate: "Umowa zlecenie",
 } as const;
 
+export const publicationStatusLabels = {
+  draft: "Szkic",
+  review: "Do weryfikacji",
+  published: "Opublikowana",
+  hidden: "Ukryta",
+  expired: "Wygasła",
+  archived: "Zarchiwizowana",
+} as const;
+
+export function publicationStatusLabel(status: string) {
+  return (
+    publicationStatusLabels[status as keyof typeof publicationStatusLabels] ?? "Status nieznany"
+  );
+}
+
 const numberFormat = new Intl.NumberFormat("pl-PL", { maximumFractionDigits: 0 });
 
 export function formatSalary(job: Job) {

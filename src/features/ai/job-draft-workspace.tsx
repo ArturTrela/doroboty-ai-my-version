@@ -60,6 +60,7 @@ export function JobDraftWorkspace({
               <FormSelect
                 id="jobId"
                 name="jobId"
+                ariaLabel="Oferta do wygenerowania"
                 required
                 defaultValue={jobs[0]?.id}
                 options={jobs.map((job) => ({ value: job.id, label: job.title }))}

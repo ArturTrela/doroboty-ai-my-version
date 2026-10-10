@@ -101,7 +101,11 @@ export function AppShell({
           {open ? <X /> : <Menu />}
         </Button>
       </header>
-      <aside id="sidebar" className={cn("sidebar", open && "sidebar-open")}>
+      <aside
+        id="sidebar"
+        aria-label="Nawigacja panelu"
+        className={cn("sidebar", open && "sidebar-open")}
+      >
         <Link href={base} className="brand hidden md:flex">
           <BrandMark />
           DoRoboty
@@ -166,7 +170,7 @@ export function AppShell({
         </div>
       </aside>
       <div className="workspace">
-        <div className="topbar">
+        <header className="topbar">
           <span>
             DoRoboty.ai <span className="px-3 text-border">/</span>{" "}
             {pathname.includes("settings")
@@ -187,7 +191,7 @@ export function AppShell({
             <span className="status-dot" />
             {mode === "demo" ? "Tryb demo" : "Bezpieczna sesja"}
           </span>
-        </div>
+        </header>
         <main id="main" className="main-content">
           {children}
         </main>

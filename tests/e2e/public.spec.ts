@@ -72,9 +72,10 @@ test("job map keeps an accessible result list", async ({ page }) => {
   await expect(map).toHaveAttribute("data-map-state", "ready");
   await expect(page.getByRole("heading", { name: "6 lokalizacji" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Zobacz rolę" })).toHaveCount(6);
-  await expect(
-    page.getByRole("link", { name: "AI Product Manager", exact: true }),
-  ).toHaveAttribute("href", "/oferty/ai-product-manager");
+  await expect(page.getByRole("link", { name: "AI Product Manager", exact: true })).toHaveAttribute(
+    "href",
+    "/oferty/ai-product-manager",
+  );
   expect(workerErrors).toEqual([]);
 });
 

@@ -1,19 +1,10 @@
 import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
+import { applicationStatusLabel } from "@/features/applications/presentation";
 import { requireProfile } from "@/features/auth/session";
 import { getSupabaseConfig } from "@/lib/env";
 
 export const dynamic = "force-dynamic";
-
-const statusLabels: Record<string, string> = {
-  submitted: "Wysłana",
-  in_review: "W przeglądzie",
-  interview: "Rozmowa",
-  continued: "Proces trwa",
-  rejected: "Zakończona",
-  withdrawn: "Wycofana",
-  hired: "Zatrudnienie",
-};
 
 export default async function ApplicationsPage({
   searchParams,
@@ -69,7 +60,7 @@ export default async function ApplicationsPage({
                     </p>
                   </div>
                   <span className="rounded-full bg-primary px-3 py-1 font-ui text-xs font-medium text-primary-foreground">
-                    {statusLabels[application.status] ?? application.status}
+                    {applicationStatusLabel(application.status)}
                   </span>
                 </div>
                 <p className="mt-4 line-clamp-3 leading-relaxed">{application.answer}</p>

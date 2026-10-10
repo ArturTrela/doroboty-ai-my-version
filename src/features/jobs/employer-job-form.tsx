@@ -26,7 +26,10 @@ const options = (values: Record<string, string>) =>
 export function EmployerJobForm() {
   const [state, action, pending] = useActionState(createEmployerJob, initialState);
   return (
-    <details className="rounded-xl bg-card shadow-[var(--gui-shadow-m)]" open={!state.ok}>
+    <details
+      className="rounded-xl bg-card shadow-[var(--gui-shadow-m)]"
+      open={state.message ? !state.ok : undefined}
+    >
       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-6 font-ui text-lg font-semibold">
         Dodaj ofertę ręcznie
         <span className="grid size-9 place-items-center rounded-full bg-[var(--gui-color-1)] text-[var(--gui-accent-text-accessible)]">
@@ -43,6 +46,27 @@ export function EmployerJobForm() {
         </div>
         <TextField label="Krótkie podsumowanie" name="summary" rows={3} required />
         <TextField label="Pełny opis" name="description" rows={9} required />
+        <fieldset className="grid gap-4 rounded-lg bg-secondary p-4">
+          <legend className="px-1 font-ui text-sm font-semibold">
+            Brief źródłowy (opcjonalnie)
+          </legend>
+          <p className="text-sm text-muted-foreground">
+            Zachowaj kontekst, który nie powinien zginąć w ogłoszeniu. Brief pozostaje prywatny i
+            może później zasilić generator szkicu.
+          </p>
+          <TextField
+            label="Kontekst, potrzeba i oczekiwany rezultat"
+            name="sourceBrief"
+            rows={6}
+            placeholder="Dlaczego otwieramy rolę, jaki problem ma rozwiązać i po czym poznamy sukces?"
+          />
+          <TextField
+            label="Kryteria decyzji — jedno w wierszu"
+            name="decisionCriteria"
+            rows={4}
+            placeholder={"Doświadczenie produkcyjne\nMierzalny efekt\nWspółpraca z biznesem"}
+          />
+        </fieldset>
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           <SelectField label="Kategoria" name="category" options={options(categoryLabels)} />
           <SelectField label="Funkcja" name="function" options={options(functionLabels)} />

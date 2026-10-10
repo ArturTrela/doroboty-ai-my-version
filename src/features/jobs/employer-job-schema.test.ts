@@ -19,6 +19,8 @@ const valid = {
   salaryPeriod: "month",
   salaryKind: "gross",
   expiryAt: "",
+  sourceBrief: "",
+  decisionCriteria: "",
 };
 
 describe("employerJobSchema", () => {
@@ -30,5 +32,19 @@ describe("employerJobSchema", () => {
   it("rejects incomplete salary ranges", () => {
     const result = employerJobSchema.safeParse({ ...valid, salaryMax: "" });
     expect(result.success).toBe(false);
+  });
+
+  it("accepts a source brief and normalizes decision criteria", () => {
+    const result = employerJobSchema.parse({
+      ...valid,
+      sourceBrief:
+        "Nowa osoba ma znaleźć wartościowy proces i dowieźć bezpieczne wdrożenie produkcyjne.",
+      decisionCriteria: "- Trafność problemu\n- Jakość decyzji\n- Wynik wdrożenia",
+    });
+    expect(result.decisionCriteria).toEqual([
+      "Trafność problemu",
+      "Jakość decyzji",
+      "Wynik wdrożenia",
+    ]);
   });
 });
