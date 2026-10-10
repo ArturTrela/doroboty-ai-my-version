@@ -9,7 +9,7 @@ export function SetupNotice() {
         <ArrowLeft size={16} />
         Wróć do demo
       </Link>
-      <Database className="mt-12 mb-6 text-primary" size={32} />
+      <Database className="mt-12 mb-6 text-[var(--gui-color-1)]" size={32} />
       <h1>Podłącz bazę danych.</h1>
       <p className="lede">
         {!config.configured && config.reason === "invalid"

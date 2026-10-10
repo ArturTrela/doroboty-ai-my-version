@@ -26,10 +26,10 @@ export default async function JobsPage({ searchParams }: Props) {
     <section className="mx-auto max-w-[1360px] px-5 py-9 lg:px-8">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-xs font-medium tracking-[0.1em] text-muted-foreground uppercase">
+          <p className="text-xs font-medium tracking-[var(--gui-tracking-xl)] text-muted-foreground uppercase">
             Aktualne role
           </p>
-          <h1 className="mt-3 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">
+          <h1 className="mt-3 text-4xl font-semibold tracking-[var(--gui-tracking-s)] sm:text-5xl">
             Oferty pracy z AI
           </h1>
           <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
@@ -65,19 +65,19 @@ export default async function JobsPage({ searchParams }: Props) {
         </span>
       </div>
       {jobs.length > 0 ? (
-        <div className="mt-3 border-t">
+        <div className="mt-3 shadow-[var(--gui-divider-top-shadow)]">
           {jobs.map((job) => (
             <JobCard key={job.id} job={job} />
           ))}
         </div>
       ) : (
-        <div className="mt-6 rounded-lg border border-dashed bg-muted/30 p-10 text-center">
+        <div className="mt-6 rounded-lg bg-muted/30 p-10 text-center shadow-[var(--gui-edge-shadow)]">
           <h2 className="text-xl font-semibold">Brak ofert dla tych filtrów</h2>
           <p className="mt-3 text-sm text-muted-foreground">
             Wyczyść część kryteriów i spróbuj ponownie.
           </p>
           <Link
-            className="mt-5 inline-block text-sm font-medium text-primary hover:underline"
+            className="mt-5 inline-block text-sm font-medium text-[var(--gui-link)] hover:underline"
             href="/oferty"
           >
             Pokaż wszystkie oferty

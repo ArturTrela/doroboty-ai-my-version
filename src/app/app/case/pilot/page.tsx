@@ -54,22 +54,22 @@ export default async function PilotPage({
 
   return (
     <div>
-      <Link className="font-ui font-bold underline" href="/app/case">
+      <Link className="font-ui font-semibold underline" href="/app/case">
         ← Analiza case
       </Link>
       <div className="page-heading">
         <div>
-          <p className="font-ui text-xs font-bold uppercase">Pilot organizacyjny</p>
+          <p className="font-ui text-xs font-semibold uppercase">Pilot organizacyjny</p>
           <h1 className="mt-2">Business case</h1>
           <p>Wartość liczona od wyniku po rozmowie, nie od liczby aplikacji.</p>
         </div>
       </div>
-      <form className="grid gap-3 border-2 bg-card p-5 md:grid-cols-2 xl:grid-cols-3">
+      <form className="grid gap-3 rounded-xl bg-card p-5 shadow-[var(--gui-shadow-m)] md:grid-cols-2 xl:grid-cols-3">
         {Object.entries(labels).map(([key, label]) => (
-          <label key={key} className="font-ui text-xs font-bold uppercase">
+          <label key={key} className="font-ui text-xs font-semibold uppercase">
             {label}
             <input
-              className="mt-1 h-10 w-full border-2 bg-background px-2"
+              className="native-select mt-1 min-h-10 w-full bg-[var(--gui-control)] px-2"
               name={key}
               type="number"
               min="0"
@@ -79,7 +79,7 @@ export default async function PilotPage({
           </label>
         ))}
         <button
-          className="border-2 bg-primary px-4 py-2 font-ui font-bold text-primary-foreground uppercase"
+          className="rounded-md border-0 bg-primary px-4 py-2 font-ui font-medium text-primary-foreground outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--gui-focus)]"
           type="submit"
         >
           Przelicz
@@ -96,7 +96,7 @@ export default async function PilotPage({
         />
         <Result label="Break-even" value={result.breakEvenContinuations ?? "—"} />
       </section>
-      <div className="mt-8 border-2 bg-secondary p-5">
+      <div className="mt-8 rounded-xl bg-secondary p-5 shadow-[var(--gui-edge-shadow)]">
         <h2 className="font-display text-3xl uppercase">Zasady decyzji</h2>
         <p className="mt-2">
           Raportuj zakres i niepewność założeń. Ekspansja wymaga poprawy głównego wyniku oraz
@@ -118,9 +118,9 @@ function Result({
 }) {
   return (
     <article
-      className={`border-2 p-4 ${primary ? "bg-primary text-primary-foreground" : "bg-card"}`}
+      className={`rounded-xl p-4 shadow-[var(--gui-edge-shadow)] ${primary ? "bg-primary text-primary-foreground" : "bg-card"}`}
     >
-      <p className="font-ui text-xs font-bold uppercase">{label}</p>
+      <p className="font-ui text-xs font-semibold uppercase">{label}</p>
       <strong className="mt-2 block font-display text-4xl">{value}</strong>
     </article>
   );

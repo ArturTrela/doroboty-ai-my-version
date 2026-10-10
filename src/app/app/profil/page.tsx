@@ -48,8 +48,11 @@ export default async function CandidateProfilePage() {
           <h2 className="font-display text-3xl uppercase">Doświadczenia</h2>
           <div className="mt-4 grid gap-3">
             {(experiencesResult.data ?? []).map((item) => (
-              <article key={item.id} className="border-2 bg-card p-4">
-                <h3 className="font-ui font-bold">
+              <article
+                key={item.id}
+                className="rounded-lg bg-card p-4 shadow-[var(--gui-edge-shadow)]"
+              >
+                <h3 className="font-ui font-semibold">
                   {item.title} · {item.company_name}
                 </h3>
                 <p className="mt-2 leading-relaxed">{item.description}</p>
@@ -66,8 +69,11 @@ export default async function CandidateProfilePage() {
           <h2 className="font-display text-3xl uppercase">Próbki pracy</h2>
           <div className="mt-4 grid gap-3">
             {(samplesResult.data ?? []).map((item) => (
-              <article key={item.id} className="border-2 bg-card p-4">
-                <h3 className="font-ui font-bold">{item.title}</h3>
+              <article
+                key={item.id}
+                className="rounded-lg bg-card p-4 shadow-[var(--gui-edge-shadow)]"
+              >
+                <h3 className="font-ui font-semibold">{item.title}</h3>
                 <p className="mt-2 leading-relaxed">{item.context}</p>
                 <p className="mt-2 bg-primary p-2 text-primary-foreground">
                   <strong>Wynik:</strong> {item.outcome}

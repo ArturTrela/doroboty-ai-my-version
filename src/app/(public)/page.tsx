@@ -29,13 +29,13 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="border-b bg-muted/25">
+      <section className="bg-muted/25 shadow-[var(--gui-divider-bottom-shadow)]">
         <div className="mx-auto grid max-w-[1360px] gap-12 px-5 py-16 lg:grid-cols-[1.3fr_0.7fr] lg:px-8 lg:py-24">
           <div>
             <Badge variant="secondary" className="px-3 py-1 text-xs">
               Practice over theory
             </Badge>
-            <h1 className="mt-6 max-w-4xl text-5xl font-semibold leading-[1.04] tracking-[-0.05em] sm:text-6xl lg:text-7xl">
+            <h1 className="mt-6 max-w-4xl text-5xl leading-[var(--gui-leading-xxl)] font-semibold tracking-[var(--gui-tracking-xs)] sm:text-6xl lg:text-7xl">
               Praca dla ludzi, którzy dowożą z AI.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
@@ -43,19 +43,19 @@ export default async function HomePage() {
               pracy — nie dopiskiem w employer brandingu.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/oferty" className={cn(buttonVariants({ size: "lg" }), "h-11 px-5")}>
+              <Link href="/oferty" className={buttonVariants({ size: "lg" })}>
                 Zobacz oferty <ArrowRight />
               </Link>
               <Link
                 href="/metodologia"
-                className={cn(buttonVariants({ size: "lg", variant: "outline" }), "h-11 px-5")}
+                className={cn(buttonVariants({ size: "lg", variant: "outline" }))}
               >
                 Jak wybieramy role
               </Link>
             </div>
           </div>
-          <aside className="self-end rounded-xl border bg-background p-6 shadow-sm lg:p-8">
-            <CheckCircle2 className="size-6 text-primary" />
+          <aside className="self-end rounded-xl bg-background p-6 shadow-[var(--gui-shadow-m)] lg:p-8">
+            <CheckCircle2 className="size-6 text-[var(--gui-success)]" />
             <p className="mt-5 text-sm font-semibold">Nie szukamy operatorów narzędzi</p>
             <p className="mt-3 text-base leading-relaxed text-muted-foreground">
               Szukamy ról dla osób, które potrafią znaleźć wartościowe zastosowanie AI, wdrożyć je i
@@ -66,22 +66,25 @@ export default async function HomePage() {
       </section>
 
       <section className="mx-auto max-w-[1360px] px-5 py-16 lg:px-8 lg:py-20">
-        <p className="text-xs font-medium tracking-[0.1em] text-muted-foreground uppercase">
+        <p className="text-xs font-medium tracking-[var(--gui-tracking-xl)] text-muted-foreground uppercase">
           Trzy sposoby pracy z AI
         </p>
-        <h2 className="mt-3 text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">
+        <h2 className="mt-3 text-3xl font-semibold tracking-[var(--gui-tracking-s)] sm:text-4xl">
           Build. Apply. Lead.
         </h2>
         <div className="mt-8 grid gap-5 md:grid-cols-3">
           {categories.map((category, index) => (
-            <article key={category.slug} className="rounded-xl border bg-card p-6 shadow-xs">
+            <article
+              key={category.slug}
+              className="rounded-xl bg-card p-6 shadow-[var(--gui-edge-shadow)]"
+            >
               <span className="text-xs font-medium text-muted-foreground">0{index + 1}</span>
               <h3 className="mt-3 text-xl font-semibold">{category.label}</h3>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                 {category.description}
               </p>
               <Link
-                className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+                className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[var(--gui-link)] hover:underline"
                 href={`/oferty?category=${category.slug}`}
               >
                 Przeglądaj role <ArrowRight className="size-4" />
@@ -91,25 +94,25 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="border-t bg-muted/25">
+      <section className="bg-muted/25 shadow-[var(--gui-divider-top-shadow)]">
         <div className="mx-auto max-w-[1360px] px-5 py-16 lg:px-8 lg:py-20">
           <div className="flex flex-wrap items-end justify-between gap-5">
             <div>
-              <p className="text-xs font-medium tracking-[0.1em] text-muted-foreground uppercase">
+              <p className="text-xs font-medium tracking-[var(--gui-tracking-xl)] text-muted-foreground uppercase">
                 Aktualne role
               </p>
-              <h2 className="mt-3 text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">
+              <h2 className="mt-3 text-3xl font-semibold tracking-[var(--gui-tracking-s)] sm:text-4xl">
                 Najnowsze oferty
               </h2>
             </div>
             <Link
-              className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+              className="inline-flex items-center gap-2 text-sm font-medium text-[var(--gui-link)] hover:underline"
               href="/oferty"
             >
               Wszystkie oferty <ArrowRight className="size-4" />
             </Link>
           </div>
-          <div className="mt-8 border-t">
+          <div className="mt-8 shadow-[var(--gui-divider-top-shadow)]">
             {latestJobs.map((job) => (
               <JobCard key={job.id} job={job} />
             ))}

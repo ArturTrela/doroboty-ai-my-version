@@ -27,12 +27,12 @@ export default async function CompanyPage({ params }: Props) {
           __html: JSON.stringify(organizationJsonLd(company)).replace(/</g, "\\u003c"),
         }}
       />
-      <div className="grid gap-8 border-b pb-12 lg:grid-cols-[1fr_320px]">
+      <div className="grid gap-8 pb-12 shadow-[var(--gui-divider-bottom-shadow)] lg:grid-cols-[1fr_320px]">
         <div>
-          <p className="text-xs font-medium tracking-[0.1em] text-muted-foreground uppercase">
+          <p className="text-xs font-medium tracking-[var(--gui-tracking-xl)] text-muted-foreground uppercase">
             Firma
           </p>
-          <h1 className="mt-3 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">
+          <h1 className="mt-3 text-4xl font-semibold tracking-[var(--gui-tracking-s)] sm:text-5xl">
             {company.name}
           </h1>
           <p className="mt-5 max-w-3xl text-lg leading-relaxed">{company.summary}</p>
@@ -40,7 +40,7 @@ export default async function CompanyPage({ params }: Props) {
             {company.description}
           </p>
         </div>
-        <dl className="h-fit rounded-xl border bg-muted/35 p-6 text-sm">
+        <dl className="h-fit rounded-xl bg-muted/35 p-6 text-sm shadow-[var(--gui-edge-shadow)]">
           <div className="flex gap-2">
             <MapPin className="size-5" />
             <div>
@@ -56,7 +56,7 @@ export default async function CompanyPage({ params }: Props) {
             </div>
           </div>
           <Link
-            className="mt-6 inline-flex items-center gap-2 font-medium text-primary hover:underline"
+            className="mt-6 inline-flex items-center gap-2 font-medium text-[var(--gui-link)] hover:underline"
             href={company.websiteUrl}
           >
             Strona firmy <ArrowUpRight className="size-4" />
@@ -66,7 +66,7 @@ export default async function CompanyPage({ params }: Props) {
       <section className="py-12">
         <h2 className="text-2xl font-semibold">Otwarte role</h2>
         {jobs.length > 0 ? (
-          <div className="mt-7 border-t">
+          <div className="mt-7 shadow-[var(--gui-divider-top-shadow)]">
             {jobs.map((job) => (
               <JobCard key={job.id} job={job} />
             ))}

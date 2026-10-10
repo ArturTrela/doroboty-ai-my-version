@@ -12,8 +12,11 @@ const initialState: OrganizationActionState = { ok: false, message: "" };
 export function OrganizationOnboardingForm() {
   const [state, action, pending] = useActionState(createOrganization, initialState);
   return (
-    <form action={action} className="form-stack max-w-2xl border-2 bg-card p-6">
-      <h2 className="font-display text-3xl uppercase">Dodaj organizację</h2>
+    <form
+      action={action}
+      className="form-stack max-w-2xl rounded-xl bg-card p-6 shadow-[var(--gui-shadow-m)]"
+    >
+      <h2 className="font-display text-3xl">Dodaj organizację</h2>
       <p>Te dane pozostaną prywatne, dopóki firma nie opublikuje oferty.</p>
       <Field name="name" label="Nazwa firmy" />
       <Field name="slug" label="Slug (małe litery i myślniki)" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" />

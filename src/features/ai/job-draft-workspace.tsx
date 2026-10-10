@@ -45,7 +45,10 @@ export function JobDraftWorkspace({
         </div>
       ) : (
         <>
-          <form action={action} className="form-stack h-fit border-2 bg-card p-6">
+          <form
+            action={action}
+            className="form-stack h-fit rounded-xl bg-card p-6 shadow-[var(--gui-shadow-m)]"
+          >
             <h2 className="font-display text-3xl uppercase">Szkic z briefu</h2>
             <p>
               Model widzi prywatny brief i kryteria decyzji. Wygenerowany tekst nie publikuje się
@@ -57,7 +60,7 @@ export function JobDraftWorkspace({
                 id="jobId"
                 name="jobId"
                 required
-                className="h-10 w-full border-2 bg-background px-2 font-ui"
+                className="native-select min-h-10 w-full bg-[var(--gui-control)] px-2 font-ui"
               >
                 {jobs.map((job) => (
                   <option key={job.id} value={job.id}>
@@ -98,7 +101,10 @@ export function JobDraftWorkspace({
 function ApprovalForm({ state }: { state: ApprovedDraftState }) {
   const [approval, action, pending] = useActionState(approveJobDraft, initialState);
   return (
-    <form action={action} className="form-stack border-2 bg-secondary p-6">
+    <form
+      action={action}
+      className="form-stack rounded-xl bg-secondary p-6 shadow-[var(--gui-edge-shadow)]"
+    >
       <input type="hidden" name="jobId" value={state.jobId} />
       <input type="hidden" name="generationId" value={state.generationId} />
       <h2 className="font-display text-3xl uppercase">Sprawdź i zatwierdź</h2>

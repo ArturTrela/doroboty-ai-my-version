@@ -20,7 +20,7 @@ export default async function WorkspaceHome() {
     <div>
       <div className="page-heading">
         <div>
-          <p className="font-ui text-xs font-bold uppercase">
+          <p className="font-ui text-xs font-semibold uppercase">
             {isCandidate
               ? "Strefa kandydata"
               : profile.role === "employer"
@@ -64,7 +64,7 @@ export default async function WorkspaceHome() {
         />
       </div>
       {profile.role === "operator" && (
-        <section className="mt-8 border-2 bg-secondary p-5">
+        <section className="mt-8 rounded-lg bg-secondary p-5 shadow-[var(--gui-edge-shadow)]">
           <h2 className="font-display text-3xl uppercase">Stan środowiska</h2>
           <ul className="mt-4 grid gap-2 font-ui text-sm sm:grid-cols-3">
             <li>
@@ -101,12 +101,12 @@ function DashboardCard({
   href: string;
 }) {
   return (
-    <article className="flex flex-col border-2 bg-card p-6 shadow-[4px_4px_0_var(--foreground)]">
+    <article className="flex flex-col rounded-xl bg-card p-6 shadow-[var(--gui-shadow-m)]">
       <Icon className="size-7" />
       <h2 className="mt-5 font-display text-3xl uppercase">{title}</h2>
       <p className="mt-3 grow text-lg leading-relaxed">{body}</p>
       <Link
-        className="mt-6 inline-flex items-center gap-2 font-ui font-bold uppercase underline"
+        className="mt-6 inline-flex items-center gap-2 font-ui font-semibold uppercase underline"
         href={href}
       >
         Przejdź <ArrowRight className="size-4" />

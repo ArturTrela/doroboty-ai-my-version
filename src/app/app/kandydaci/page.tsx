@@ -47,11 +47,11 @@ export default async function EmployerInboxPage({
           {profile.role === "operator" ? "Widok operatora" : "Widok pracodawcy"}
         </span>
       </div>
-      <form className="mb-6 flex flex-wrap items-end gap-2 border-2 bg-secondary p-4">
-        <label className="font-ui text-xs font-bold uppercase">
+      <form className="mb-6 flex flex-wrap items-end gap-2 rounded-xl bg-secondary p-4 shadow-[var(--gui-edge-shadow)]">
+        <label className="font-ui text-xs font-semibold uppercase">
           Status
           <select
-            className="mt-1 block h-10 border-2 bg-background px-2"
+            className="native-select mt-1 block min-h-10 bg-[var(--gui-control)] px-2"
             name="status"
             defaultValue={status ?? ""}
           >
@@ -64,7 +64,7 @@ export default async function EmployerInboxPage({
           </select>
         </label>
         <button
-          className="h-10 border-2 bg-primary px-4 font-ui text-xs font-bold text-primary-foreground uppercase"
+          className="min-h-10 rounded-md border-0 bg-primary px-4 font-ui text-xs font-medium text-primary-foreground outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--gui-focus)]"
           type="submit"
         >
           Filtruj
@@ -84,33 +84,36 @@ export default async function EmployerInboxPage({
               experiences?: { title: string; company_name: string; measurable_outcome?: string }[];
             };
             return (
-              <article key={application.id} className="border-2 bg-card p-6">
+              <article
+                key={application.id}
+                className="rounded-xl bg-card p-6 shadow-[var(--gui-shadow-m)]"
+              >
                 <div className="flex flex-wrap justify-between gap-4">
                   <div>
-                    <p className="font-ui text-xs font-bold uppercase">{job?.title}</p>
+                    <p className="font-ui text-xs font-semibold uppercase">{job?.title}</p>
                     <h2 className="mt-1 font-display text-3xl uppercase">
                       {snapshot.profile?.displayName || "Kandydat / kandydatka"}
                     </h2>
                     <p className="mt-1">{snapshot.profile?.headline}</p>
                   </div>
-                  <span className="h-fit border-2 bg-secondary px-3 py-1 font-ui text-xs font-bold uppercase">
+                  <span className="h-fit rounded-full bg-secondary px-3 py-1 font-ui text-xs font-medium">
                     {application.status}
                   </span>
                 </div>
                 <div className="mt-5 grid gap-5 lg:grid-cols-2">
                   <section>
-                    <h3 className="font-ui font-bold uppercase">Odpowiedź</h3>
+                    <h3 className="font-ui font-semibold uppercase">Odpowiedź</h3>
                     <p className="mt-2 whitespace-pre-wrap text-lg leading-relaxed">
                       {application.answer}
                     </p>
                   </section>
                   <section>
-                    <h3 className="font-ui font-bold uppercase">Źródłowe doświadczenie</h3>
+                    <h3 className="font-ui font-semibold uppercase">Źródłowe doświadczenie</h3>
                     <ul className="mt-2 grid gap-2">
                       {(snapshot.experiences ?? []).map((experience, index) => (
                         <li
                           key={`${experience.title}-${index}`}
-                          className="border-l-4 border-primary pl-3"
+                          className="pl-3 shadow-[var(--gui-accent-bar-shadow)]"
                         >
                           <strong>
                             {experience.title} · {experience.company_name}
@@ -123,15 +126,15 @@ export default async function EmployerInboxPage({
                 </div>
                 <form
                   action={recordEmployerStage}
-                  className="mt-6 flex flex-wrap items-end gap-2 border-t-2 pt-5"
+                  className="mt-6 flex flex-wrap items-end gap-2 pt-5 shadow-[var(--gui-divider-top-shadow)]"
                 >
                   <input type="hidden" name="applicationId" value={application.id} />
                   <label className="grow">
-                    <span className="font-ui text-xs font-bold uppercase">
+                    <span className="font-ui text-xs font-semibold uppercase">
                       Notatka (opcjonalnie)
                     </span>
                     <input
-                      className="mt-1 h-9 w-full border-2 bg-background px-2"
+                      className="native-select mt-1 min-h-10 w-full bg-[var(--gui-control)] px-2"
                       name="note"
                       maxLength={2000}
                     />
@@ -139,7 +142,7 @@ export default async function EmployerInboxPage({
                   {actions.map(([stage, label]) => (
                     <button
                       key={stage}
-                      className="h-9 border-2 bg-primary px-3 font-ui text-xs font-bold text-primary-foreground uppercase hover:bg-secondary hover:text-secondary-foreground"
+                      className="min-h-10 rounded-md border-0 bg-primary px-3 font-ui text-xs font-medium text-primary-foreground outline-none hover:bg-[var(--gui-neutral-9)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--gui-focus)]"
                       type="submit"
                       name="stage"
                       value={stage}

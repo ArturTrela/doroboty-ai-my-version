@@ -4,6 +4,14 @@
 @import "../../tokens.css";
 @import "./workspace.css";
 
+@font-face {
+  font-family: "Timeless Grotesk";
+  src: url("./fonts/timeless-sans-variable.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -13,6 +21,42 @@
   --font-ui: var(--font-interface);
   --font-mono: var(--font-code);
   --font-heading: var(--font-display);
+  --text-xs: var(--gui-text-xxs);
+  --text-xs--line-height: var(--gui-leading-xxs);
+  --text-xs--letter-spacing: var(--gui-tracking-xl);
+  --text-sm: var(--gui-text-xs);
+  --text-sm--line-height: var(--gui-leading-xs);
+  --text-sm--letter-spacing: var(--gui-tracking-l);
+  --text-base: var(--gui-text-s);
+  --text-base--line-height: var(--gui-leading-s);
+  --text-base--letter-spacing: var(--gui-tracking-l);
+  --text-lg: var(--gui-text-m);
+  --text-lg--line-height: var(--gui-leading-m);
+  --text-lg--letter-spacing: var(--gui-tracking-m);
+  --text-xl: var(--gui-text-l);
+  --text-xl--line-height: var(--gui-leading-l);
+  --text-xl--letter-spacing: var(--gui-tracking-s);
+  --text-2xl: var(--gui-text-l);
+  --text-2xl--line-height: var(--gui-leading-l);
+  --text-2xl--letter-spacing: var(--gui-tracking-s);
+  --text-3xl: var(--gui-text-xl);
+  --text-3xl--line-height: var(--gui-leading-xl);
+  --text-3xl--letter-spacing: var(--gui-tracking-s);
+  --text-4xl: var(--gui-text-xl);
+  --text-4xl--line-height: var(--gui-leading-xl);
+  --text-4xl--letter-spacing: var(--gui-tracking-s);
+  --text-5xl: var(--gui-text-xxl);
+  --text-5xl--line-height: var(--gui-leading-xxl);
+  --text-5xl--letter-spacing: var(--gui-tracking-xs);
+  --text-6xl: var(--gui-text-xxl);
+  --text-6xl--line-height: var(--gui-leading-xxl);
+  --text-6xl--letter-spacing: var(--gui-tracking-xs);
+  --text-7xl: var(--gui-text-xxl);
+  --text-7xl--line-height: var(--gui-leading-xxl);
+  --text-7xl--letter-spacing: var(--gui-tracking-xs);
+  --shadow-sm: var(--gui-shadow-s);
+  --shadow-md: var(--gui-shadow-m);
+  --shadow-lg: var(--gui-shadow-l);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -42,13 +86,13 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-sm: var(--gui-radius-xs);
+  --radius-md: var(--gui-radius-s);
+  --radius-lg: var(--gui-radius-m);
+  --radius-xl: var(--gui-radius-l);
+  --radius-2xl: var(--gui-radius-xl);
+  --radius-3xl: var(--gui-radius-xl);
+  --radius-4xl: var(--gui-radius-xl);
 }
 
 @layer base {
@@ -57,6 +101,10 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-variation-settings:
+      "STYL" 0,
+      "ital" 0;
+    text-wrap: pretty;
   }
   html {
     @apply font-sans;
@@ -64,7 +112,19 @@
   }
 
   ::selection {
-    background: var(--secondary);
-    color: var(--foreground);
+    background: var(--gui-color-1-transparent);
+    color: var(--gui-text);
+  }
+
+  svg {
+    stroke-width: var(--icon-stroke-width);
+  }
+
+  [data-slot="dialog-portal"],
+  [data-slot="alert-dialog-portal"] {
+    font-family: var(--gui-font-ui);
+    font-variation-settings:
+      "STYL" 0,
+      "ital" 0;
   }
 }

@@ -56,7 +56,7 @@ export function ApplicationForm({
     <form
       action={action}
       onFocusCapture={trackStart}
-      className="form-stack border-2 bg-card p-6 shadow-[5px_5px_0_var(--foreground)]"
+      className="form-stack rounded-xl bg-card p-6 shadow-[var(--gui-shadow-m)]"
     >
       {assignmentIds.map((assignmentId) => (
         <ExperimentExposure key={assignmentId} assignmentId={assignmentId} />
@@ -64,7 +64,10 @@ export function ApplicationForm({
       <input type="hidden" name="jobId" value={jobId} />
       <input type="hidden" name="variant" value={variant} />
       <input type="hidden" name="aiGenerationId" value={generationId} />
-      <div className="border-2 bg-secondary p-4" onPointerDown={trackStart}>
+      <div
+        className="rounded-lg bg-secondary p-4 shadow-[var(--gui-edge-shadow)]"
+        onPointerDown={trackStart}
+      >
         <strong className="font-ui">
           {variant === "one_click" ? "Wariant: zapisany profil" : "Wariant: pełna odpowiedź"}
         </strong>

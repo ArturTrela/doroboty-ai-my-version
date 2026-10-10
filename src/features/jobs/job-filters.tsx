@@ -30,8 +30,8 @@ const filterIcons = {
 
 export function JobFiltersForm({ filters }: { filters: JobFilters }) {
   return (
-    <form className="border-b pb-6" action="/oferty">
-      <div className="flex rounded-lg border bg-background p-1 shadow-xs focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/20">
+    <form className="pb-6 shadow-[var(--gui-divider-bottom-shadow)]" action="/oferty">
+      <div className="flex rounded-lg bg-background p-1 shadow-[var(--gui-edge-shadow)] focus-within:shadow-[var(--gui-control-focus-shadow)]">
         <label className="relative min-w-0 flex-1">
           <span className="sr-only">Szukaj</span>
           <Search
@@ -107,7 +107,7 @@ function FilterSelect({
   const Icon = filterIcons[name];
 
   return (
-    <label className="relative flex h-14 items-center gap-3 rounded-lg border bg-background px-3 transition-colors focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/20">
+    <label className="relative flex h-14 items-center gap-3 rounded-lg bg-[var(--gui-control)] px-3 shadow-[var(--gui-control-shadow)] transition-[background-color,box-shadow] focus-within:shadow-[var(--gui-control-focus-shadow)] hover:shadow-[var(--gui-control-hover-shadow)]">
       <Icon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
       <span className="min-w-0 flex-1">
         <span className="block text-[11px] leading-4 text-muted-foreground">{label}</span>

@@ -14,15 +14,15 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-dvh bg-background text-foreground">
       <a
-        className="fixed top-3 left-3 z-50 -translate-y-40 rounded-md bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-sm focus:translate-y-0"
+        className="fixed top-3 left-3 z-50 -translate-y-40 rounded-md bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-[var(--gui-shadow-m)] focus:translate-y-0"
         href="#main"
       >
         Przejdź do treści
       </a>
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+      <header className="bg-background/95 shadow-[var(--gui-divider-bottom-shadow)] backdrop-blur supports-[backdrop-filter]:bg-background/80">
         <div className="mx-auto flex h-16 max-w-[1360px] items-center justify-between gap-4 px-5 lg:px-8">
           <Link
-            className="flex items-center gap-2.5 text-base font-semibold tracking-[-0.02em]"
+            className="flex items-center gap-2.5 text-base font-semibold tracking-[var(--gui-tracking-s)]"
             href="/"
             aria-label="DoRoboty.ai — strona główna"
           >
@@ -43,7 +43,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
               href="/auth/sign-in"
               className={cn(
                 buttonVariants({ variant: "outline", size: "lg" }),
-                "h-9 px-4 text-sm font-medium",
+                "text-sm font-medium",
               )}
             >
               Zaloguj się
@@ -52,7 +52,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
         </div>
       </header>
       <main id="main">{children}</main>
-      <footer className="border-t bg-muted/40 text-foreground">
+      <footer className="bg-muted/40 text-foreground shadow-[var(--gui-divider-top-shadow)]">
         <div className="mx-auto grid max-w-[1360px] gap-10 px-5 py-12 sm:grid-cols-2 lg:px-8">
           <div>
             <p className="text-base font-semibold">DoRoboty.ai</p>
@@ -73,7 +73,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
             </Link>
           </nav>
         </div>
-        <div className="border-t px-5 py-4 text-xs text-muted-foreground lg:px-8">
+        <div className="px-5 py-4 text-xs text-muted-foreground shadow-[var(--gui-divider-top-shadow)] lg:px-8">
           <div className="mx-auto max-w-[1360px]">
             © {new Date().getFullYear()} DoRoboty.ai — od Superhero.tech
           </div>

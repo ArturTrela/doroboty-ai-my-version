@@ -35,17 +35,19 @@ export function JobCard({ job }: { job: JobWithCompany }) {
     .toUpperCase();
 
   return (
-    <article className="group grid gap-5 border-b py-5 transition-colors hover:bg-muted/35 sm:grid-cols-[56px_minmax(0,1.35fr)_minmax(220px,0.8fr)_auto] sm:items-center sm:px-1">
-      <div className="flex size-14 items-center justify-center rounded-lg border bg-muted text-sm font-semibold tracking-wide text-foreground">
+    <article className="group grid gap-5 py-5 shadow-[var(--gui-divider-bottom-shadow)] transition-colors hover:bg-muted/35 sm:grid-cols-[56px_minmax(0,1.35fr)_minmax(220px,0.8fr)_auto] sm:items-center sm:px-1">
+      <div className="flex size-14 items-center justify-center rounded-lg bg-muted text-sm font-semibold tracking-[var(--gui-tracking-xl)] text-foreground shadow-[var(--gui-edge-shadow)]">
         {initials}
       </div>
 
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-2">
-          <h3 className="text-base font-semibold tracking-[-0.015em] sm:text-lg">{job.title}</h3>
+          <h3 className="text-base font-semibold tracking-[var(--gui-tracking-s)] sm:text-lg">
+            {job.title}
+          </h3>
           {job.verificationStatus === "employer_verified" && (
             <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
-              <BadgeCheck className="size-3.5 text-primary" /> Zweryfikowana
+              <BadgeCheck className="size-3.5 text-[var(--gui-success)]" /> Zweryfikowana
             </span>
           )}
         </div>
@@ -85,7 +87,7 @@ export function JobCard({ job }: { job: JobWithCompany }) {
       <div className="flex items-center justify-between gap-4 sm:block sm:text-right">
         <p className="text-xs text-muted-foreground">{publishedLabel(job.publishedAt)}</p>
         <Link
-          className="mt-2 inline-flex h-9 items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium shadow-xs transition-colors hover:bg-muted"
+          className="mt-2 inline-flex min-h-10 items-center gap-2 rounded-md bg-background px-3 text-sm font-medium shadow-[var(--gui-edge-shadow)] transition-colors hover:bg-muted"
           href={`/oferty/${job.slug}`}
         >
           Zobacz rolę{" "}

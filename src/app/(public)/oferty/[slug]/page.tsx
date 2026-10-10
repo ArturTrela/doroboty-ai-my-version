@@ -42,7 +42,7 @@ export default async function JobPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
-      <header className="border-b bg-muted/30">
+      <header className="bg-muted/30 shadow-[var(--gui-divider-bottom-shadow)]">
         <div className="mx-auto max-w-5xl px-5 py-12 lg:px-8 lg:py-16">
           <Link
             className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
@@ -58,11 +58,11 @@ export default async function JobPage({ params }: Props) {
               </Badge>
             )}
           </div>
-          <h1 className="mt-5 text-4xl font-semibold leading-tight tracking-[-0.04em] sm:text-5xl">
+          <h1 className="mt-5 text-4xl leading-tight font-semibold tracking-[var(--gui-tracking-s)] sm:text-5xl">
             {job.title}
           </h1>
           <Link
-            className="mt-4 inline-block text-lg font-medium text-primary hover:underline"
+            className="mt-4 inline-block text-lg font-medium text-[var(--gui-link)] hover:underline"
             href={`/firmy/${job.company.slug}`}
           >
             {job.company.name}
@@ -80,20 +80,20 @@ export default async function JobPage({ params }: Props) {
               <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
-          <div className="mt-12 rounded-xl border bg-muted/40 p-6">
+          <div className="mt-12 rounded-xl bg-muted/40 p-6 shadow-[var(--gui-edge-shadow)]">
             <h2 className="text-xl font-semibold">Chcesz aplikować?</h2>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
               Zaloguj się, uzupełnij profil i pokaż doświadczenie związane z tą rolą.
             </p>
             <Link
               href={`/auth/sign-in?next=/aplikuj/${job.slug}`}
-              className={cn(buttonVariants({ size: "lg" }), "mt-5 h-11 px-5")}
+              className={cn(buttonVariants({ size: "lg" }), "mt-5")}
             >
               Aplikuj w DoRoboty.ai
             </Link>
           </div>
         </div>
-        <aside className="h-fit rounded-xl border bg-card p-5 shadow-xs">
+        <aside className="h-fit rounded-xl bg-card p-5 shadow-[var(--gui-shadow-m)]">
           <h2 className="text-lg font-semibold">Konkrety</h2>
           <dl className="mt-5 grid gap-5 text-sm">
             <div>

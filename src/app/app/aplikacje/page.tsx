@@ -60,7 +60,10 @@ export default async function ApplicationsPage({
           {(data ?? []).map((application) => {
             const job = Array.isArray(application.job) ? application.job[0] : application.job;
             return (
-              <article key={application.id} className="border-2 bg-card p-5">
+              <article
+                key={application.id}
+                className="rounded-xl bg-card p-5 shadow-[var(--gui-edge-shadow)]"
+              >
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div>
                     <h2 className="font-display text-2xl uppercase">{job?.title ?? "Oferta"}</h2>
@@ -68,13 +71,13 @@ export default async function ApplicationsPage({
                       {application.variant === "one_click" ? "Zapisany profil" : "Pełna odpowiedź"}
                     </p>
                   </div>
-                  <span className="border-2 bg-primary px-3 py-1 font-ui text-xs font-bold text-primary-foreground uppercase">
+                  <span className="rounded-full bg-primary px-3 py-1 font-ui text-xs font-medium text-primary-foreground">
                     {statusLabels[application.status] ?? application.status}
                   </span>
                 </div>
                 <p className="mt-4 line-clamp-3 leading-relaxed">{application.answer}</p>
                 <Link
-                  className="mt-4 inline-block font-ui font-bold underline"
+                  className="mt-4 inline-block font-ui font-semibold underline"
                   href={`/oferty/${job?.slug}`}
                 >
                   Zobacz ofertę

@@ -1,11 +1,13 @@
-/* Application layout; b0 preset tokens and fonts are in tokens.css. */
+/* Untitled application layout; theme tokens and fonts are in tokens.css. */
 html,
 body {
   overflow-x: clip;
 }
 body {
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: var(--gui-text-s);
+  line-height: var(--gui-leading-s);
+  letter-spacing: var(--gui-tracking-l);
 }
 h1,
 h2,
@@ -17,15 +19,16 @@ h3,
   min-width: 0;
 }
 h1 {
-  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-size: clamp(var(--gui-text-l), 3vw, var(--gui-text-xl));
   font-weight: 600;
-  line-height: 1.15;
-  letter-spacing: -0.025em;
+  line-height: var(--gui-leading-xl);
+  letter-spacing: var(--gui-tracking-s);
 }
 h2 {
-  font-size: 1.05rem;
+  font-size: var(--gui-text-m);
   font-weight: 600;
-  letter-spacing: -0.02em;
+  line-height: var(--gui-leading-m);
+  letter-spacing: var(--gui-tracking-m);
 }
 button,
 a,
@@ -55,9 +58,10 @@ a {
   z-index: 100;
   left: 16px;
   top: -100px;
-  padding: 12px;
+  padding: var(--gui-space-s);
   background: var(--primary);
   color: var(--primary-foreground);
+  border-radius: var(--gui-radius-s);
 }
 .skip-link:focus {
   top: 16px;
@@ -70,8 +74,8 @@ a {
   position: fixed;
   inset: 0 auto 0 0;
   background: var(--sidebar);
-  border-right: 1px solid var(--sidebar-border);
-  padding: 32px 20px 20px;
+  box-shadow: var(--gui-divider-inline-end-shadow);
+  padding: var(--gui-space-l) var(--gui-space-m) var(--gui-space-m);
   display: flex;
   flex-direction: column;
   z-index: 20;
@@ -79,10 +83,11 @@ a {
 .brand {
   display: flex;
   align-items: center;
-  gap: 9px;
-  font-size: 23px;
+  gap: var(--gui-space-xs);
+  font-size: var(--gui-text-l);
   font-weight: 600;
-  letter-spacing: -0.03em;
+  line-height: var(--gui-leading-l);
+  letter-spacing: var(--gui-tracking-s);
   white-space: nowrap;
 }
 .brand-mark {
@@ -91,17 +96,17 @@ a {
   justify-content: center;
   width: 30px;
   height: 30px;
-  background: var(--primary);
-  color: var(--primary-foreground);
-  border-radius: var(--radius-md);
+  background: var(--gui-color-1);
+  color: var(--gui-accent-text);
+  border-radius: var(--gui-radius-s);
 }
 .workspace-label {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin: 24px 0;
-  padding: 12px 9px;
-  border-block: 1px solid var(--border);
+  gap: var(--gui-space-xs);
+  margin: var(--gui-space-l) 0;
+  padding: var(--gui-space-s) var(--gui-space-xs);
+  box-shadow: var(--gui-divider-top-shadow), var(--gui-divider-bottom-shadow);
 }
 .workspace-avatar {
   width: 30px;
@@ -109,27 +114,27 @@ a {
   display: grid;
   place-items: center;
   background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  box-shadow: var(--gui-edge-shadow);
+  border-radius: var(--gui-radius-s);
   font-weight: 600;
 }
 .workspace-label strong {
   display: block;
-  font-size: 12px;
+  font-size: var(--gui-text-xs);
   font-weight: 500;
 }
 .workspace-label div > span {
-  font-size: 11px;
+  font-size: var(--gui-text-xxs);
   color: var(--muted-foreground);
 }
 .nav-link {
   display: flex;
   align-items: center;
-  gap: 11px;
-  border-radius: var(--radius-md);
-  padding: 11px 12px;
-  margin-bottom: 5px;
-  font-size: 13px;
+  gap: var(--gui-space-xs);
+  border-radius: var(--gui-radius-s);
+  padding: var(--gui-space-xs) var(--gui-space-s);
+  margin-bottom: var(--gui-space-xxs);
+  font-size: var(--gui-text-xs);
   color: var(--muted-foreground);
   white-space: nowrap;
 }
@@ -138,8 +143,8 @@ a {
   color: var(--foreground);
 }
 .nav-active {
-  background: var(--sidebar-accent);
-  color: var(--sidebar-accent-foreground);
+  background: var(--gui-color-1);
+  color: var(--gui-accent-text);
   font-weight: 500;
 }
 .sidebar-bottom {
@@ -148,7 +153,7 @@ a {
 }
 .sidebar-bottom > p {
   font-weight: 500;
-  font-size: 12px;
+  font-size: var(--gui-text-xs);
   margin-bottom: 8px;
 }
 .sidebar-bottom > span {
@@ -166,10 +171,10 @@ a {
 .sidebar-credit {
   display: flex;
   justify-content: space-between;
-  border-top: 1px solid var(--border);
+  box-shadow: var(--gui-divider-top-shadow);
   padding-top: 18px;
   margin-top: 24px;
-  font-size: 11px;
+  font-size: var(--gui-text-xxs);
   color: var(--muted-foreground);
 }
 .workspace {
@@ -180,13 +185,13 @@ a {
 }
 .topbar {
   min-height: 56px;
-  border-bottom: 1px solid var(--border);
+  box-shadow: var(--gui-divider-bottom-shadow);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
   color: var(--muted-foreground);
-  font-size: 12px;
+  font-size: var(--gui-text-xs);
 }
 .mode-label {
   display: flex;
@@ -197,8 +202,8 @@ a {
 .status-dot {
   width: 6px;
   height: 6px;
-  background: var(--primary);
-  border-radius: 50%;
+  background: var(--gui-color-1);
+  border-radius: var(--gui-radius-full);
 }
 .main-content {
   width: 100%;
@@ -212,12 +217,12 @@ a {
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  border: 1px solid var(--border);
+  box-shadow: var(--gui-edge-shadow);
   background: var(--card);
-  border-radius: var(--radius-md);
-  padding: 14px 18px;
+  border-radius: var(--gui-radius-s);
+  padding: var(--gui-space-s) var(--gui-space-m);
   margin-bottom: 46px;
-  font-size: 12px;
+  font-size: var(--gui-text-xs);
   color: var(--muted-foreground);
 }
 .demo-banner strong {
@@ -230,7 +235,7 @@ a {
   display: flex;
   align-items: center;
   gap: 7px;
-  color: var(--primary);
+  color: var(--gui-link);
   white-space: nowrap;
 }
 .page-heading {
@@ -262,13 +267,21 @@ a {
 }
 .native-select {
   min-height: 32px;
-  border: 1px solid var(--input);
-  border-radius: var(--radius-md);
-  background: var(--card);
+  border: 0;
+  border-radius: var(--gui-radius-s);
+  background: var(--gui-control);
   color: var(--foreground);
-  padding: 4px 32px 4px 10px;
+  padding: var(--gui-space-xs) 32px var(--gui-space-xs) var(--gui-space-s);
   font: inherit;
   width: 100%;
+  box-shadow: var(--gui-control-shadow);
+  outline: none;
+}
+.native-select:hover {
+  box-shadow: var(--gui-control-hover-shadow);
+}
+.native-select:focus-visible {
+  box-shadow: var(--gui-control-focus-shadow);
 }
 .filter-select {
   width: 185px;
@@ -276,7 +289,7 @@ a {
 .result-count {
   margin-left: auto;
   color: var(--muted-foreground);
-  font-size: 12px;
+  font-size: var(--gui-text-xs);
   white-space: nowrap;
 }
 .app-footer {
@@ -284,9 +297,9 @@ a {
   justify-content: space-between;
   gap: 16px;
   padding: 22px 48px;
-  border-top: 1px solid var(--border);
+  box-shadow: var(--gui-divider-top-shadow);
   color: var(--muted-foreground);
-  font-size: 11px;
+  font-size: var(--gui-text-xxs);
 }
 .app-footer a {
   display: flex;
@@ -299,8 +312,9 @@ a {
 }
 .empty-state {
   min-height: 280px;
-  border: 1px dashed var(--border);
-  border-radius: var(--radius-lg);
+  border: 0;
+  box-shadow: var(--gui-edge-shadow);
+  border-radius: var(--gui-radius-m);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -330,7 +344,7 @@ a {
 }
 .error-message {
   color: var(--destructive);
-  font-size: 13px;
+  font-size: var(--gui-text-xs);
   line-height: 1.6;
 }
 .form-actions {
@@ -343,8 +357,8 @@ a {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  font-size: 13px;
-  color: var(--primary);
+  font-size: var(--gui-text-xs);
+  color: var(--gui-link);
 }
 .text-link:hover {
   text-decoration: underline;
@@ -353,7 +367,7 @@ a {
 .settings-section,
 .component-section {
   padding-block: 30px;
-  border-top: 1px solid var(--border);
+  box-shadow: var(--gui-divider-top-shadow);
 }
 .settings-section {
   display: flex;
@@ -364,7 +378,7 @@ a {
 .settings-section p,
 .component-section > p {
   color: var(--muted-foreground);
-  font-size: 13px;
+  font-size: var(--gui-text-xs);
   line-height: 1.8;
   margin-top: 10px;
   max-width: 55ch;
@@ -408,7 +422,7 @@ code {
 }
 .auth-aside {
   background: var(--sidebar);
-  border-right: 1px solid var(--sidebar-border);
+  box-shadow: var(--gui-divider-inline-end-shadow);
   padding: 48px;
   display: flex;
   flex-direction: column;
@@ -447,8 +461,8 @@ code {
   color: var(--primary);
 }
 .success-panel {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  box-shadow: var(--gui-edge-shadow);
+  border-radius: var(--gui-radius-m);
   padding: 22px;
   line-height: 1.8;
   background: var(--card);
@@ -487,7 +501,7 @@ code {
     align-items: center;
     justify-content: space-between;
     padding-inline: 20px;
-    border-bottom: 1px solid var(--border);
+    box-shadow: var(--gui-divider-bottom-shadow);
   }
   .sidebar {
     display: none;
@@ -499,7 +513,7 @@ code {
     bottom: auto;
     width: 100%;
     padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
+    box-shadow: var(--gui-divider-bottom-shadow);
   }
   .sidebar .brand,
   .sidebar .workspace-label,
@@ -574,7 +588,7 @@ code {
 /* Dashboard inspirowany blokiem dashboard-01 shadcn/ui. */
 .dashboard {
   display: grid;
-  gap: 24px;
+  gap: var(--gui-space-l);
   min-width: 0;
 }
 .dashboard-heading {
@@ -585,18 +599,19 @@ code {
 }
 .dashboard-heading h1 {
   font-family: var(--font-body);
-  font-size: 22px;
-  letter-spacing: -0.03em;
+  font-size: var(--gui-text-l);
+  line-height: var(--gui-leading-l);
+  letter-spacing: var(--gui-tracking-s);
 }
 .dashboard-info {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 16px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--accent);
-  font-size: 13px;
+  gap: var(--gui-space-s);
+  padding: var(--gui-space-m);
+  box-shadow: var(--gui-accent-edge-shadow);
+  border-radius: var(--gui-radius-m);
+  background: var(--gui-color-1-transparent);
+  font-size: var(--gui-text-xs);
   line-height: 1.6;
 }
 .dashboard-info > svg {
@@ -614,17 +629,17 @@ code {
 .metric-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  gap: var(--gui-space-s);
 }
 .metric-card,
 .visitors-card {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
+  box-shadow: var(--gui-edge-shadow);
+  border-radius: var(--gui-radius-l);
   background: var(--card);
-  padding: 24px;
+  padding: var(--gui-space-l);
 }
 .metric-card {
-  background: linear-gradient(180deg, var(--card), var(--muted));
+  background: var(--card);
 }
 .metric-top {
   display: flex;
@@ -632,12 +647,13 @@ code {
   align-items: center;
   gap: 8px;
   color: var(--muted-foreground);
-  font-size: 13px;
+  font-size: var(--gui-text-xs);
 }
 .metric-value {
-  font-size: 30px;
+  font-size: var(--gui-text-l);
+  line-height: var(--gui-leading-l);
   font-weight: 600;
-  letter-spacing: -0.025em;
+  letter-spacing: var(--gui-tracking-s);
   font-variant-numeric: tabular-nums;
   margin-top: 8px;
 }
@@ -646,13 +662,13 @@ code {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
+  font-size: var(--gui-text-xs);
   font-weight: 500;
 }
 .metric-detail,
 .chart-heading p {
   color: var(--muted-foreground);
-  font-size: 13px;
+  font-size: var(--gui-text-xs);
   margin-top: 6px;
 }
 .chart-heading {
@@ -665,13 +681,13 @@ code {
 .chart-heading h2,
 .table-toolbar h2 {
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: var(--gui-text-s);
 }
 .period-picker {
   display: flex;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 3px;
+  box-shadow: var(--gui-edge-shadow);
+  border-radius: var(--gui-radius-m);
+  padding: var(--gui-space-xxs);
 }
 .period-picker [data-slot="button"] {
   padding-inline: 12px;
@@ -687,7 +703,7 @@ code {
   display: flex;
   justify-content: space-between;
   color: var(--muted-foreground);
-  font-size: 11px;
+  font-size: var(--gui-text-xxs);
   margin-top: 10px;
 }
 .chart-legend {
@@ -696,7 +712,7 @@ code {
   gap: 20px;
   margin-top: 16px;
   color: var(--muted-foreground);
-  font-size: 11px;
+  font-size: var(--gui-text-xxs);
 }
 .chart-legend span {
   display: inline-flex;
@@ -706,7 +722,7 @@ code {
 .chart-legend i {
   width: 8px;
   height: 8px;
-  border-radius: 2px;
+  border-radius: var(--gui-radius-xs);
   background: var(--chart-2);
 }
 .chart-legend span:last-child i {
@@ -738,8 +754,8 @@ code {
 }
 .table-scroll {
   overflow-x: auto;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  box-shadow: var(--gui-edge-shadow);
+  border-radius: var(--gui-radius-m);
   background: var(--card);
 }
 .documents-table {
@@ -747,7 +763,7 @@ code {
   min-width: 760px;
   border-collapse: collapse;
   text-align: left;
-  font-size: 12px;
+  font-size: var(--gui-text-xs);
 }
 .documents-table thead {
   background: var(--muted);
@@ -761,7 +777,7 @@ code {
   font-weight: 500;
 }
 .documents-table tbody tr {
-  border-top: 1px solid var(--border);
+  box-shadow: var(--gui-divider-top-shadow);
 }
 .documents-table tbody tr:hover,
 .documents-table tr[data-selected="true"] {
@@ -787,7 +803,7 @@ code {
 .table-footer {
   margin-top: 16px;
   color: var(--muted-foreground);
-  font-size: 12px;
+  font-size: var(--gui-text-xs);
   flex-wrap: wrap;
 }
 .table-pagination > span {
