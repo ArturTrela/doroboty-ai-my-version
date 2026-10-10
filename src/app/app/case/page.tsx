@@ -76,7 +76,7 @@ export default async function CaseOperationsPage({
         {caseReleaseKeys.map((key) => (
           <Link
             key={key}
-            className={`border-2 px-3 py-2 font-ui text-xs font-bold uppercase ${key === release ? "bg-primary" : "bg-card"}`}
+            className={`border-2 px-3 py-2 font-ui text-xs font-bold uppercase ${key === release ? "bg-primary text-primary-foreground" : "bg-card"}`}
             href={`/app/case?release=${key}`}
           >
             {labels[key]}
@@ -102,7 +102,7 @@ export default async function CaseOperationsPage({
           </select>
         </label>
         <button
-          className="h-10 border-2 bg-primary px-4 font-ui text-xs font-bold uppercase"
+          className="h-10 border-2 bg-primary px-4 font-ui text-xs font-bold text-primary-foreground uppercase"
           type="submit"
         >
           Ustaw i ukryj późniejsze etapy
@@ -142,7 +142,10 @@ export default async function CaseOperationsPage({
           value={segment.languageBackground}
           options={segmentOptions.languageBackground}
         />
-        <button className="border-2 bg-primary px-4 py-2 font-ui font-bold uppercase" type="submit">
+        <button
+          className="border-2 bg-primary px-4 py-2 font-ui font-bold text-primary-foreground uppercase"
+          type="submit"
+        >
           Zastosuj segment
         </button>
       </form>
@@ -204,7 +207,7 @@ export default async function CaseOperationsPage({
         <code>npm run case:export -- {release}</code>.
       </p>
       <Link
-        className="mt-6 inline-block border-2 bg-primary px-4 py-3 font-ui font-bold uppercase"
+        className="mt-6 inline-block border-2 bg-primary px-4 py-3 font-ui font-bold text-primary-foreground uppercase"
         href="/app/case/pilot"
       >
         Kalkulator pilota
@@ -253,7 +256,9 @@ function Metric({
   primary?: boolean;
 }) {
   return (
-    <article className={`border-2 p-5 ${primary ? "bg-primary" : "bg-card"}`}>
+    <article
+      className={`border-2 p-5 ${primary ? "bg-primary text-primary-foreground" : "bg-card"}`}
+    >
       <p className="font-ui text-xs font-bold uppercase">{label}</p>
       <strong className="mt-3 block font-display text-5xl">{value}</strong>
     </article>

@@ -68,7 +68,7 @@ export default async function ApplicationsPage({
                       {application.variant === "one_click" ? "Zapisany profil" : "Pełna odpowiedź"}
                     </p>
                   </div>
-                  <span className="border-2 bg-primary px-3 py-1 font-ui text-xs font-bold uppercase">
+                  <span className="border-2 bg-primary px-3 py-1 font-ui text-xs font-bold text-primary-foreground uppercase">
                     {statusLabels[application.status] ?? application.status}
                   </span>
                 </div>

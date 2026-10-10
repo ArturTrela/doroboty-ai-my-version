@@ -64,7 +64,7 @@ export default async function EmployerInboxPage({
           </select>
         </label>
         <button
-          className="h-10 border-2 bg-primary px-4 font-ui text-xs font-bold uppercase"
+          className="h-10 border-2 bg-primary px-4 font-ui text-xs font-bold text-primary-foreground uppercase"
           type="submit"
         >
           Filtruj
@@ -139,7 +139,7 @@ export default async function EmployerInboxPage({
                   {actions.map(([stage, label]) => (
                     <button
                       key={stage}
-                      className="h-9 border-2 bg-primary px-3 font-ui text-xs font-bold uppercase hover:bg-secondary"
+                      className="h-9 border-2 bg-primary px-3 font-ui text-xs font-bold text-primary-foreground uppercase hover:bg-secondary hover:text-secondary-foreground"
                       type="submit"
                       name="stage"
                       value={stage}

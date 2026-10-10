@@ -69,7 +69,7 @@ async function fixtureClient(email: string) {
   return client;
 }
 test("sign-up, email confirmation, dashboard, sign-in, and password recovery", async ({ page }) => {
-  const email = `browser-${crypto.randomUUID()}@example.test`;
+  const email = `browser-${crypto.randomUUID()}@example.com`;
   await page.goto("/app");
   await expect(page).toHaveURL(/auth\/sign-in/);
   await page.getByRole("link", { name: "Załóż konto", exact: true }).click();

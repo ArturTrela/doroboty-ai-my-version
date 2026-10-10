@@ -78,7 +78,10 @@ export default async function PilotPage({
             />
           </label>
         ))}
-        <button className="border-2 bg-primary px-4 py-2 font-ui font-bold uppercase" type="submit">
+        <button
+          className="border-2 bg-primary px-4 py-2 font-ui font-bold text-primary-foreground uppercase"
+          type="submit"
+        >
           Przelicz
         </button>
       </form>
@@ -114,7 +117,9 @@ function Result({
   primary?: boolean;
 }) {
   return (
-    <article className={`border-2 p-4 ${primary ? "bg-primary" : "bg-card"}`}>
+    <article
+      className={`border-2 p-4 ${primary ? "bg-primary text-primary-foreground" : "bg-card"}`}
+    >
       <p className="font-ui text-xs font-bold uppercase">{label}</p>
       <strong className="mt-2 block font-display text-4xl">{value}</strong>
     </article>

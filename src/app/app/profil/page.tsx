@@ -69,7 +69,7 @@ export default async function CandidateProfilePage() {
               <article key={item.id} className="border-2 bg-card p-4">
                 <h3 className="font-ui font-bold">{item.title}</h3>
                 <p className="mt-2 leading-relaxed">{item.context}</p>
-                <p className="mt-2 bg-primary p-2">
+                <p className="mt-2 bg-primary p-2 text-primary-foreground">
                   <strong>Wynik:</strong> {item.outcome}
                 </p>
               </article>
