@@ -71,6 +71,30 @@ test("job map keeps an accessible result list", async ({ page }) => {
   expect(workerErrors).toEqual([]);
 });
 
+test("job filters keep a balanced grid at medium desktop widths", async ({ page }) => {
+  await page.setViewportSize({ width: 1166, height: 800 });
+  await page.goto("/oferty?view=map");
+
+  const filterBoxes = await page.locator("[data-job-filter]").evaluateAll((filters) =>
+    filters.map((filter) => {
+      const box = filter.getBoundingClientRect();
+      return { x: Math.round(box.x), y: Math.round(box.y), width: Math.round(box.width) };
+    }),
+  );
+  const clearBox = await page.getByRole("link", { name: "Wyczyść" }).boundingBox();
+
+  expect(filterBoxes).toHaveLength(5);
+  expect(new Set(filterBoxes.slice(0, 3).map(({ y }) => y)).size).toBe(1);
+  expect(new Set(filterBoxes.slice(3).map(({ y }) => y)).size).toBe(1);
+  expect(filterBoxes[3]!.y).toBeGreaterThan(filterBoxes[0]!.y);
+  expect(clearBox).not.toBeNull();
+  expect(Math.round(clearBox!.y)).toBe(filterBoxes[3]!.y);
+  expect(Math.max(...filterBoxes.map(({ width }) => width))).toBeLessThanOrEqual(
+    Math.min(...filterBoxes.map(({ width }) => width)) + 1,
+  );
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(1166);
+});
+
 test("unknown jobs return the Polish not-found state", async ({ page }) => {
   const response = await page.goto("/oferty/nie-istnieje");
   expect(response?.status()).toBe(404);

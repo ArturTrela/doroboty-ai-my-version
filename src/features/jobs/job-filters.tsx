@@ -51,7 +51,7 @@ export function JobFiltersForm({ filters, view }: { filters: JobFilters; view?: 
         </Button>
       </div>
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-[repeat(5,minmax(0,1fr))_auto]">
+      <div className="mt-4 grid gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-[repeat(5,minmax(0,1fr))_auto]">
         <FilterSelect
           name="category"
           label="Kategoria"
@@ -83,7 +83,7 @@ export function JobFiltersForm({ filters, view }: { filters: JobFilters; view?: 
           options={contractLabels}
         />
         <Link
-          className="inline-flex h-14 items-center justify-center gap-2 px-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:col-span-2 lg:col-span-1"
+          className="inline-flex h-14 items-center justify-center gap-2 px-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:col-span-2 md:col-span-1"
           href="/oferty"
         >
           <RotateCcw className="size-4" />
@@ -108,26 +108,31 @@ function FilterSelect({
   const Icon = filterIcons[name];
 
   return (
-    <label className="relative flex min-h-14 items-center gap-3 rounded-lg bg-[var(--gui-control)] px-3 transition-colors focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--gui-focus)]">
-      <Icon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
-      <span className="min-w-0 flex-1">
-        <span className="block text-xs text-muted-foreground">{label}</span>
-        <FormSelect
-          name={name}
-          defaultValue={value ?? ""}
-          ariaLabel={label}
-          placeholder="Wszystkie"
-          progressiveFallback
-          triggerClassName="min-h-6 rounded-none bg-transparent p-0 text-sm font-medium focus-visible:outline-none"
-          options={[
-            { value: "", label: "Wszystkie" },
-            ...Object.entries(options).map(([optionValue, optionLabel]) => ({
-              value: optionValue,
-              label: optionLabel,
-            })),
-          ]}
-        />
-      </span>
-    </label>
+    <div
+      className="relative grid min-h-14 grid-cols-[auto_minmax(0,1fr)] grid-rows-[auto_auto] items-center gap-x-3 rounded-lg bg-[var(--gui-control)] px-3 py-2 transition-colors focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--gui-focus)]"
+      data-job-filter={name}
+    >
+      <span className="col-start-2 row-start-1 block text-xs text-muted-foreground">{label}</span>
+      <Icon
+        aria-hidden="true"
+        className="col-start-1 row-start-2 size-4 shrink-0 text-muted-foreground"
+      />
+      <FormSelect
+        className="col-start-2 row-start-2"
+        name={name}
+        defaultValue={value ?? ""}
+        ariaLabel={label}
+        placeholder="Wszystkie"
+        progressiveFallback
+        triggerClassName="rounded-none bg-transparent p-0 text-sm font-medium focus-visible:outline-none data-[size=default]:min-h-6"
+        options={[
+          { value: "", label: "Wszystkie" },
+          ...Object.entries(options).map(([optionValue, optionLabel]) => ({
+            value: optionValue,
+            label: optionLabel,
+          })),
+        ]}
+      />
+    </div>
   );
 }

@@ -50,3 +50,11 @@ authenticated screens.
   `setWorkerUrl(new URL(..., import.meta.url))` call before a map is created.
 - The map E2E fixture serves a minimal style document, waits for MapLibre's real `load` event,
   and fails when the browser reports a worker-load error.
+
+## Regression repair: public filter alignment
+
+- Filter icons align with the selected value row instead of the combined label-and-value block.
+- The filter grid uses three balanced columns at medium desktop widths and switches to the
+  five-filter single row only when the content area is wide enough.
+- The clear action completes the last row at medium widths and retains a full-width position in
+  the two-column layout.
