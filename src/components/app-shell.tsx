@@ -14,13 +14,13 @@ import {
   Menu,
   Send,
   Settings2,
-  Sparkles,
   UserRound,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { browserClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
+import { BrandMark } from "@/features/public/brand-mark";
 export function AppShell({
   children,
   mode,
@@ -84,11 +84,9 @@ export function AppShell({
       </a>
       <header className="mobile-header">
         <Link href={base} className="brand">
-          <span className="brand-mark">
-            <Sparkles size={18} />
-          </span>
+          <BrandMark />
           DoRoboty
-          <span className="rounded-sm bg-[var(--gui-color-1)] px-1 text-[var(--gui-accent-text)]">
+          <span className="rounded-sm bg-[var(--gui-color-1)] px-1 text-[var(--gui-accent-text-accessible)]">
             .ai
           </span>
         </Link>
@@ -105,11 +103,9 @@ export function AppShell({
       </header>
       <aside id="sidebar" className={cn("sidebar", open && "sidebar-open")}>
         <Link href={base} className="brand hidden md:flex">
-          <span className="brand-mark">
-            <Sparkles size={18} />
-          </span>
+          <BrandMark />
           DoRoboty
-          <span className="rounded-sm bg-[var(--gui-color-1)] px-1 text-[var(--gui-accent-text)]">
+          <span className="rounded-sm bg-[var(--gui-color-1)] px-1 text-[var(--gui-accent-text-accessible)]">
             .ai
           </span>
         </Link>

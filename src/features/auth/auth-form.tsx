@@ -4,11 +4,12 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { browserClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { BrandMark } from "@/features/public/brand-mark";
 export type AuthMode = "sign-in" | "sign-up" | "forgot-password" | "update-password";
 const copy = {
   "sign-in": {
@@ -43,6 +44,10 @@ export function AuthForm({
 }) {
   const [message, setMessage] = useState("");
   const schema = z.object({
+    displayName:
+      mode === "sign-up"
+        ? z.string().trim().min(2, "Podaj imię lub nazwę zawodową.").max(120)
+        : z.string().optional(),
     email: mode === "update-password" ? z.string() : z.email("Podaj prawidłowy adres e-mail."),
     password:
       mode === "forgot-password"
@@ -61,10 +66,10 @@ export function AuthForm({
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(schema),
-    defaultValues: { email: "", password: "" },
+    defaultValues: { displayName: "", email: "", password: "" },
     mode: "onBlur",
   });
-  async function submit(values: { email: string; password: string }) {
+  async function submit(values: { displayName?: string; email: string; password: string }) {
     setMessage("");
     try {
       const client = browserClient();
@@ -75,11 +80,19 @@ export function AuthForm({
         window.location.assign(nextPath);
       }
       if (mode === "sign-up") {
-        const { error } = await client.auth.signUp({
-          ...values,
-          options: { emailRedirectTo: `${callback}?next=${encodeURIComponent(nextPath)}` },
+        const { data, error } = await client.auth.signUp({
+          email: values.email,
+          password: values.password,
+          options: {
+            emailRedirectTo: `${callback}?next=${encodeURIComponent(nextPath)}`,
+            data: { display_name: values.displayName?.trim() },
+          },
         });
         if (error) throw error;
+        if (data.session) {
+          window.location.assign(nextPath === "/app" ? "/app/profil" : nextPath);
+          return;
+        }
         setMessage(
           "Sprawdź skrzynkę. Jeśli konto wymaga potwierdzenia, znajdziesz tam link aktywacyjny.",
         );
@@ -111,9 +124,7 @@ export function AuthForm({
     <main className="auth-layout">
       <div className="auth-aside">
         <Link href="/" className="brand">
-          <span className="brand-mark">
-            <Sparkles size={18} />
-          </span>
+          <BrandMark />
           DoRoboty.ai
         </Link>
         <div>
@@ -148,6 +159,24 @@ export function AuthForm({
             </div>
           ) : (
             <form className="form-stack" noValidate onSubmit={handleSubmit(submit)}>
+              {mode === "sign-up" && (
+                <div className="field">
+                  <Label htmlFor="displayName">Imię lub nazwa zawodowa</Label>
+                  <Input
+                    id="displayName"
+                    autoComplete="name"
+                    placeholder="np. Marta, Product Designer"
+                    aria-invalid={!!errors.displayName}
+                    aria-describedby={errors.displayName ? "display-name-error" : undefined}
+                    {...register("displayName")}
+                  />
+                  {errors.displayName && (
+                    <p id="display-name-error" className="error-message">
+                      {errors.displayName.message}
+                    </p>
+                  )}
+                </div>
+              )}
               {mode !== "update-password" && (
                 <div className="field">
                   <Label htmlFor="email">Email</Label>
@@ -200,7 +229,7 @@ export function AuthForm({
             {mode === "sign-in" ? (
               <>
                 <Link href="/auth/forgot-password">Nie pamiętam hasła</Link>
-                <Link href="/auth/sign-up">Załóż konto</Link>
+                <Link href="/auth/sign-up?next=/app/profil">Załóż konto kandydata</Link>
               </>
             ) : (
               <Link href="/auth/sign-in">Mam już konto</Link>

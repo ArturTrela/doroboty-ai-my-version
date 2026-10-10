@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import {
   candidateProfileSchema,
+  candidateCvSchema,
   experienceSchema,
   workSampleSchema,
 } from "@/features/candidates/schema";
@@ -93,4 +94,61 @@ export async function addWorkSample(
   if (error) return { ok: false, message: "Nie udało się dodać próbki pracy." };
   revalidatePath("/app/profil");
   return { ok: true, message: "Próbka pracy dodana." };
+}
+
+export async function uploadCandidateCv(
+  _previous: CandidateActionState,
+  formData: FormData,
+): Promise<CandidateActionState> {
+  const { client, user } = await requireProfile(["candidate"]);
+  const parsed = candidateCvSchema.safeParse({ cv: formData.get("cv") });
+  if (!parsed.success) {
+    return { ok: false, message: parsed.error.issues[0]?.message ?? "Sprawdź plik." };
+  }
+  const file = parsed.data.cv;
+  const storagePath = `${user.id}/cv.pdf`;
+  const upload = await client.storage.from("candidate-cv").upload(storagePath, file, {
+    contentType: "application/pdf",
+    upsert: true,
+    cacheControl: "3600",
+  });
+  if (upload.error) return { ok: false, message: "Nie udało się bezpiecznie zapisać CV." };
+
+  const metadata = await client.from("candidate_documents").upsert({
+    user_id: user.id,
+    storage_path: storagePath,
+    file_name: file.name.slice(0, 180),
+    mime_type: file.type,
+    size_bytes: file.size,
+    uploaded_at: new Date().toISOString(),
+  });
+  if (metadata.error) {
+    await client.storage.from("candidate-cv").remove([storagePath]);
+    return { ok: false, message: "Nie udało się zapisać informacji o CV." };
+  }
+  revalidatePath("/app/profil");
+  return { ok: true, message: "CV zapisane. Możesz je w każdej chwili podmienić." };
+}
+
+export async function removeCandidateCv(
+  _previous: CandidateActionState,
+  _formData: FormData,
+): Promise<CandidateActionState> {
+  void _previous;
+  void _formData;
+  const { client, user } = await requireProfile(["candidate"]);
+  const { data } = await client
+    .from("candidate_documents")
+    .select("storage_path")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (!data) return { ok: true, message: "Nie masz zapisanego CV." };
+
+  const removed = await client.storage.from("candidate-cv").remove([data.storage_path]);
+  if (removed.error) return { ok: false, message: "Nie udało się usunąć pliku CV." };
+  const deleted = await client.from("candidate_documents").delete().eq("user_id", user.id);
+  if (deleted.error)
+    return { ok: false, message: "Plik usunięto, ale metadane wymagają odświeżenia." };
+  revalidatePath("/app/profil");
+  return { ok: true, message: "CV usunięte." };
 }

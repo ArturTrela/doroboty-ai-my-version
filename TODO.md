@@ -364,6 +364,33 @@ invariants, and anti-spoiler rules are in
 - [ ] A complete rehearsal produces the intended evidence without forcing one prescribed
       participant solution.
 
+## M10 — Marketplace self-service and local testing
+
+- [x] **M10-01** Replace remaining native selects with the Untitled shared select, including
+      keyboard behavior and a progressive-enhancement fallback for public filters.
+- [x] **M10-02** Add a one-command local Supabase setup with seeded test accounts and local
+      public environment configuration.
+- [x] **M10-03** Add geographic coordinates and a responsive, accessible MapLibre job view
+      with an OpenFreeMap basemap.
+- [x] **M10-04** Replace the abstract brand mark with a consistent robot mark across shells
+      and the application icon.
+- [x] **M10-05** Add a validated employer job form backed by an organization-scoped database
+      function and RLS-protected draft/review reads.
+- [x] **M10-06** Make candidate registration explicit and collect the candidate display name.
+- [x] **M10-07** Add a private candidate PDF CV upload, replacement, signed download, and
+      removal flow with ownership policies.
+- [x] **M10-08** Cover the new schemas, RLS boundaries, local journeys, and visual states with
+      automated tests and a Graphical audit.
+
+### M10 Definition of Done
+
+- [x] An employer and candidate can complete the new paths against a reset local database.
+- [x] Another signed-in user cannot read or mutate an employer's job or candidate's CV.
+- [x] Public listing list/map modes, auth, and both panels are responsive and keyboard usable.
+- [x] `./scripts/verify` and local Supabase integration tests pass.
+
+---
+
 ## External dependencies and decisions
 
 - [ ] **EXT-01** Approve the final numeric shape of baseline, one-click, and post-AI

@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CalendarDays, ChevronsUpDown } from "lucide-react";
+import { CalendarDays, ChevronsUpDown, List, Map } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
 import { JobCard } from "@/features/jobs/job-card";
 import { JobFiltersForm } from "@/features/jobs/job-filters";
+import { JobMap } from "@/features/jobs/job-map";
 import { hasIndexableFilters, parseJobFilters, type SearchParams } from "@/features/jobs/filters";
 import { getPublishedJobs } from "@/features/jobs/queries";
+import { cn } from "@/lib/utils";
 
 type Props = { searchParams: Promise<SearchParams> };
 
@@ -19,8 +22,21 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 }
 
 export default async function JobsPage({ searchParams }: Props) {
-  const filters = parseJobFilters(await searchParams);
+  const params = await searchParams;
+  const filters = parseJobFilters(params);
   const jobs = await getPublishedJobs(filters);
+  const view =
+    (Array.isArray(params.view) ? params.view[0] : params.view) === "map" ? "map" : "list";
+  const viewHref = (nextView: "list" | "map") => {
+    const query = new URLSearchParams();
+    for (const [key, value] of Object.entries(params)) {
+      if (key === "view" || value === undefined) continue;
+      for (const item of Array.isArray(value) ? value : [value]) query.append(key, item);
+    }
+    if (nextView === "map") query.set("view", "map");
+    const suffix = query.toString();
+    return suffix ? `/oferty?${suffix}` : "/oferty";
+  };
 
   return (
     <section className="mx-auto max-w-[1360px] px-5 py-9 lg:px-8">
@@ -54,22 +70,46 @@ export default async function JobsPage({ searchParams }: Props) {
         </div>
       </div>
       <div className="mt-8">
-        <JobFiltersForm filters={filters} />
+        <JobFiltersForm filters={filters} view={view} />
       </div>
       <div className="mt-7 flex items-center justify-between gap-4 text-sm">
         <p className="font-semibold" role="status">
           {jobs.length === 1 ? "1 oferta" : `${jobs.length} ofert`}
         </p>
-        <span className="inline-flex items-center gap-2 text-muted-foreground">
-          <ChevronsUpDown className="size-4" /> Sortuj: najnowsze
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="mr-2 hidden items-center gap-2 text-muted-foreground sm:inline-flex">
+            <ChevronsUpDown className="size-4" /> Sortuj: najnowsze
+          </span>
+          <Link
+            aria-current={view === "list" ? "page" : undefined}
+            className={cn(
+              buttonVariants({ variant: view === "list" ? "secondary" : "ghost", size: "sm" }),
+            )}
+            href={viewHref("list")}
+          >
+            <List className="size-4" /> Lista
+          </Link>
+          <Link
+            aria-current={view === "map" ? "page" : undefined}
+            className={cn(
+              buttonVariants({ variant: view === "map" ? "secondary" : "ghost", size: "sm" }),
+            )}
+            href={viewHref("map")}
+          >
+            <Map className="size-4" /> Mapa
+          </Link>
+        </div>
       </div>
       {jobs.length > 0 ? (
-        <div className="mt-3 shadow-[var(--gui-divider-top-shadow)]">
-          {jobs.map((job) => (
-            <JobCard key={job.id} job={job} />
-          ))}
-        </div>
+        view === "map" ? (
+          <JobMap jobs={jobs} />
+        ) : (
+          <div className="mt-3 shadow-[var(--gui-divider-top-shadow)]">
+            {jobs.map((job) => (
+              <JobCard key={job.id} job={job} />
+            ))}
+          </div>
+        )
       ) : (
         <div className="mt-6 rounded-lg bg-muted/30 p-10 text-center">
           <h2 className="text-xl font-semibold">Brak ofert dla tych filtrów</h2>

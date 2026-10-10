@@ -39,6 +39,8 @@ type DbJob = {
   function: JobFunction;
   remote_status: RemoteStatus;
   locations: string[];
+  map_latitude: number | null;
+  map_longitude: number | null;
   seniority: SeniorityLevel;
   contract_type: ContractType;
   salary_min: number | null;
@@ -80,6 +82,10 @@ function mapJob(row: DbJob): JobWithCompany {
     function: row.function,
     remoteStatus: row.remote_status,
     locations: row.locations,
+    coordinates:
+      row.map_latitude !== null && row.map_longitude !== null
+        ? { latitude: row.map_latitude, longitude: row.map_longitude }
+        : undefined,
     seniority: row.seniority,
     contract: row.contract_type,
     salaryMin: row.salary_min ?? undefined,

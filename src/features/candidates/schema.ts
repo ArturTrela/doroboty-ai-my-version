@@ -22,3 +22,13 @@ export const workSampleSchema = z.object({
   context: z.string().trim().min(20).max(3000),
   outcome: z.string().trim().min(10).max(2000),
 });
+
+export const candidateCvSchema = z.object({
+  cv: z
+    .instanceof(File, { message: "Wybierz plik PDF." })
+    .refine((file) => file.type === "application/pdf", "CV musi być plikiem PDF.")
+    .refine(
+      (file) => file.size > 0 && file.size <= 5 * 1024 * 1024,
+      "CV może mieć maksymalnie 5 MB.",
+    ),
+});

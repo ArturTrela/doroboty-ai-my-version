@@ -5,6 +5,7 @@ import { approveJobDraft, generateJobDraft, type JobDraftState } from "@/feature
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { FormSelect } from "@/components/ui/form-select";
 import { Textarea } from "@/components/ui/textarea";
 
 const initialState: JobDraftState = { ok: false, message: "" };
@@ -56,18 +57,13 @@ export function JobDraftWorkspace({
             </p>
             <div className="field">
               <Label htmlFor="jobId">Oferta</Label>
-              <select
+              <FormSelect
                 id="jobId"
                 name="jobId"
                 required
-                className="native-select min-h-10 w-full bg-[var(--gui-control)] px-2 font-ui"
-              >
-                {jobs.map((job) => (
-                  <option key={job.id} value={job.id}>
-                    {job.title}
-                  </option>
-                ))}
-              </select>
+                defaultValue={jobs[0]?.id}
+                options={jobs.map((job) => ({ value: job.id, label: job.title }))}
+              />
             </div>
             <Button type="submit" disabled={pending || !jobs.length}>
               {pending ? "Generuję…" : "Wygeneruj szkic"}

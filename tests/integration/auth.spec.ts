@@ -6,6 +6,15 @@ const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
 const mail = process.env.LOCAL_MAIL_URL ?? "http://127.0.0.1:54324";
 const password = "Local-test-password-483!";
 const localCasePassword = "DoRoboty-local-only-2026!";
+const labelsForRelease = (release: string) =>
+  ({
+    baseline: "Baseline",
+    post_one_click: "Po one-click",
+    discovery: "Discovery",
+    post_ai: "Po interwencji AI",
+    pilot: "Pilot",
+    demo_day: "Demo Day",
+  })[release] ?? release;
 test.beforeAll(() => {
   for (const url of [api, mail])
     if (!url || !["127.0.0.1", "localhost"].includes(new URL(url).hostname))
@@ -53,7 +62,7 @@ async function confirmedAccount(prefix = "account") {
   ).toBeNull();
   const url = new URL(await emailLink(email, "signup"));
   const confirmation = await client.auth.verifyOtp({
-    token_hash: url.searchParams.get("token_hash")!,
+    token_hash: (url.searchParams.get("token_hash") ?? url.searchParams.get("token"))!,
     type: "signup",
   });
   expect(confirmation.error).toBeNull();
@@ -72,7 +81,8 @@ test("sign-up, email confirmation, dashboard, sign-in, and password recovery", a
   const email = `browser-${crypto.randomUUID()}@example.com`;
   await page.goto("/app");
   await expect(page).toHaveURL(/auth\/sign-in/);
-  await page.getByRole("link", { name: "Załóż konto", exact: true }).click();
+  await page.getByRole("link", { name: "Załóż konto kandydata", exact: true }).click();
+  await page.getByLabel("Imię lub nazwa zawodowa").fill("Nowy kandydat");
   await page.getByLabel("Email", { exact: true }).fill(email);
   await page.getByLabel("Hasło", { exact: true }).fill(password);
   await page.getByRole("button", { name: "Załóż konto", exact: true }).click();
@@ -136,6 +146,71 @@ test("RLS isolates candidate evidence and prevents role escalation", async () =>
   const roleAfterAttempt = await a.client.from("profiles").select("role").eq("id", a.id).single();
   expect(roleAfterAttempt.error).toBeNull();
   expect(roleAfterAttempt.data?.role).toBe("candidate");
+});
+
+test("candidate CV storage and metadata stay private", async () => {
+  const candidate = await confirmedAccount("cv-owner");
+  const other = await confirmedAccount("cv-other");
+  const path = `${candidate.id}/cv.pdf`;
+  const file = new TextEncoder().encode("%PDF-1.4 private fixture");
+  const uploaded = await candidate.client.storage.from("candidate-cv").upload(path, file, {
+    contentType: "application/pdf",
+    upsert: true,
+  });
+  expect(uploaded.error).toBeNull();
+  const metadata = await candidate.client.from("candidate_documents").upsert({
+    user_id: candidate.id,
+    storage_path: path,
+    file_name: "cv.pdf",
+    mime_type: "application/pdf",
+    size_bytes: file.byteLength,
+  });
+  expect(metadata.error).toBeNull();
+  expect((await candidate.client.from("candidate_documents").select("user_id")).data).toHaveLength(
+    1,
+  );
+  expect((await other.client.from("candidate_documents").select("user_id")).data).toHaveLength(0);
+  expect((await candidate.client.storage.from("candidate-cv").download(path)).error).toBeNull();
+  expect((await other.client.storage.from("candidate-cv").download(path)).error).not.toBeNull();
+});
+
+test("employers create review jobs only for their organization", async () => {
+  const employer = await fixtureClient("employer@doroboty.local");
+  const otherEmployer = await fixtureClient("employer-other@doroboty.local");
+  const candidate = await fixtureClient("candidate@doroboty.local");
+  const slug = `self-service-${crypto.randomUUID()}`;
+  const input = {
+    job_slug: slug,
+    job_title: "AI Delivery Lead",
+    job_summary: "Poprowadź wdrożenia AI od problemu do mierzalnego wyniku biznesowego.",
+    job_description:
+      "Szukamy osoby, która potrafi prowadzić discovery, eksperymenty i bezpieczne wdrożenia AI w zespole produktowym.",
+    job_category: "lead",
+    job_function: "product",
+    job_remote_status: "hybrid",
+    job_locations: ["Warszawa"],
+    job_seniority: "senior",
+    job_contract_type: "employment",
+    job_salary_min: 18000,
+    job_salary_max: 24000,
+    job_salary_currency: "PLN",
+    job_salary_period: "month",
+    job_salary_kind: "gross",
+    job_expiry_at: null,
+    job_map_latitude: null,
+    job_map_longitude: null,
+  };
+  const created = await employer.rpc("create_employer_job", input);
+  expect(created.error).toBeNull();
+  const id = created.data as string;
+  const own = await employer.from("jobs").select("publication_status, company_id").eq("id", id);
+  expect(own.data).toEqual([
+    { publication_status: "review", company_id: "10000000-0000-4000-8000-000000000001" },
+  ]);
+  expect((await otherEmployer.from("jobs").select("id").eq("id", id)).data).toHaveLength(0);
+  expect(
+    (await candidate.rpc("create_employer_job", { ...input, job_slug: `${slug}-candidate` })).error,
+  ).not.toBeNull();
 });
 
 test("application submission is atomic, idempotent, and private", async () => {
@@ -483,7 +558,8 @@ test("only an operator can inspect and release every case stage", async ({ page 
     "pilot",
     "demo_day",
   ]) {
-    await page.getByLabel("Aktywny etap").selectOption(release);
+    await page.getByRole("combobox", { name: "Aktywny etap" }).click();
+    await page.getByRole("option", { name: labelsForRelease(release), exact: true }).click();
     await page.getByRole("button", { name: "Ustaw i ukryj późniejsze etapy" }).click();
     await expect(page.getByText("Potwierdzony aktywny etap:")).toContainText(
       release === "post_one_click"
@@ -539,7 +615,8 @@ test("candidate and employer AI drafts require approval and preserve public sour
   await page.getByRole("button", { name: "Zaloguj się", exact: true }).click();
   await expect(page).toHaveURL(/\/app$/);
   await page.goto("/app/oferty");
-  await page.getByLabel("Oferta").selectOption({ label: "AI Product Manager" });
+  await page.getByRole("combobox", { name: "Oferta" }).click();
+  await page.getByRole("option", { name: "AI Product Manager", exact: true }).click();
   await page.getByRole("button", { name: "Wygeneruj szkic" }).click();
   await expect(page.getByRole("status").filter({ hasText: "Szkic gotowy" })).toBeVisible();
   await page.getByLabel("Tytuł", { exact: true }).fill("AI Product Manager — wersja prywatna");

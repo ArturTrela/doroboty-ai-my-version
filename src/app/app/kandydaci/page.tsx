@@ -1,5 +1,6 @@
 import { recordEmployerStage } from "@/features/applications/actions";
 import { buttonVariants } from "@/components/ui/button";
+import { FormSelect } from "@/components/ui/form-select";
 import { requireProfile } from "@/features/auth/session";
 import { getSupabaseConfig } from "@/lib/env";
 
@@ -51,18 +52,15 @@ export default async function EmployerInboxPage({
       <form className="mb-6 flex flex-wrap items-end gap-2 rounded-xl bg-secondary p-4">
         <label className="font-ui text-base font-medium">
           Status
-          <select
-            className="native-select mt-1 block min-h-10 bg-[var(--gui-control)] px-2"
+          <FormSelect
+            className="mt-1"
             name="status"
             defaultValue={status ?? ""}
-          >
-            <option value="">Wszystkie</option>
-            {statuses.map((item) => (
-              <option key={item} value={item}>
-                {item}
-              </option>
-            ))}
-          </select>
+            options={[
+              { value: "", label: "Wszystkie" },
+              ...statuses.map((item) => ({ value: item, label: item })),
+            ]}
+          />
         </label>
         <button className={buttonVariants({ size: "sm" })} type="submit">
           Filtruj

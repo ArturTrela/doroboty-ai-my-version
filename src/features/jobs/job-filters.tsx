@@ -3,7 +3,6 @@ import {
   BarChart3,
   BriefcaseBusiness,
   Building2,
-  ChevronDown,
   FileText,
   Grid2X2,
   RotateCcw,
@@ -11,6 +10,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { FormSelect } from "@/components/ui/form-select";
 import type { JobFilters } from "@/features/jobs/types";
 import {
   categoryLabels,
@@ -28,9 +28,10 @@ const filterIcons = {
   contract: FileText,
 } as const;
 
-export function JobFiltersForm({ filters }: { filters: JobFilters }) {
+export function JobFiltersForm({ filters, view }: { filters: JobFilters; view?: "list" | "map" }) {
   return (
     <form className="pb-6 shadow-[var(--gui-divider-bottom-shadow)]" action="/oferty">
+      {view === "map" ? <input type="hidden" name="view" value="map" /> : null}
       <div className="flex rounded-lg bg-background p-1 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--gui-focus)]">
         <label className="relative min-w-0 flex-1">
           <span className="sr-only">Szukaj</span>
@@ -107,27 +108,26 @@ function FilterSelect({
   const Icon = filterIcons[name];
 
   return (
-    <label className="relative flex h-14 items-center gap-3 rounded-lg bg-[var(--gui-control)] px-3 transition-colors focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--gui-focus)]">
+    <label className="relative flex min-h-14 items-center gap-3 rounded-lg bg-[var(--gui-control)] px-3 transition-colors focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--gui-focus)]">
       <Icon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
       <span className="min-w-0 flex-1">
         <span className="block text-xs text-muted-foreground">{label}</span>
-        <select
-          className="block w-full appearance-none bg-transparent pr-5 text-sm font-medium outline-none"
+        <FormSelect
           name={name}
           defaultValue={value ?? ""}
-        >
-          <option value="">Wszystkie</option>
-          {Object.entries(options).map(([optionValue, optionLabel]) => (
-            <option key={optionValue} value={optionValue}>
-              {optionLabel}
-            </option>
-          ))}
-        </select>
+          ariaLabel={label}
+          placeholder="Wszystkie"
+          progressiveFallback
+          triggerClassName="min-h-6 rounded-none bg-transparent p-0 text-sm font-medium focus-visible:outline-none"
+          options={[
+            { value: "", label: "Wszystkie" },
+            ...Object.entries(options).map(([optionValue, optionLabel]) => ({
+              value: optionValue,
+              label: optionLabel,
+            })),
+          ]}
+        />
       </span>
-      <ChevronDown
-        aria-hidden="true"
-        className="pointer-events-none absolute right-3 bottom-[14px] size-3.5 text-muted-foreground"
-      />
     </label>
   );
 }

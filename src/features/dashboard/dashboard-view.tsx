@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { FormSelect } from "@/components/ui/form-select";
 import { documents, visitorDays } from "./data";
 
 const metrics = [
@@ -228,19 +229,20 @@ export function DashboardView() {
                 }}
               />
             </div>
-            <select
-              className="native-select filter-select"
-              aria-label="Filter by status"
+            <FormSelect
+              className="filter-select"
+              ariaLabel="Filter by status"
               value={status}
-              onChange={(event) => {
-                setStatus(event.target.value);
+              onValueChange={(nextStatus) => {
+                setStatus(nextStatus);
                 setPage(0);
               }}
-            >
-              <option value="all">All statuses</option>
-              <option value="progress">In progress</option>
-              <option value="done">Done</option>
-            </select>
+              options={[
+                { value: "all", label: "All statuses" },
+                { value: "progress", label: "In progress" },
+                { value: "done", label: "Done" },
+              ]}
+            />
           </div>
         </div>
         <div

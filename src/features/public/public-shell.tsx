@@ -40,6 +40,12 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
               </Link>
             ))}
             <Link
+              href="/auth/sign-up?next=/app/profil"
+              className="hidden text-sm font-medium text-[var(--gui-link)] sm:inline"
+            >
+              Załóż konto
+            </Link>
+            <Link
               href="/auth/sign-in"
               className={cn(
                 buttonVariants({ variant: "outline", size: "lg" }),

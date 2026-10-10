@@ -1,5 +1,6 @@
 import {
   CandidateProfileForm,
+  CandidateCvForm,
   ExperienceForm,
   WorkSampleForm,
 } from "@/features/candidates/profile-forms";
@@ -11,7 +12,7 @@ export const dynamic = "force-dynamic";
 export default async function CandidateProfilePage() {
   if (!getSupabaseConfig().configured) return null;
   const { client, user, profile } = await requireProfile(["candidate"]);
-  const [candidateResult, experiencesResult, samplesResult] = await Promise.all([
+  const [candidateResult, experiencesResult, samplesResult, documentResult] = await Promise.all([
     client.from("candidate_profiles").select("*").eq("user_id", user.id).single(),
     client
       .from("candidate_experiences")
@@ -23,8 +24,15 @@ export default async function CandidateProfilePage() {
       .select("*")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false }),
+    client.from("candidate_documents").select("*").eq("user_id", user.id).maybeSingle(),
   ]);
   if (candidateResult.error) throw new Error("Nie udało się wczytać profilu.");
+
+  const document = documentResult.data;
+  const signedUrl = document
+    ? (await client.storage.from("candidate-cv").createSignedUrl(document.storage_path, 600)).data
+        ?.signedUrl
+    : undefined;
 
   return (
     <div>
@@ -39,6 +47,18 @@ export default async function CandidateProfilePage() {
           profile={{ ...candidateResult.data, display_name: profile.display_name }}
         />
         <div className="grid gap-6">
+          <CandidateCvForm
+            document={
+              document
+                ? {
+                    fileName: document.file_name,
+                    sizeBytes: document.size_bytes,
+                    uploadedAt: document.uploaded_at,
+                    downloadUrl: signedUrl,
+                  }
+                : undefined
+            }
+          />
           <ExperienceForm />
           <WorkSampleForm />
         </div>

@@ -28,6 +28,19 @@ npm run dev
 
 The public marketplace works with deterministic fixtures when Supabase is absent. Authenticated candidate, employer, AI, and instructor workflows require Supabase and never silently fall back after it is configured. See the [participant guide](docs/PARTICIPANT_GUIDE.md) and [Supabase runbook](docs/supabase.md).
 
+To start a complete local database, apply migrations, seed marketplace data, create test
+accounts, and configure `.env.local`, run:
+
+```sh
+npm run db:setup
+npm run dev
+```
+
+Use `candidate@doroboty.local` or `employer@doroboty.local` with password
+`DoRoboty-local-only-2026!`. Supabase Studio is available at
+`http://127.0.0.1:55323`. `db:setup` resets only the local database and uses dedicated
+55xxx ports, so it does not collide with another Supabase project.
+
 ## Verification
 
 ```sh

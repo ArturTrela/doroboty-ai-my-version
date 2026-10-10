@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
+import { FormSelect } from "@/components/ui/form-select";
 import { releaseCaseAction } from "@/features/case-data/actions";
 import { requireProfile } from "@/features/auth/session";
 import {
@@ -94,17 +95,12 @@ export default async function CaseOperationsPage({
       >
         <label className="font-ui text-base font-medium">
           Aktywny etap
-          <select
+          <FormSelect
             name="release"
             defaultValue={activeRelease ?? "baseline"}
-            className="native-select mt-1 block min-h-10 bg-[var(--gui-control)] px-2"
-          >
-            {caseReleaseKeys.map((key) => (
-              <option key={key} value={key}>
-                {labels[key]}
-              </option>
-            ))}
-          </select>
+            className="mt-1"
+            options={caseReleaseKeys.map((key) => ({ value: key, label: labels[key] }))}
+          />
         </label>
         <button className={buttonVariants({ size: "sm" })} type="submit">
           Ustaw i ukryj późniejsze etapy
@@ -228,18 +224,15 @@ function SegmentSelect({
   return (
     <label className="font-ui text-base font-medium">
       {label}
-      <select
-        className="native-select mt-1 min-h-10 w-full bg-[var(--gui-control)] px-2"
+      <FormSelect
+        className="mt-1"
         name={name}
         defaultValue={value ?? ""}
-      >
-        <option value="">Wszystkie</option>
-        {Object.entries(options).map(([key, option]) => (
-          <option value={key} key={key}>
-            {option}
-          </option>
-        ))}
-      </select>
+        options={[
+          { value: "", label: "Wszystkie" },
+          ...Object.entries(options).map(([key, option]) => ({ value: key, label: option })),
+        ]}
+      />
     </label>
   );
 }

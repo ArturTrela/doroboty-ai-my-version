@@ -35,7 +35,8 @@ try {
     await page.goto(new URL(`/app/case?release=${key}`, origin).href, {
       waitUntil: "networkidle",
     });
-    await page.locator('select[name="release"]').selectOption(key);
+    await page.getByRole("combobox", { name: "Aktywny etap" }).click();
+    await page.getByRole("option", { name: label, exact: true }).click();
     await page.getByRole("button", { name: "Ustaw i ukryj późniejsze etapy" }).click();
     await page.getByText(`Potwierdzony aktywny etap: ${label}`, { exact: true }).waitFor();
     await page.getByText(/^OK — pełne \d+ ścieżek jest spójne/).waitFor();
@@ -52,7 +53,8 @@ try {
     await page.goto(new URL("/app/case?release=discovery", origin).href, {
       waitUntil: "networkidle",
     });
-    await page.locator('select[name="release"]').selectOption("discovery");
+    await page.getByRole("combobox", { name: "Aktywny etap" }).click();
+    await page.getByRole("option", { name: "Discovery", exact: true }).click();
     await page.getByRole("button", { name: "Ustaw i ukryj późniejsze etapy" }).click();
     await page.getByText("Potwierdzony aktywny etap: Discovery", { exact: true }).waitFor();
   } finally {
