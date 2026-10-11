@@ -17,6 +17,10 @@ signals needed for a hiring decision.
 3. Follow the sprint order in [`TODO.md`](TODO.md).
 4. Use the preserved source material under [`docs/source/`](docs/source/).
 
+The current flows, features, permissions, and known gaps are registered in
+[`FEATURES.md`](FEATURES.md). Keep it updated with every behavior change, as required by
+[`AGENTS.md`](AGENTS.md).
+
 ## Local development
 
 Requirements: Node.js 24 and npm.
