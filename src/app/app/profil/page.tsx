@@ -11,6 +11,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { requireProfile } from "@/features/auth/session";
 import { getSupabaseConfig } from "@/lib/env";
 import { safeReturnPath } from "@/features/auth/return-path";
+import { candidateWorkSamplesEnabled } from "@/features/candidates/features";
 
 export const dynamic = "force-dynamic";
 
@@ -133,40 +134,42 @@ export default async function CandidateProfilePage({
             <ExperienceForm />
           </div>
         </section>
-        <section
-          id="portfolio"
-          className="rounded-xl bg-card p-[var(--gui-space-l)] shadow-[var(--gui-shadow-m)]"
-        >
-          <h2>Próbki pracy</h2>
-          <p className="mt-[var(--gui-space-xxs)] text-sm text-muted-foreground">
-            Linki i wyniki, które możesz dołączyć do konkretnej aplikacji.
-          </p>
-          {samples.length === 0 ? (
-            <p className="mt-[var(--gui-space-m)] text-muted-foreground">
-              Nie masz jeszcze próbek pracy.
+        {candidateWorkSamplesEnabled && (
+          <section
+            id="portfolio"
+            className="rounded-xl bg-card p-[var(--gui-space-l)] shadow-[var(--gui-shadow-m)]"
+          >
+            <h2>Próbki pracy</h2>
+            <p className="mt-[var(--gui-space-xxs)] text-sm text-muted-foreground">
+              Linki i wyniki, które możesz dołączyć do konkretnej aplikacji.
             </p>
-          ) : (
-            <div className="mt-[var(--gui-space-m)] grid gap-[var(--gui-space-s)]">
-              {samples.map((item, index) => (
-                <details key={item.id} className="rounded-lg bg-secondary p-[var(--gui-space-m)]">
-                  <summary className="cursor-pointer font-ui font-medium">{item.title}</summary>
-                  <div className="mt-[var(--gui-space-m)]">
-                    <CandidateItemActions
-                      id={item.id}
-                      kind="work_sample"
-                      first={index === 0}
-                      last={index === samples.length - 1}
-                    />
-                    <WorkSampleForm item={item} />
-                  </div>
-                </details>
-              ))}
+            {samples.length === 0 ? (
+              <p className="mt-[var(--gui-space-m)] text-muted-foreground">
+                Nie masz jeszcze próbek pracy.
+              </p>
+            ) : (
+              <div className="mt-[var(--gui-space-m)] grid gap-[var(--gui-space-s)]">
+                {samples.map((item, index) => (
+                  <details key={item.id} className="rounded-lg bg-secondary p-[var(--gui-space-m)]">
+                    <summary className="cursor-pointer font-ui font-medium">{item.title}</summary>
+                    <div className="mt-[var(--gui-space-m)]">
+                      <CandidateItemActions
+                        id={item.id}
+                        kind="work_sample"
+                        first={index === 0}
+                        last={index === samples.length - 1}
+                      />
+                      <WorkSampleForm item={item} />
+                    </div>
+                  </details>
+                ))}
+              </div>
+            )}
+            <div className="mt-[var(--gui-space-m)]">
+              <WorkSampleForm />
             </div>
-          )}
-          <div className="mt-[var(--gui-space-m)]">
-            <WorkSampleForm />
-          </div>
-        </section>
+          </section>
+        )}
       </div>
     </div>
   );

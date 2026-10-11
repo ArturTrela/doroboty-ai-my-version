@@ -232,7 +232,7 @@ export function ApplicationForm({
           })}
           {experiences.length + workSamples.length === 0 && (
             <p className="rounded-lg bg-muted p-[var(--gui-space-m)] text-sm text-muted-foreground">
-              Najpierw dodaj doświadczenie lub próbkę pracy w profilu.
+              Najpierw uzupełnij doświadczenie w profilu.
             </p>
           )}
         </div>

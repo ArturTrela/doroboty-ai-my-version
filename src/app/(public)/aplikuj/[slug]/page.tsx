@@ -7,6 +7,7 @@ import { requireProfile } from "@/features/auth/session";
 import { getPublishedJob } from "@/features/jobs/queries";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
+import { candidateWorkSamplesEnabled } from "@/features/candidates/features";
 import {
   contractLabels,
   formatSalary,
@@ -195,7 +196,7 @@ export default async function ApplyPage({ params }: { params: Promise<{ slug: st
             description: item.description,
             outcome: item.measurable_outcome,
           }))}
-          workSamples={(samples ?? []).map((item) => ({
+          workSamples={(candidateWorkSamplesEnabled ? (samples ?? []) : []).map((item) => ({
             id: item.id,
             title: item.title,
             subtitle: item.context,
@@ -203,7 +204,9 @@ export default async function ApplyPage({ params }: { params: Promise<{ slug: st
             outcome: item.outcome,
           }))}
           initialExperienceIds={defaultExperienceIds}
-          initialWorkSampleIds={draft?.selected_work_sample_ids ?? []}
+          initialWorkSampleIds={
+            candidateWorkSamplesEnabled ? (draft?.selected_work_sample_ids ?? []) : []
+          }
           initialGenerationId={draft?.ai_generation_id ?? undefined}
           cvFileName={document?.file_name}
           draftUpdatedAt={draft?.updated_at}

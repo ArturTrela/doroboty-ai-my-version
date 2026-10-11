@@ -550,6 +550,10 @@ M11-34 requires a real first-time participant. The fresh-account automated journ
 
 ## External dependencies and decisions
 
+- [x] **UX-01** Temporarily hide candidate work-sample editing, profile preview, and new-application
+      selection. Do not silently attach previously selected samples from saved drafts; preserve stored
+      work samples and historical application snapshots. Restore via `candidateWorkSamplesEnabled`.
+
 - [ ] **EXT-01** Approve the final numeric shape of baseline, one-click, and post-AI
       datasets after red-team validation.
 - [ ] **EXT-02** Select the course AI provider/model and define participant cost limits.

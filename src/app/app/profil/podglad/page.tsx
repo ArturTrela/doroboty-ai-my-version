@@ -3,6 +3,7 @@ import { ArrowLeft, ExternalLink, FileText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { requireProfile } from "@/features/auth/session";
+import { candidateWorkSamplesEnabled } from "@/features/candidates/features";
 
 export const dynamic = "force-dynamic";
 
@@ -29,8 +30,9 @@ export default async function CandidateProfilePreviewPage() {
           </Link>
           <h1>Podgląd profilu</h1>
           <p>
-            Tak wygląda bieżący profil. Przy aplikowaniu wybierzesz doświadczenia i próbki pracy,
-            które przekażemy pracodawcy. Wysłane zgłoszenia zachowują wersję z chwili wysłania.
+            Tak wygląda bieżący profil. Przy aplikowaniu wybierzesz doświadczenia
+            {candidateWorkSamplesEnabled ? " i próbki pracy" : ""}, które przekażemy pracodawcy.
+            Wysłane zgłoszenia zachowują wersję z chwili wysłania.
           </p>
         </div>
       </div>
@@ -72,33 +74,35 @@ export default async function CandidateProfilePreviewPage() {
             )}
           </div>
         </section>
-        <section>
-          <h2>Próbki pracy</h2>
-          <div className="mt-[var(--gui-space-s)] grid gap-[var(--gui-space-s)]">
-            {(samples ?? []).map((item) => (
-              <div key={item.id} className="rounded-lg bg-secondary p-[var(--gui-space-m)]">
-                <h3 className="font-medium">{item.title}</h3>
-                <p className="mt-[var(--gui-space-xs)] text-muted-foreground">{item.context}</p>
-                <p className="mt-[var(--gui-space-xs)]">
-                  <strong>Wynik:</strong> {item.outcome}
-                </p>
-                {item.url && (
-                  <a
-                    className="text-link mt-[var(--gui-space-s)]"
-                    href={item.url}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Otwórz próbkę <ExternalLink />
-                  </a>
-                )}
-              </div>
-            ))}
-            {(samples ?? []).length === 0 && (
-              <p className="text-muted-foreground">Brak próbek pracy.</p>
-            )}
-          </div>
-        </section>
+        {candidateWorkSamplesEnabled && (
+          <section>
+            <h2>Próbki pracy</h2>
+            <div className="mt-[var(--gui-space-s)] grid gap-[var(--gui-space-s)]">
+              {(samples ?? []).map((item) => (
+                <div key={item.id} className="rounded-lg bg-secondary p-[var(--gui-space-m)]">
+                  <h3 className="font-medium">{item.title}</h3>
+                  <p className="mt-[var(--gui-space-xs)] text-muted-foreground">{item.context}</p>
+                  <p className="mt-[var(--gui-space-xs)]">
+                    <strong>Wynik:</strong> {item.outcome}
+                  </p>
+                  {item.url && (
+                    <a
+                      className="text-link mt-[var(--gui-space-s)]"
+                      href={item.url}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Otwórz próbkę <ExternalLink />
+                    </a>
+                  )}
+                </div>
+              ))}
+              {(samples ?? []).length === 0 && (
+                <p className="text-muted-foreground">Brak próbek pracy.</p>
+              )}
+            </div>
+          </section>
+        )}
         <section className="rounded-lg bg-muted p-[var(--gui-space-m)]">
           <h2 className="flex items-center gap-[var(--gui-space-xs)]">
             <FileText /> CV
