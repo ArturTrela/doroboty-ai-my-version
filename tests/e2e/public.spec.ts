@@ -135,3 +135,17 @@ test("job browsing remains useful with JavaScript disabled", async ({ browser })
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await context.close();
 });
+
+test("small result sets have no pagination and unavailable pages redirect safely", async ({
+  page,
+}) => {
+  await page.goto("/oferty?page=99");
+  await expect(page).toHaveURL(/\/oferty$/);
+  await expect(page.getByRole("article")).toHaveCount(6);
+  await expect(page.getByRole("navigation", { name: "Strony ofert" })).toHaveCount(0);
+  await expect(page.locator("[data-job-page-summary]")).toHaveText("Oferty 1–6 z 6");
+  await page.goto("/oferty?query=nonexistent-role&page=3");
+  await expect(page).toHaveURL(/\/oferty\?query=nonexistent-role$/);
+  await expect(page.getByRole("heading", { name: "Brak ofert dla tych filtrów" })).toBeVisible();
+  await expect(page.locator("[data-job-page-summary]")).toHaveCount(0);
+});

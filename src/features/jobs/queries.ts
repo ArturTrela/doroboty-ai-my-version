@@ -107,7 +107,8 @@ const dbJobs = cache(async () => {
     .from("jobs")
     .select("*, company:companies!inner(*)")
     .eq("publication_status", "published")
-    .order("published_at", { ascending: false });
+    .order("published_at", { ascending: false })
+    .order("id", { ascending: true });
 
   if (error) throw new Error(`Unable to load published jobs: ${error.message}`);
   return (data as unknown as DbJob[]).map(mapJob);

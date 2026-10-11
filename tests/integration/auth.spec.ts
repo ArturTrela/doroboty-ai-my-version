@@ -1099,7 +1099,76 @@ test("optional marketplace volume preserves data and supports candidate applicat
   expect(foreignBriefs.data).toEqual([]);
 
   await page.goto("/oferty");
-  await expect(page.locator('h3 a[href^="/oferty/demo-"]')).toHaveCount(100);
+  await expect(page.getByRole("article")).toHaveCount(20);
+  const allPublicJobs = await visitor.from("jobs").select("id, slug");
+  expect(allPublicJobs.error).toBeNull();
+  const total = allPublicJobs.data!.length;
+  const visitedSlugs: string[] = [];
+  const pages = Math.ceil(total / 20);
+  for (let number = 1; number <= pages; number++) {
+    await page.goto(number === 1 ? "/oferty" : `/oferty?page=${number}`);
+    await expect(page.getByRole("article")).toHaveCount(Math.min(20, total - (number - 1) * 20));
+    visitedSlugs.push(
+      ...(await page
+        .locator("article h3 a")
+        .evaluateAll((links) =>
+          links.map((link) => link.getAttribute("href")!.split("/").at(-1)!),
+        )),
+    );
+    await expect(page.locator("[data-job-page-summary]")).toHaveText(
+      `Oferty ${(number - 1) * 20 + 1}–${Math.min(number * 20, total)} z ${total}`,
+    );
+  }
+  expect(new Set(visitedSlugs)).toEqual(new Set(allPublicJobs.data!.map((job) => job.slug)));
+  expect(visitedSlugs).toHaveLength(total);
+  await expect(page.getByRole("button", { name: "Następna", exact: true })).toBeDisabled();
+  await page.goto("/oferty?page=999");
+  await expect(page).toHaveURL(new RegExp(`page=${pages}$`));
+
+  // Native filter submission starts at page one, then page links retain all selected filters.
+  await page.goto("/oferty?function=engineering");
+  await page
+    .getByRole("navigation", { name: "Strony ofert" })
+    .getByRole("link", { name: "Następna", exact: true })
+    .click();
+  await expect(page).toHaveURL(/function=engineering&page=2$/);
+  await page.getByRole("button", { name: "Szukaj / Filtruj" }).click();
+  await expect(page).not.toHaveURL(/page=/);
+  await expect(page.getByRole("article")).toHaveCount(20);
+  await page.goto("/oferty?function=engineering&page=2");
+  await page.getByRole("link", { name: "Mapa", exact: true }).click();
+  await expect(page).toHaveURL(/function=engineering&view=map$/);
+  await expect(page.getByRole("navigation", { name: "Strony ofert" })).toHaveCount(0);
+  await page.getByRole("link", { name: "Lista", exact: true }).click();
+  await expect(page).toHaveURL(/function=engineering$/);
+
+  const noJs = await page.context().browser()!.newContext({ javaScriptEnabled: false });
+  const nativePage = await noJs.newPage();
+  await nativePage.goto("http://127.0.0.1:3107/oferty?function=engineering");
+  await nativePage.getByRole("link", { name: "Następna", exact: true }).click();
+  await expect(nativePage).toHaveURL(/function=engineering&page=2$/);
+  await expect(nativePage.getByRole("article")).toHaveCount(1);
+  await noJs.close();
+  for (const width of [320, 390, 1280]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const theme of ["light", "dark"]) {
+      await page.evaluate((value) => localStorage.setItem("theme", value), theme);
+      await page.goto("/oferty?page=2");
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+      ).toBe(true);
+      expect(
+        (await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa"]).analyze()).violations,
+      ).toEqual([]);
+    }
+  }
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page
+    .getByRole("navigation", { name: "Strony ofert" })
+    .getByRole("link", { name: "Następna", exact: true })
+    .focus();
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/page=3$/);
   await page.goto("/firmy/demo-kobalt-labs");
   await expect(page.getByRole("heading", { name: "Kobalt Labs", exact: true })).toBeVisible();
   await expect(page.locator('h3 a[href^="/oferty/demo-"]')).toHaveCount(4);

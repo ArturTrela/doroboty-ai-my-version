@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { CalendarDays, ChevronsUpDown, List, Map } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { JobCard } from "@/features/jobs/job-card";
 import { JobFiltersForm } from "@/features/jobs/job-filters";
 import { JobMap } from "@/features/jobs/job-map";
+import { JobPagination } from "@/features/jobs/job-pagination";
+import { jobListingHref, paginateJobs } from "@/features/jobs/pagination";
 import { hasIndexableFilters, parseJobFilters, type SearchParams } from "@/features/jobs/filters";
 import { getPublishedJobs } from "@/features/jobs/queries";
 import { cn } from "@/lib/utils";
@@ -27,6 +30,11 @@ export default async function JobsPage({ searchParams }: Props) {
   const params = await searchParams;
   const filters = parseJobFilters(params);
   const jobs = await getPublishedJobs(filters);
+  const view =
+    (Array.isArray(params.view) ? params.view[0] : params.view) === "map" ? "map" : "list";
+  const pagination = paginateJobs(jobs, filters.page);
+  if (view === "list" && pagination.page !== filters.page)
+    redirect(jobListingHref(filters, pagination.page));
   let savedIds: Set<string> | undefined;
   if (getSupabaseConfig().configured) {
     const client = await serverClient();
@@ -48,18 +56,6 @@ export default async function JobsPage({ searchParams }: Props) {
       }
     }
   }
-  const view =
-    (Array.isArray(params.view) ? params.view[0] : params.view) === "map" ? "map" : "list";
-  const viewHref = (nextView: "list" | "map") => {
-    const query = new URLSearchParams();
-    for (const [key, value] of Object.entries(params)) {
-      if (key === "view" || value === undefined) continue;
-      for (const item of Array.isArray(value) ? value : [value]) query.append(key, item);
-    }
-    if (nextView === "map") query.set("view", "map");
-    const suffix = query.toString();
-    return suffix ? `/oferty?${suffix}` : "/oferty";
-  };
 
   return (
     <section className="mx-auto max-w-[1360px] px-5 py-9 lg:px-8">
@@ -108,7 +104,7 @@ export default async function JobsPage({ searchParams }: Props) {
             className={cn(
               buttonVariants({ variant: view === "list" ? "secondary" : "ghost", size: "sm" }),
             )}
-            href={viewHref("list")}
+            href={jobListingHref(filters)}
           >
             <List className="size-4" /> Lista
           </Link>
@@ -117,7 +113,7 @@ export default async function JobsPage({ searchParams }: Props) {
             className={cn(
               buttonVariants({ variant: view === "map" ? "secondary" : "ghost", size: "sm" }),
             )}
-            href={viewHref("map")}
+            href={jobListingHref(filters, 1, "map")}
           >
             <Map className="size-4" /> Mapa
           </Link>
@@ -127,11 +123,14 @@ export default async function JobsPage({ searchParams }: Props) {
         view === "map" ? (
           <JobMap jobs={jobs} />
         ) : (
-          <div className="mt-3 shadow-[var(--gui-divider-top-shadow)]">
-            {jobs.map((job) => (
-              <JobCard key={job.id} job={job} saved={savedIds?.has(job.id)} />
-            ))}
-          </div>
+          <>
+            <div className="mt-3 shadow-[var(--gui-divider-top-shadow)]">
+              {pagination.items.map((job) => (
+                <JobCard key={job.id} job={job} saved={savedIds?.has(job.id)} />
+              ))}
+            </div>
+            <JobPagination pagination={pagination} filters={filters} />
+          </>
         )
       ) : (
         <div className="mt-6 rounded-lg bg-muted/30 p-10 text-center">

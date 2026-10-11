@@ -26,6 +26,18 @@ describe("job filters", () => {
     expect(parseJobFilters({ category: "everything", page: "-1" })).toEqual({ page: 1 });
   });
 
+  it("keeps filters for invalid page values and allows clamping large valid pages", () => {
+    expect(parseJobFilters({ category: "build", page: "999" })).toMatchObject({
+      category: "build",
+      page: 999,
+    });
+    for (const page of ["0", "-1", "1.5", "NaN", "Infinity", "999999999999999999999"])
+      expect(parseJobFilters({ category: "build", page })).toMatchObject({
+        category: "build",
+        page: 1,
+      });
+  });
+
   it("filters deterministic jobs by taxonomy and text", () => {
     const items = joinJobsWithCompanies();
     expect(filterJobs(items, { category: "build", page: 1 })).toHaveLength(2);
