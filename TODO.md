@@ -33,6 +33,7 @@ invariants, and anti-spoiler rules are in
 | **S4 — AI intervention**           | Human-approved AI writing tools and measurable text-fit proxy    | M5         |
 | **S5 — Deploy and learn**          | Experiments, analytics, exports, and participant deployment path | M6, M7     |
 | **S6 — Organization and Demo Day** | Pilot, business case, rehearsal, and release hardening           | M8, M9     |
+| **S7 — Candidate experience**      | Coherent account, profile, application, and AI-assisted journey  | M11        |
 
 ---
 
@@ -388,6 +389,154 @@ invariants, and anti-spoiler rules are in
 - [x] Another signed-in user cannot read or mutate an employer's job or candidate's CV.
 - [x] Public listing list/map modes, auth, and both panels are responsive and keyboard usable.
 - [x] `./scripts/verify` and local Supabase integration tests pass.
+
+---
+
+## M11 — Complete candidate experience
+
+This milestone closes the gap between the existing candidate capabilities and a coherent,
+discoverable product journey. `P0` items are required for the candidate-side MVP. `P1` items
+complete the account experience but may follow after the primary application journey is usable.
+
+### Current-state audit
+
+- Sign-up currently asks for a single display name, email, and password. It does not explain the
+  next steps, profile requirements, data visibility, or how the user returns to the intended job.
+- Candidate dashboard, profile editing, experience entry, work samples, private CV upload,
+  application history, and AI drafting already exist, but they are split across poorly connected
+  routes and are difficult to discover from the public experience.
+- The public header and job-detail CTA are not session-aware: a signed-in candidate still sees
+  `Załóż konto` and `Zaloguj się`, and `Aplikuj` routes through sign-in again.
+- The candidate profile supports adding experience and work samples but not editing, deleting,
+  reordering, or previewing the exact information an employer will receive.
+- Application history is a flat summary card. It has no detail page, candidate-readable timeline,
+  submitted evidence snapshot, CV state, withdrawal action, or explanation of what happens next.
+- The application screen shows only the title, company, and short summary. It hides the full role
+  description, expectations, employment details, location, salary, and company context while the
+  candidate writes the answer.
+- AI drafting is implemented, but the product does not let the candidate choose source evidence,
+  inspect what was used, resume a draft, or understand why the generated answer matches the role.
+
+### A — Identity, registration, and navigation
+
+- [ ] **M11-01 [P0]** Define and document the canonical candidate journey: anonymous job view →
+      register or sign in → confirm email when required → onboarding → profile readiness → apply →
+      confirmation → application tracking.
+- [ ] **M11-02 [P0]** Replace the ambiguous display-name-only registration with first name, last
+      name, email, password, password requirements, and required privacy acknowledgement. Derive
+      the public display name from first and last name; do not collect a phone number in MVP.
+- [ ] **M11-03 [P0]** Preserve and validate the intended destination through sign-up, email
+      confirmation, and sign-in so a candidate returns to the job they wanted to apply for.
+- [ ] **M11-04 [P0]** Add a post-registration onboarding flow with explicit steps: account created,
+      basic profile, first experience, CV, and ready-to-apply review. Allow saving and resuming.
+- [ ] **M11-05 [P0]** Make the public shell session-aware. Signed-in candidates see `Moje konto`,
+      `Profil`, `Aplikacje`, and `Wyloguj się`; they never see `Załóż konto` or `Zaloguj się`.
+- [ ] **M11-06 [P0]** Make job-detail CTAs role- and session-aware: signed-in candidates go directly
+      to apply, anonymous visitors keep the job return path, and employers/operators never enter a
+      candidate application flow by accident.
+- [ ] **M11-07 [P1]** Build real account settings for email, password, active session, personal-data
+      export, and account deletion with re-authentication, confirmation, retention rules, and safe
+      recovery messaging.
+
+### B — Candidate home, profile, and CV
+
+- [ ] **M11-08 [P0]** Turn `/app` into a candidate home with profile-completeness status, missing
+      actions, application updates, saved-job count, and one clear recommended next step.
+- [ ] **M11-09 [P0]** Reorganize `/app/profil` into readable sections for personal information,
+      professional summary, experience, work samples, preferences, and documents instead of one
+      long stack of unrelated forms.
+- [ ] **M11-10 [P0]** Add a candidate-facing profile preview showing exactly what an employer will
+      receive after application, including the current CV filename and the distinction between live
+      profile data and application snapshots.
+- [ ] **M11-11 [P0]** Add edit, delete, and reorder actions for experience and work samples, with
+      confirmation for destructive actions and useful empty, success, and error states.
+- [ ] **M11-12 [P0]** Complete the CV manager with clear upload, replace, open, and remove states;
+      readable size/date metadata; PDF validation; upload progress; failure recovery; and an explicit
+      explanation of when an employer can access the file.
+- [ ] **M11-13 [P1]** Add job preferences: functions, categories, seniority, locations, remote mode,
+      contract types, and optional salary expectations. Keep preferences private unless the
+      candidate explicitly submits them with an application.
+- [ ] **M11-14 [P1]** Add saved jobs from listings and job detail, with a candidate account view and
+      graceful handling when a saved role expires or is archived.
+
+### C — Application history and status tracking
+
+- [ ] **M11-15 [P0]** Add `/app/aplikacje/[id]` with the job and company snapshot, submitted answer,
+      selected evidence, CV snapshot/filename, submission date, current status, and an ordered
+      candidate-readable timeline.
+- [ ] **M11-16 [P0]** Replace process jargon with candidate copy that explains each status, what has
+      happened, whether the candidate needs to act, and what may happen next. Never expose employer
+      notes or internal scoring.
+- [ ] **M11-17 [P0]** Add a dedicated submission confirmation page with a receipt, link to the saved
+      application, next-step expectations, and a return path to jobs.
+- [ ] **M11-18 [P0]** Add a controlled application-withdrawal action for eligible stages, with
+      confirmation, an immutable timeline event, and clear consequences. Terminal applications stay
+      read-only.
+- [ ] **M11-19 [P1]** Add an in-app activity indicator for status changes and interview invitations.
+      Email notifications remain outside this milestone unless separately approved.
+
+### D — Context-rich application and AI writing assistant
+
+- [ ] **M11-20 [P0]** Redesign `/aplikuj/[slug]` as a focused application workspace that keeps the
+      full job context available: company, complete description, expectations, location, work mode,
+      seniority, contract, salary, and verification status. Use a desktop split view and a clear
+      mobile reading order without duplicating inconsistent job copy.
+- [ ] **M11-21 [P0]** Introduce an explicit application sequence: check profile readiness → select
+      relevant evidence → write or generate the answer → review what will be sent → submit.
+- [ ] **M11-22 [P0]** Let the candidate select experiences and work samples for this application and
+      preview the exact immutable snapshot that the employer will receive. Default suggestions may
+      help, but the candidate remains in control.
+- [ ] **M11-23 [P0]** Turn the existing AI action into a visible writing assistant grounded in the
+      full job description and candidate-selected evidence. Show the sources used, prohibit invented
+      claims, and support generate, edit, regenerate, discard, and manual-only paths.
+- [ ] **M11-24 [P0]** Explain AI boundaries next to the assistant: it drafts text, does not score the
+      candidate, does not make hiring decisions, and never submits without explicit review and
+      confirmation.
+- [ ] **M11-25 [P0]** Save a private per-job application draft so refresh, authentication, navigation,
+      and recoverable AI failures do not destroy work. Provide explicit resume and discard actions.
+- [ ] **M11-26 [P0]** Add a final review step containing the role, answer, selected evidence, CV state,
+      privacy acknowledgement, and submission action. Returning to edit must preserve the draft.
+- [ ] **M11-27 [P0]** Handle duplicate, expired, hidden, already-submitted, incomplete-profile, missing
+      CV, AI-unavailable, and network-error states with actionable recovery instead of generic errors.
+
+### E — Data, security, analytics, and quality
+
+- [ ] **M11-28 [P0]** Add migrations and generated types for structured candidate names, job
+      preferences, saved jobs, application drafts, evidence selections, withdrawals, and candidate
+      activity where the chosen UX requires persistent state.
+- [ ] **M11-29 [P0]** Extend RLS and Storage tests across two candidates, two employers, an operator,
+      anonymous access, drafts, CV files, submitted snapshots, withdrawals, and account deletion.
+- [ ] **M11-30 [P0]** Add candidate analytics for registration completion, onboarding steps, profile
+      readiness, job saves, application steps, AI draft use, review, submission, and withdrawal while
+      rejecting names, email, CV metadata, free text, and other PII.
+- [ ] **M11-31 [P0]** Add browser tests for anonymous → registration → onboarding → manual application,
+      returning candidate → AI-assisted application, draft resume, status detail, withdrawal, and
+      session-aware public navigation.
+- [ ] **M11-32 [P0]** Verify mobile and desktop reflow, keyboard-only use, focus management, form
+      labels, validation recovery, loading/empty/error states, screen-reader announcements, and WCAG
+      AA contrast on every candidate-critical screen.
+- [ ] **M11-33 [P0]** Run a Graphical audit across public, auth, candidate workspace, profile,
+      application, and confirmation screens; fix component drift and preserve light/dark modes and
+      portal typography.
+- [ ] **M11-34 [P0]** Run the candidate journey with a first-time test user who has no seeded data and
+      record where they hesitate, misunderstand data visibility, or lose application context.
+
+### M11 Definition of Done
+
+- [ ] A new candidate understands registration before starting, creates an account with first name,
+      last name, email, and password, confirms it when required, and returns to the intended job.
+- [ ] A signed-in candidate sees account navigation everywhere and never sees anonymous sign-up or
+      sign-in CTAs.
+- [ ] The candidate can understand, complete, edit, preview, and safely delete their profile data;
+      upload or replace a private CV; and see exactly what an employer receives.
+- [ ] The candidate can read the complete role while applying, choose relevant evidence, use or skip
+      the grounded AI assistant, recover a draft, review the final payload, and submit deliberately.
+- [ ] Every application has a candidate-readable detail page and timeline based on immutable job,
+      answer, evidence, and profile snapshots.
+- [ ] Candidate drafts, profiles, CVs, and applications cannot cross user or organization boundaries,
+      and no profile content or free text reaches product analytics.
+- [ ] The complete first-time and returning-candidate journeys pass responsive, keyboard,
+      accessibility, security, integration, and E2E checks from a reset local database.
 
 ---
 
