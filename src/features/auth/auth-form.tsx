@@ -12,6 +12,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { BrandMark } from "@/features/public/brand-mark";
 import { captureBrowserAnalytics } from "@/features/analytics/client-event";
+import {
+  authPath,
+  roleMatchesAudience,
+  roleMismatchMessage,
+  type AuthAudience,
+  type AccountRole,
+} from "./audience";
 export type AuthMode = "sign-in" | "sign-up" | "forgot-password" | "update-password";
 
 type AuthValues = {
@@ -47,12 +54,22 @@ export function AuthForm({
   mode,
   linkError = false,
   nextPath = "/app",
+  audience = null,
+  signedInRole = null,
+  roleError = false,
 }: {
   mode: AuthMode;
   linkError?: boolean;
   nextPath?: string;
+  audience?: AuthAudience;
+  signedInRole?: AccountRole | null;
+  roleError?: boolean;
 }) {
   const [message, setMessage] = useState("");
+  const [currentRole, setCurrentRole] = useState(signedInRole);
+  const [switchingAccount, setSwitchingAccount] = useState(false);
+  const wrongAccount =
+    mode === "sign-in" && currentRole && !roleMatchesAudience(currentRole, audience);
   const router = useRouter();
   const schema = z
     .object({
@@ -90,6 +107,8 @@ export function AuthForm({
     register,
     handleSubmit,
     setError,
+    resetField,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<AuthValues>({
     resolver: zodResolver(schema),
@@ -108,12 +127,29 @@ export function AuthForm({
       const client = browserClient();
       const callback = `${window.location.origin}/auth/callback`;
       if (mode === "sign-in") {
-        const { error } = await client.auth.signInWithPassword(values);
+        const { data, error } = await client.auth.signInWithPassword({
+          email: values.email,
+          password: values.password,
+        });
         if (error) throw error;
+        if (audience) {
+          const { data: profile, error: profileError } = await client
+            .from("profiles")
+            .select("role")
+            .eq("id", data.user.id)
+            .single();
+          if (profileError || !profile) throw new Error("Profile unavailable");
+          if (!roleMatchesAudience(profile.role, audience)) {
+            setCurrentRole(profile.role);
+            router.refresh();
+            return;
+          }
+        }
         router.push(nextPath);
         router.refresh();
       }
       if (mode === "sign-up") {
+        if (audience === "employer") throw new Error("Employer signup is not supported");
         const onboardingPath = `/app/onboarding?next=${encodeURIComponent(nextPath)}`;
         const { data, error } = await client.auth.signUp({
           email: values.email,
@@ -141,7 +177,7 @@ export function AuthForm({
       }
       if (mode === "forgot-password") {
         const { error } = await client.auth.resetPasswordForEmail(values.email, {
-          redirectTo: `${callback}?next=/auth/update-password`,
+          redirectTo: `${callback}?next=${encodeURIComponent(authPath("update-password", audience, nextPath))}`,
         });
         if (error) throw error;
         setMessage(
@@ -161,6 +197,22 @@ export function AuthForm({
             ? "Nie udało się zalogować. Sprawdź e-mail, hasło i potwierdzenie konta."
             : "Nie udało się wykonać tej operacji. Spróbuj ponownie za chwilę.",
       });
+    }
+  }
+  async function switchAccount() {
+    setSwitchingAccount(true);
+    try {
+      const { error } = await browserClient().auth.signOut({ scope: "local" });
+      if (error) throw error;
+      resetField("email");
+      resetField("password");
+      clearErrors();
+      setCurrentRole(null);
+      router.refresh();
+    } catch {
+      setError("root", { message: "Nie udało się wylogować. Spróbuj ponownie." });
+    } finally {
+      setSwitchingAccount(false);
     }
   }
   return (
@@ -186,22 +238,56 @@ export function AuthForm({
           Wróć do ofert
         </Link>
         <div className="auth-form">
-          <h1>{copy[mode].title}</h1>
-          <p className="lede">{copy[mode].description}</p>
+          <h1>
+            {mode === "sign-in" && audience
+              ? audience === "employer"
+                ? "Logowanie dla firm"
+                : "Logowanie kandydata"
+              : copy[mode].title}
+          </h1>
+          <p className="lede">
+            {mode === "sign-in" && audience
+              ? audience === "employer"
+                ? "Zaloguj się kontem pracodawcy, aby zarządzać ofertami i kandydatami."
+                : "Zaloguj się, aby uzupełnić profil i aplikować na oferty."
+              : copy[mode].description}
+          </p>
           {linkError && (
             <p role="alert" className="error-message mb-6">
               Ten link jest nieprawidłowy albo wygasł. Poproś o nowy lub zaloguj się.
             </p>
           )}
-          {message ? (
+          {wrongAccount ? (
+            <div className="form-stack">
+              <p role="alert" className="error-message">
+                {roleMismatchMessage(audience)}
+              </p>
+              {errors.root && (
+                <p role="alert" className="error-message">
+                  {errors.root.message}
+                </p>
+              )}
+              <Button onClick={switchAccount} disabled={switchingAccount}>
+                {switchingAccount ? "Wylogowywanie…" : "Zaloguj się na inne konto"}
+              </Button>
+              <Link className="text-link" href="/app">
+                Wróć do mojego konta
+              </Link>
+            </div>
+          ) : message ? (
             <div role="status" className="success-panel">
               <p>{message}</p>
-              <Link className="text-link mt-5" href="/auth/sign-in">
+              <Link className="text-link mt-5" href={authPath("sign-in", audience, nextPath)}>
                 Przejdź do logowania <ArrowRight size={16} />
               </Link>
             </div>
           ) : (
             <form className="form-stack" noValidate onSubmit={handleSubmit(submit)}>
+              {roleError && !currentRole && (
+                <p role="alert" className="error-message">
+                  Zaloguj się kontem odpowiednim dla tej strefy.
+                </p>
+              )}
               {mode === "sign-up" && (
                 <div className="grid gap-[var(--gui-space-s)] sm:grid-cols-2">
                   <div className="field">
@@ -312,13 +398,28 @@ export function AuthForm({
           <div className="auth-links">
             {mode === "sign-in" ? (
               <>
-                <Link href="/auth/forgot-password">Nie pamiętam hasła</Link>
-                <Link href={`/auth/sign-up?next=${encodeURIComponent(nextPath)}`}>
-                  Załóż konto kandydata
+                <Link href={authPath("forgot-password", audience, nextPath)}>
+                  Nie pamiętam hasła
+                </Link>
+                {audience !== "employer" && (
+                  <Link href={authPath("sign-up", "candidate", nextPath)}>
+                    Załóż konto kandydata
+                  </Link>
+                )}
+                <Link
+                  href={authPath(
+                    "sign-in",
+                    audience === "employer" ? "candidate" : "employer",
+                    audience === "employer" ? "/app" : "/app/oferty",
+                  )}
+                >
+                  {audience === "employer"
+                    ? "Szukasz pracy? Logowanie kandydata"
+                    : "Rekrutujesz? Logowanie dla firm"}
                 </Link>
               </>
             ) : (
-              <Link href={`/auth/sign-in?next=${encodeURIComponent(nextPath)}`}>Mam już konto</Link>
+              <Link href={authPath("sign-in", audience, nextPath)}>Mam już konto</Link>
             )}
           </div>
         </div>

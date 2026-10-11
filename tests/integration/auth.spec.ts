@@ -655,6 +655,110 @@ test("invalid confirmation links do not redirect outside the application", async
   await expect(page.locator("main").getByRole("alert")).toContainText("wygasł");
 });
 
+for (const direction of [
+  {
+    audience: "employer",
+    wrongEmail: "candidate@doroboty.local",
+    correctEmail: "employer@doroboty.local",
+    next: "/app/oferty",
+    title: "Logowanie dla firm",
+    mismatch: "To konto kandydata.",
+    destination: "Oferty firmy",
+  },
+  {
+    audience: "candidate",
+    wrongEmail: "employer@doroboty.local",
+    correctEmail: "candidate@doroboty.local",
+    next: "/app/profil",
+    title: "Logowanie kandydata",
+    mismatch: "To konto pracodawcy lub operatora.",
+    destination: "Twój profil",
+  },
+]) {
+  test(`${direction.audience} login explains wrong accounts and supports switching`, async ({
+    page,
+  }, testInfo) => {
+    const loginPath = `/auth/sign-in?audience=${direction.audience}&next=${encodeURIComponent(direction.next)}`;
+    await page.goto(loginPath);
+    await expect(page.getByRole("heading", { name: direction.title, exact: true })).toBeVisible();
+    if (direction.audience === "employer") {
+      await expect(
+        page.getByRole("link", { name: "Załóż konto kandydata", exact: true }),
+      ).toHaveCount(0);
+    } else {
+      await expect(
+        page.getByRole("link", { name: "Załóż konto kandydata", exact: true }),
+      ).toHaveAttribute("href", /audience=candidate/);
+    }
+    await page.getByLabel("Email", { exact: true }).fill(direction.wrongEmail);
+    await page.getByLabel("Hasło", { exact: true }).fill("Incorrect-password-483!");
+    await page.getByRole("button", { name: "Zaloguj się", exact: true }).click();
+    await expect(page.locator("main").getByRole("alert")).toContainText("Nie udało się zalogować.");
+    await expect(page.locator("main").getByRole("alert")).not.toContainText(direction.mismatch);
+    await page.getByLabel("Hasło", { exact: true }).fill(localCasePassword);
+    await page.getByRole("button", { name: "Zaloguj się", exact: true }).click();
+    await expect(page.locator("main").getByRole("alert")).toContainText(direction.mismatch);
+    await expect(page).toHaveURL(/\/auth\/sign-in\?/);
+    for (const width of [390, 1280]) {
+      await page.setViewportSize({ width, height: 800 });
+      for (const colorScheme of ["light", "dark"] as const) {
+        await page.emulateMedia({ colorScheme });
+        expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+          true,
+        );
+        expect(
+          (await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa"]).analyze()).violations,
+        ).toEqual([]);
+        await page.screenshot({
+          path: testInfo.outputPath(`role-mismatch-${width}-${colorScheme}.png`),
+          fullPage: true,
+        });
+      }
+    }
+    await page.reload();
+    await expect(page.locator("main").getByRole("alert")).toContainText(direction.mismatch);
+    await page.goto(direction.next);
+    await expect(page.locator("main").getByRole("alert")).toContainText(direction.mismatch);
+    await expect(page).toHaveURL(/error=role/);
+    await page.getByRole("button", { name: "Zaloguj się na inne konto", exact: true }).focus();
+    await page.keyboard.press("Enter");
+    await expect(page.getByLabel("Email", { exact: true })).toHaveValue("");
+    await expect(page.getByLabel("Hasło", { exact: true })).toHaveValue("");
+    await page.getByLabel("Email", { exact: true }).fill(direction.correctEmail);
+    await page.getByLabel("Hasło", { exact: true }).fill(localCasePassword);
+    await page.getByRole("button", { name: "Zaloguj się", exact: true }).click();
+    await expect(
+      page.getByRole("heading", { name: direction.destination, exact: true }),
+    ).toBeVisible();
+    await page.goto(loginPath);
+    await expect(
+      page.getByRole("heading", { name: direction.destination, exact: true }),
+    ).toBeVisible();
+    await expect(page).toHaveURL(new RegExp(`${direction.next}$`));
+  });
+}
+
+test("employer entry preserves recovery context and never creates a candidate through signup", async ({
+  page,
+}) => {
+  await page.goto("/app/oferty");
+  await expect(page).toHaveURL(/audience=employer/);
+  await expect(
+    page.getByRole("heading", { name: "Logowanie dla firm", exact: true }),
+  ).toBeVisible();
+  await page.getByRole("link", { name: "Nie pamiętam hasła", exact: true }).click();
+  await expect(page).toHaveURL(/\/auth\/forgot-password\?audience=employer/);
+  await expect(page.getByRole("link", { name: "Mam już konto", exact: true })).toHaveAttribute(
+    "href",
+    /audience=employer/,
+  );
+  await page.goto("/auth/sign-up?next=/app/oferty");
+  await expect(
+    page.getByRole("heading", { name: "Logowanie dla firm", exact: true }),
+  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "Załóż konto", exact: true })).toHaveCount(0);
+});
+
 test("candidate application and employer first-conversation decision work end to end", async ({
   page,
 }) => {

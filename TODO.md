@@ -550,6 +550,9 @@ M11-34 requires a real first-time participant. The fresh-account automated journ
 
 ## External dependencies and decisions
 
+- [x] **UX-02** Separate employer/candidate authentication entry points, explain account-role
+      mismatches instead of silently redirecting, and support explicit local-session account switching.
+
 - [x] **UX-01** Temporarily hide candidate work-sample editing, profile preview, and new-application
       selection. Do not silently attach previously selected samples from saved drafts; preserve stored
       work samples and historical application snapshots. Restore via `candidateWorkSamplesEnabled`.

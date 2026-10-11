@@ -134,13 +134,13 @@ export default async function JobPage({ params }: Props) {
               ) : !role ? (
                 <>
                   <Link
-                    href={`/auth/sign-in?next=${encodeURIComponent(`/aplikuj/${job.slug}`)}`}
+                    href={`/auth/sign-in?audience=candidate&next=${encodeURIComponent(`/aplikuj/${job.slug}`)}`}
                     className={buttonVariants({ size: "lg" })}
                   >
                     Zaloguj się i aplikuj
                   </Link>
                   <Link
-                    href={`/auth/sign-up?next=${encodeURIComponent(`/aplikuj/${job.slug}`)}`}
+                    href={`/auth/sign-up?audience=candidate&next=${encodeURIComponent(`/aplikuj/${job.slug}`)}`}
                     className={buttonVariants({ variant: "outline", size: "lg" })}
                   >
                     Załóż konto

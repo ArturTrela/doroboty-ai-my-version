@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 const navigation = [
   { href: "/oferty", label: "Oferty" },
   { href: "/metodologia", label: "Metodologia" },
-  { href: "/auth/sign-in?next=/app/oferty", label: "Dla firm" },
+  { href: "/auth/sign-in?audience=employer&next=/app/oferty", label: "Dla firm" },
 ];
 
 export async function PublicShell({ children }: { children: React.ReactNode }) {
@@ -58,13 +58,13 @@ export async function PublicShell({ children }: { children: React.ReactNode }) {
             ) : (
               <>
                 <Link
-                  href="/auth/sign-up?next=/app/onboarding"
+                  href="/auth/sign-up?audience=candidate&next=/app/onboarding"
                   className="hidden text-sm font-medium text-[var(--gui-link)] sm:inline"
                 >
                   Załóż konto
                 </Link>
                 <Link
-                  href="/auth/sign-in"
+                  href="/auth/sign-in?audience=candidate"
                   className={cn(
                     buttonVariants({ variant: "outline", size: "lg" }),
                     "text-sm font-medium",
