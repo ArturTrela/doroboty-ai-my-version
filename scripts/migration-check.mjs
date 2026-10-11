@@ -141,7 +141,104 @@ if (jobs !== 6 || companies !== 3 || releases !== 6 || rlsTables < 15) {
     `Unexpected seed/schema counts: jobs=${jobs}, companies=${companies}, releases=${releases}, RLS=${rlsTables}`,
   );
 }
+
+const marketplaceSql = await readFile(
+  join(process.cwd(), "supabase", "marketplace-fixtures.sql"),
+  "utf8",
+);
+const originalJob = (await db.query("select * from public.jobs order by id limit 1")).rows[0];
+const originalMemberships = (
+  await db.query("select * from public.organization_memberships order by user_id")
+).rows;
+await db.exec(marketplaceSql);
+const expanded = (
+  await db.query(`select
+  count(*)::int as jobs,
+  count(distinct company_id)::int as companies,
+  count(distinct category)::int as categories,
+  count(distinct function)::int as functions,
+  count(distinct remote_status)::int as modes,
+  count(distinct seniority)::int as levels,
+  count(distinct contract_type)::int as contracts,
+  count(*) filter (where publication_status = 'published' and expiry_at > now()
+    and map_latitude between -90 and 90 and map_longitude between -180 and 180
+    and salary_min > 0 and salary_max > salary_min)::int as valid
+  from public.jobs where id::text like 'a2000000-%'`)
+).rows[0];
+if (
+  JSON.stringify(expanded) !==
+  JSON.stringify({
+    jobs: 100,
+    companies: 25,
+    categories: 3,
+    functions: 6,
+    modes: 3,
+    levels: 4,
+    contracts: 3,
+    valid: 100,
+  })
+)
+  throw new Error(`Invalid expanded marketplace fixture coverage: ${JSON.stringify(expanded)}`);
+const linked = (
+  await db.query(`select count(*)::int as count from public.jobs j
+  join public.organizations o on o.company_id = j.company_id
+  join public.employer_briefs b on b.id = j.employer_brief_id and b.company_id = j.company_id
+  join public.job_text_versions v on v.job_id = j.id and v.version = 1
+    and v.visibility = 'public' and v.approved_at is not null
+  where j.id::text like 'a2000000-%'`)
+).rows[0].count;
+if (linked !== 100)
+  throw new Error("Expanded jobs lack an organization, source brief or text version.");
+await db.exec(`update public.jobs set summary = 'Edited local fixture — keep this content on rerun.'
+  where id = 'a2000000-0000-4000-8000-000000000001'`);
+await db.exec(marketplaceSql);
+const totals = (
+  await db.query(`select
+  (select count(*)::int from public.jobs) as jobs,
+  (select count(*)::int from public.companies) as companies,
+  (select count(*)::int from public.job_text_versions where job_id::text like 'a2000000-%') as versions`)
+).rows[0];
+if (totals.jobs !== 106 || totals.companies !== 28 || totals.versions !== 100)
+  throw new Error("Marketplace fixture rerun created duplicates.");
+const edited = (
+  await db.query(
+    "select summary from public.jobs where id = 'a2000000-0000-4000-8000-000000000001'",
+  )
+).rows[0];
+if (edited.summary !== "Edited local fixture — keep this content on rerun.")
+  throw new Error("Marketplace fixture rerun overwrote local edits.");
+const preservedJob = (await db.query("select * from public.jobs where id = $1", [originalJob.id]))
+  .rows[0];
+const preservedMemberships = (
+  await db.query("select * from public.organization_memberships order by user_id")
+).rows;
+if (
+  JSON.stringify(originalJob) !== JSON.stringify(preservedJob) ||
+  JSON.stringify(originalMemberships) !== JSON.stringify(preservedMemberships)
+)
+  throw new Error("Marketplace supplement changed canonical data or memberships.");
+await db.exec("set role anon");
+const publicJobs = (
+  await db.query("select count(*)::int as count from public.jobs where id::text like 'a2000000-%'")
+).rows[0].count;
+if (publicJobs !== 100) throw new Error("Expanded published jobs are not publicly readable.");
+let privateBriefsBlocked = false;
+try {
+  await db.query("select * from public.employer_briefs");
+} catch {
+  privateBriefsBlocked = true;
+}
+if (!privateBriefsBlocked) throw new Error("Expanded briefs are exposed anonymously.");
+await actAs(employerA);
+const foreignBriefs = (
+  await db.query("select id from public.employer_briefs where id::text like 'a3000000-%'")
+).rows;
+if (foreignBriefs.length)
+  throw new Error("Existing employer gained access to foreign source briefs.");
 await db.close();
 console.log(
   `Migration gate passed: ${migrations.length} migrations, deterministic seed, and ${rlsTables} RLS tables.`,
+);
+console.log(
+  "Marketplace supplement passed: 100 jobs, 25 companies, all relationships, idempotency and privacy.",
 );

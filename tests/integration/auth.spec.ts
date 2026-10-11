@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
 import AxeBuilder from "@axe-core/playwright";
+import { execFileSync } from "node:child_process";
 const api = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
 const mail = process.env.LOCAL_MAIL_URL ?? "http://127.0.0.1:54324";
@@ -1065,4 +1066,56 @@ test("candidate-critical screens reflow in both themes and expose accessible con
   await expect(page.getByRole("option", { name: "EUR", exact: true })).toBeVisible();
   await page.getByRole("option", { name: "EUR", exact: true }).click();
   await expect(page.getByRole("combobox", { name: "Waluta" })).toContainText("EUR");
+});
+
+test("optional marketplace volume preserves data and supports candidate applications", async ({
+  page,
+}) => {
+  const candidate = await fixtureClient("candidate@doroboty.local");
+  const existing = await candidate.from("applications").select("id");
+  expect(existing.error).toBeNull();
+  for (let run = 0; run < 2; run++)
+    execFileSync(process.execPath, ["scripts/seed-marketplace.mjs"], { stdio: "pipe" });
+  const visitor = createClient(api, key, { auth: { persistSession: false } });
+  const jobs = await visitor
+    .from("jobs")
+    .select("id, company_id, slug, map_latitude, map_longitude")
+    .like("slug", "demo-%");
+  expect(jobs.error).toBeNull();
+  expect(jobs.data).toHaveLength(100);
+  expect(new Set(jobs.data!.map((job) => job.company_id)).size).toBe(25);
+  expect(jobs.data!.every((job) => job.map_latitude !== null && job.map_longitude !== null)).toBe(
+    true,
+  );
+  const preserved = await candidate.from("applications").select("id");
+  expect(preserved.error).toBeNull();
+  expect(preserved.data).toEqual(existing.data);
+  const employer = await fixtureClient("employer@doroboty.local");
+  const foreignBriefs = await employer
+    .from("employer_briefs")
+    .select("id")
+    .like("title", "%brief testowy");
+  expect(foreignBriefs.error).toBeNull();
+  expect(foreignBriefs.data).toEqual([]);
+
+  await page.goto("/oferty");
+  await expect(page.locator('h3 a[href^="/oferty/demo-"]')).toHaveCount(100);
+  await page.goto("/firmy/demo-kobalt-labs");
+  await expect(page.getByRole("heading", { name: "Kobalt Labs", exact: true })).toBeVisible();
+  await expect(page.locator('h3 a[href^="/oferty/demo-"]')).toHaveCount(4);
+  await page.goto("/auth/sign-in?audience=candidate");
+  await page.getByLabel("Email", { exact: true }).fill("candidate@doroboty.local");
+  await page.getByLabel("Hasło", { exact: true }).fill(localCasePassword);
+  await page.getByRole("button", { name: "Zaloguj się", exact: true }).click();
+  await expect(page).toHaveURL(/\/app$/);
+  await page.goto("/aplikuj/demo-kobalt-labs-ai-product-manager-1");
+  await expect(page.getByRole("heading", { name: "Pełny opis roli" })).toBeVisible();
+  await page
+    .getByLabel("Dlaczego pasujesz do tej roli?")
+    .fill(
+      "Prowadziłem discovery produktu i wdrożyłem prototyp z zespołem. Potrafię mierzyć efekt i opisać ograniczenia rozwiązania.",
+    );
+  await page.getByRole("checkbox", { name: /Sprawdziłem/ }).check();
+  await page.getByRole("button", { name: "Wyślij aplikację" }).click();
+  await expect(page.getByRole("heading", { name: "Aplikacja wysłana" })).toBeVisible();
 });

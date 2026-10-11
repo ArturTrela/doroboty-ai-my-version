@@ -171,6 +171,17 @@ for operator access, release gating, assignment stability and AI approval/proven
 
 ## Shared platform and starter demonstration
 
+**SYS-07 Tooling — optional local marketplace volume.** `npm run db:seed-marketplace`
+adds 100 synthetic published roles across 25 fictional companies to the running local
+Supabase stack, without reset or changed memberships. Roles have map coordinates,
+organizations, private briefs, salary/dates and public text versions. Reruns preserve
+existing records and edits. This is separate from canonical course releases and the
+static demo; existing employer accounts do not gain access to these organizations.
+Evidence: [supplement SQL](supabase/marketplace-fixtures.sql),
+[local-only runner](scripts/seed-marketplace.mjs),
+[schema/fixture checks](scripts/migration-check.mjs),
+[database runbook](docs/supabase.md).
+
 | ID / status        | Entry                               | Flow and result                                                                                                                                                                                                                                                                                                          |
 | ------------------ | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | SYS-01 Available   | Shared shells and controls          | Graphical Untitled tokens/components, Base UI shadcn primitives, Inter/free font setup, Lucide icons, robot brand, responsive navigation, focus/validation/loading/empty states and light/dark/system themes. Theme preference persists in the browser; this is distinct from domain-data persistence.                   |

@@ -24,15 +24,44 @@ npm run test:integration
 npm run db:stop
 ```
 
-The first start downloads images. Ports: 54321 for the API, 54322 for the database, 54323 for Studio, 54324 for the Mailpit test mailbox, and 3107 for the test application. Do not run demo and integration tests in parallel: both rebuild `.next`.
+The first start downloads images. Configured ports: 55321 for the API, 55322 for the database, 55323 for Studio, 55324 for the Mailpit test mailbox, and 3107 for the test application. Do not run demo and integration tests in parallel: both rebuild `.next`.
 
 The integration script reads the public key from the local CLI, rejects remote URLs, and builds the application against the local stack. It does not save keys to the repository. Tests cover auth and independent sessions; domain integration scenarios extend this suite. Emails go only to the local mailbox.
+
+**The integration script resets its local database.** If the normal development stack
+contains data you want to keep, run integration tests from an isolated checkout with a
+different Supabase `project_id` and unused API/database/shadow/Studio/mail ports. Do not
+run the suite against the user's active database. Stop only the isolated stack afterward.
 
 `npm run db:reset` deletes **local** data and reapplies migrations. Do not use it for a normal start; tests create unique accounts. After integration tests, `npm run test:e2e` rebuilds the application without Supabase configuration. Local email rate limits are increased only for tests.
 
 The callback supports PKCE code and token_hash. Only allowlisted local application paths are accepted as redirect targets. Expired or invalid links lead to an error message on the sign-in screen.
 
-## Domain tables
+## Optional local marketplace volume
+
+With the local stack running, add 100 published synthetic jobs across 25 fictional
+companies without resetting data:
+
+```sh
+npm run db:seed-marketplace
+```
+
+The command validates the local CLI database URL and Docker container/port, then applies
+`supabase/marketplace-fixtures.sql` in one transaction. Stable reserved IDs and conflict
+handling make reruns nonduplicating and preserve edits to existing records. A conflicting
+slug fails the transaction rather than overwriting another record. Companies use reserved
+`.invalid` websites; roles clearly identify themselves as fictional. All jobs include map
+coordinates, an organization, a private source brief and an approved public text version.
+No users or organization memberships are added. Existing employers therefore cannot manage
+these companies; use an operator for authorized inspection, or explicitly provision an
+employer for one company separately. Candidates can browse and apply normally.
+
+This supplement is deliberately opt-in and is not included in `db:reset` or the canonical
+six-job course seed. After an intentional local reset, run it again if needed. It does not
+alter staged synthetic learning datasets. `npm run db:check` checks the supplement's
+relationships, variety, rerun preservation and access boundaries against the migrated schema.
+
+## Domain deployment
 
 Before deployment, run `npx supabase db push --dry-run` against the intended project, review every migration, and test RLS with candidate, employer, other-organization, operator, and anonymous sessions. Never use `db reset` against a remote or production project.
 
