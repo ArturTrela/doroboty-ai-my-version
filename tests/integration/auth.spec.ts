@@ -685,17 +685,15 @@ test("candidate application and employer first-conversation decision work end to
   await page.getByRole("button", { name: "Dodaj doświadczenie" }).click();
   await expect(page.getByRole("status").filter({ hasText: "Doświadczenie dodane." })).toBeVisible();
 
-  await page.getByLabel("Tytuł", { exact: true }).fill("Mapa procesu i prototyp");
-  await page.getByLabel("Link HTTPS (opcjonalnie)").fill("https://example.com/work-sample");
-  await page.getByLabel("Kontekst", { exact: true }).fill("Proces finansowy wymagał discovery.");
-  await page
-    .getByLabel("Wynik", { exact: true })
-    .fill("Prototyp obniżył czas obsługi o 20 procent.");
-  await page.getByRole("button", { name: "Dodaj próbkę" }).click();
-  await expect(page.getByRole("status").filter({ hasText: "Próbka pracy dodana." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Próbki pracy", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Dodaj próbkę" })).toHaveCount(0);
+  await page.getByRole("link", { name: "Podgląd dla pracodawcy" }).click();
+  await expect(page.getByRole("heading", { name: "Podgląd profilu", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Próbki pracy", exact: true })).toHaveCount(0);
 
   await page.goto("/aplikuj/ai-product-manager");
   await expect(page.getByRole("heading", { name: "Pełny opis roli" })).toBeVisible();
+  await expect(page.locator('input[name="selectedWorkSampleIds"]')).toHaveCount(0);
   const answer = page.getByLabel("Dlaczego pasujesz do tej roli?");
   if ((await answer.inputValue()).length < 40) {
     await answer.fill(
