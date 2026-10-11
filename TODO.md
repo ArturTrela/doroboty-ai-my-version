@@ -389,6 +389,8 @@ invariants, and anti-spoiler rules are in
 - [x] **M10-09** Paginate the public job list in server-rendered groups of 20, preserving
       filters and no-JavaScript navigation; keep the map unpaginated. Cover page ranges,
       invalid/out-of-range pages, mobile/light-dark states and the expanded local dataset.
+- [x] **M10-10** Generate and integrate 25 synthetic company marks into job cards, role
+      details and company pages; preserve custom logos and initial/error fallbacks.
 
 ### M10 Definition of Done
 

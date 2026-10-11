@@ -19,6 +19,7 @@ import {
   seniorityLabels,
 } from "@/features/jobs/presentation";
 import { cn } from "@/lib/utils";
+import { CompanyLogo } from "@/features/jobs/company-logo";
 
 const relativeFormatter = new Intl.RelativeTimeFormat("pl", { numeric: "auto" });
 
@@ -30,18 +31,9 @@ function publishedLabel(value: string) {
 }
 
 export function JobCard({ job, saved }: { job: JobWithCompany; saved?: boolean }) {
-  const initials = job.company.name
-    .split(/\s+/)
-    .map((word) => word[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-
   return (
     <article className="group grid gap-5 py-5 shadow-[var(--gui-divider-bottom-shadow)] transition-colors hover:bg-muted/35 sm:grid-cols-[56px_minmax(0,1.35fr)_minmax(220px,0.8fr)_auto] sm:items-center sm:px-1">
-      <div className="flex size-14 items-center justify-center rounded-lg bg-muted text-sm font-semibold tracking-[var(--gui-tracking-xl)] text-foreground">
-        {initials}
-      </div>
+      <CompanyLogo company={job.company} />
 
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-2">

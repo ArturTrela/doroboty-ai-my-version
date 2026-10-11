@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowUpRight, MapPin, Users } from "lucide-react";
 import { JobCard } from "@/features/jobs/job-card";
+import { CompanyLogo } from "@/features/jobs/company-logo";
 import { organizationJsonLd } from "@/features/jobs/presentation";
 import { getCompanyWithJobs } from "@/features/jobs/queries";
 
@@ -29,9 +30,7 @@ export default async function CompanyPage({ params }: Props) {
       />
       <div className="grid gap-8 pb-12 shadow-[var(--gui-divider-bottom-shadow)] lg:grid-cols-[1fr_320px]">
         <div>
-          <p className="text-xs font-medium tracking-[var(--gui-tracking-xl)] text-muted-foreground">
-            Firma
-          </p>
+          <CompanyLogo company={company} size="large" />
           <h1 className="mt-3 text-4xl font-semibold tracking-[var(--gui-tracking-s)] sm:text-5xl">
             {company.name}
           </h1>

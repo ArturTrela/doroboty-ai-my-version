@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { CompanyLogo } from "@/features/jobs/company-logo";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, BadgeCheck, Bookmark, BriefcaseBusiness, MapPin } from "lucide-react";
@@ -86,10 +87,11 @@ export default async function JobPage({ params }: Props) {
             {job.title}
           </h1>
           <Link
-            className="mt-4 inline-block text-lg font-medium text-[var(--gui-link)] hover:underline"
+            className="mt-4 inline-flex max-w-full items-center gap-[var(--gui-space-s)] text-lg font-medium text-[var(--gui-link)] hover:underline"
             href={`/firmy/${job.company.slug}`}
           >
-            {job.company.name}
+            <CompanyLogo company={job.company} />
+            <span className="min-w-0 break-words">{job.company.name}</span>
           </Link>
           <p className="mt-5 max-w-3xl text-lg leading-relaxed text-muted-foreground">
             {job.summary}

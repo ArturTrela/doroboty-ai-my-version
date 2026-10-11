@@ -78,6 +78,21 @@ scenario in [integration tests](tests/integration/auth.spec.ts). Current paginat
 slices the filtered dataset on the server; it does not provide database-level paging
 beyond the existing Supabase query row limit.
 
+**PUB-13 Available — company identities.** Shared job cards (including saved jobs),
+`/oferty/[slug]` and `/firmy/[slug]` display company logos. The 25 optional synthetic
+marketplace companies have generated transparent local marks, resolved by their
+`demo-*` slugs without database updates. Valid existing company logo URLs take
+precedence; companies without artwork keep initials. Failed image loads fall back
+to initials when JavaScript is available. Company names and links remain separate,
+accessible server-rendered text; images are decorative. Local PNGs use Next.js
+image optimization with reserved dimensions. Remote custom logos load directly,
+not through an unrestricted image proxy. Map marker initials are intentionally
+unchanged. There is no logo-upload/editor flow. Evidence:
+[shared renderer](src/features/jobs/company-logo.tsx),
+[defaults and resolution](src/features/jobs/company-logos.ts),
+[unit tests](src/features/jobs/company-logos.test.ts), and
+[asset prompts/review](docs/tasks/company-logos.md).
+
 ## Identity and sessions
 
 | ID / status         | Entry                                                                | Flow and result                                                                                                                                                                                                                                                                                                                 |
@@ -233,7 +248,7 @@ Evidence: [theme guidance](GUI.md), [shared components](src/components/),
 
 | Routes                                                                                               | Entries                   |
 | ---------------------------------------------------------------------------------------------------- | ------------------------- |
-| `/`, `/oferty`, `/oferty/[slug]`, `/firmy/[slug]`, `/metodologia`, `/polityka-prywatnosci`           | PUB-01–12                 |
+| `/`, `/oferty`, `/oferty/[slug]`, `/firmy/[slug]`, `/metodologia`, `/polityka-prywatnosci`           | PUB-01–13                 |
 | `/robots.txt`, `/sitemap.xml`, not-found/error boundaries                                            | PUB-11–12                 |
 | `/auth/sign-in`, `/auth/sign-up`, `/auth/forgot-password`, `/auth/update-password`, `/auth/callback` | AUTH-01–07                |
 | `/app`, `/app/onboarding`, `/app/profil`, `/app/profil/podglad`, `/app/zapisane`                     | CAN-01–08, EMP-01         |
