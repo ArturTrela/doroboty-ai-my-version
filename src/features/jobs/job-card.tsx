@@ -7,7 +7,8 @@ import {
   MapPin,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { toggleSavedJob } from "@/features/jobs/candidate-job-actions";
 import type { JobWithCompany } from "@/features/jobs/types";
 import {
   categoryLabels,
@@ -28,7 +29,7 @@ function publishedLabel(value: string) {
   return `Dodano ${relativeFormatter.format(weeks, "week")}`;
 }
 
-export function JobCard({ job }: { job: JobWithCompany }) {
+export function JobCard({ job, saved }: { job: JobWithCompany; saved?: boolean }) {
   const initials = job.company.name
     .split(/\s+/)
     .map((word) => word[0])
@@ -100,6 +101,20 @@ export function JobCard({ job }: { job: JobWithCompany }) {
           Zobacz rolę{" "}
           <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
         </Link>
+        {saved !== undefined && (
+          <form action={toggleSavedJob} className="mt-2">
+            <input type="hidden" name="jobId" value={job.id} />
+            <input type="hidden" name="slug" value={job.slug} />
+            <Button
+              type="submit"
+              variant="ghost"
+              size="sm"
+              aria-label={`${saved ? "Usuń z zapisanych" : "Zapisz ofertę"}: ${job.title}`}
+            >
+              {saved ? "Usuń z zapisanych" : "Zapisz ofertę"}
+            </Button>
+          </form>
+        )}
       </div>
     </article>
   );

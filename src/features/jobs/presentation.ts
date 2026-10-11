@@ -119,3 +119,6 @@ export function organizationJsonLd(company: JobWithCompany["company"]) {
     address: { "@type": "PostalAddress", addressLocality: company.location },
   };
 }
+export function isJobExpired(expiryAt: string | null | undefined) {
+  return Boolean(expiryAt && new Date(expiryAt).getTime() <= Date.now());
+}

@@ -92,9 +92,14 @@ export function deterministicText(request: AiTextRequest) {
     const experience = Array.isArray(request.source.experiences)
       ? (request.source.experiences[0] as Record<string, unknown> | undefined)
       : undefined;
+    const sample = Array.isArray(request.source.workSamples)
+      ? (request.source.workSamples[0] as Record<string, unknown> | undefined)
+      : undefined;
     const evidence = experience
       ? `${String(experience.title ?? "W poprzednim projekcie")} w ${String(experience.company_name ?? "zespole")}: ${String(experience.measurable_outcome ?? experience.description ?? "doprowadziłem pracę do mierzalnego wyniku")}`
-      : "Potrafię przejść od rozpoznania problemu do sprawdzonego wdrożenia i jasno opisać własną odpowiedzialność.";
+      : sample
+        ? `${String(sample.title ?? "Próbka pracy")}: ${String(sample.context ?? "")} ${String(sample.outcome ?? "")}`
+        : String(request.source.bio ?? "");
     return `Jako ${headline} wnoszę do roli ${jobTitle} doświadczenie oparte na konkretnym dowodzie. ${evidence}. Chcę podczas rozmowy pokazać tok decyzji, kompromisy i sposób mierzenia rezultatu, zamiast zastępować je ogólną deklaracją motywacji.`;
   }
   const title = String(request.source.title ?? "Specjalista AI");

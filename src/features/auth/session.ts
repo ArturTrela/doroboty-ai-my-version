@@ -18,11 +18,17 @@ export async function requireProfile(allowed?: ProfileRole[]) {
   const { client, user } = await requireSession();
   const { data, error } = await client
     .from("profiles")
-    .select("id, role, display_name")
+    .select("id, role, display_name, first_name, last_name")
     .eq("id", user.id)
     .single();
   if (error || !data) throw new Error("Nie udało się wczytać profilu użytkownika.");
-  const profile = data as { id: string; role: ProfileRole; display_name: string | null };
+  const profile = data as {
+    id: string;
+    role: ProfileRole;
+    display_name: string | null;
+    first_name: string | null;
+    last_name: string | null;
+  };
   if (allowed && !allowed.includes(profile.role)) redirect("/app");
   return { client, user, profile };
 }

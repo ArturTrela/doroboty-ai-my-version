@@ -1,6 +1,13 @@
 import { z } from "zod";
 
 export const aiJobIdSchema = z.uuid();
+export const candidateDraftRequestSchema = z
+  .object({
+    jobId: z.uuid(),
+    experienceIds: z.array(z.uuid()).max(20),
+    workSampleIds: z.array(z.uuid()).max(20),
+  })
+  .refine((value) => value.experienceIds.length + value.workSampleIds.length > 0);
 export const jobDraftSchema = z.object({ jobId: z.uuid() });
 export const jobBriefSchema = z.object({
   jobId: z.uuid(),

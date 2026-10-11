@@ -56,7 +56,10 @@ async function confirmedAccount(prefix = "account") {
       await client.auth.signUp({
         email,
         password,
-        options: { emailRedirectTo: "http://127.0.0.1:3107/auth/callback?next=/app" },
+        options: {
+          emailRedirectTo: "http://127.0.0.1:3107/auth/callback?next=/app",
+          data: { first_name: "Test", last_name: "Candidate" },
+        },
       })
     ).error,
   ).toBeNull();
@@ -82,15 +85,19 @@ test("sign-up, email confirmation, dashboard, sign-in, and password recovery", a
   await page.goto("/app");
   await expect(page).toHaveURL(/auth\/sign-in/);
   await page.getByRole("link", { name: "Załóż konto kandydata", exact: true }).click();
-  await page.getByLabel("Imię lub nazwa zawodowa").fill("Nowy kandydat");
+  await page.getByLabel("Imię", { exact: true }).fill("Nowy");
+  await page.getByLabel("Nazwisko", { exact: true }).fill("Kandydat");
   await page.getByLabel("Email", { exact: true }).fill(email);
   await page.getByLabel("Hasło", { exact: true }).fill(password);
+  await page.getByLabel(/Akceptuję politykę prywatności/).check();
   await page.getByRole("button", { name: "Załóż konto", exact: true }).click();
   await expect(page.getByRole("status")).toContainText("Sprawdź skrzynkę");
   await page.getByRole("link", { name: "Przejdź do logowania" }).click();
   await expect(page.getByRole("button", { name: "Zaloguj się", exact: true })).toBeVisible();
   await page.goto(await emailLink(email, "signup"));
-  await expect(page).toHaveURL(/\/app$/);
+  await expect(page).toHaveURL(/\/app\/onboarding/);
+  await expect(page.getByRole("heading", { name: "Przygotuj profil" })).toBeVisible();
+  await page.goto("/app");
   await expect(page.getByRole("heading", { name: /Cześć/ })).toBeVisible();
   await page.reload();
   await expect(page.getByRole("heading", { name: /Cześć/ })).toBeVisible();
@@ -133,6 +140,88 @@ test("sessions for two accounts remain independent", async () => {
   expect((await b.client.auth.getUser()).data.user?.id).toBe(b.id);
 });
 
+test("first-time candidate returns from registration, resumes a draft, and withdraws a receipt", async ({
+  page,
+}) => {
+  const email = `journey-${crypto.randomUUID()}@example.test`;
+  await page.goto("/oferty/ai-product-manager");
+  await page.getByRole("link", { name: "Zaloguj się i aplikuj", exact: true }).first().click();
+  await page.getByRole("link", { name: "Załóż konto kandydata", exact: true }).click();
+  await page.getByLabel("Imię", { exact: true }).fill("Nowa");
+  await page.getByLabel("Nazwisko", { exact: true }).fill("Kandydatka");
+  await page.getByLabel("Email", { exact: true }).fill(email);
+  await page.getByLabel("Hasło", { exact: true }).fill(password);
+  await page.getByLabel(/Akceptuję politykę prywatności/).check();
+  await page.getByRole("button", { name: "Załóż konto", exact: true }).click();
+  await expect(page.getByRole("status")).toContainText("Sprawdź skrzynkę");
+  await page.goto(await emailLink(email, "signup"));
+  await expect(page).toHaveURL(/onboarding.*ai-product-manager/);
+  await page.getByRole("link", { name: "Kontynuuj konfigurację" }).click();
+  await page.getByLabel("Nagłówek").fill("Product Manager");
+  await page.getByLabel("O Tobie").fill("Prowadzę discovery produktów i mierzę rezultaty wdrożeń.");
+  await page.getByLabel("Miasto").fill("Warszawa");
+  await page.getByLabel("Lata doświadczenia").fill("4");
+  await page.getByRole("button", { name: "Zapisz profil" }).click();
+  await expect(page.getByRole("status").filter({ hasText: "Profil zapisany" })).toBeVisible();
+  await page.getByLabel("Rola", { exact: true }).fill("Product Manager");
+  await page.getByLabel("Firma lub projekt").fill("Synthetic Labs");
+  await page
+    .getByLabel("Co zrobiłeś / zrobiłaś")
+    .fill("Przeprowadziłam discovery procesu i wdrożyłam prototyp z zespołem operacyjnym.");
+  await page.getByRole("button", { name: "Dodaj doświadczenie" }).click();
+  await expect(page.getByRole("status").filter({ hasText: "Doświadczenie dodane" })).toBeVisible();
+  await page.locator('input[type="file"]').setInputFiles({
+    name: "pierwsze-cv.pdf",
+    mimeType: "application/pdf",
+    buffer: Buffer.from("%PDF-1.4 synthetic fixture"),
+  });
+  await page.getByRole("button", { name: "Dodaj CV", exact: true }).click();
+  await expect(page.getByRole("status").filter({ hasText: "CV zapisane" })).toBeVisible();
+  await page.getByRole("link", { name: "Sprawdź gotowość i wróć do aplikowania" }).click();
+  await page.getByRole("link", { name: "Przejdź dalej" }).click();
+  await expect(page).toHaveURL(/\/aplikuj\/ai-product-manager$/);
+  await page.goto("/oferty/ai-product-manager");
+  await expect(page.getByRole("link", { name: "Moje konto", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Zaloguj się", exact: true })).toHaveCount(0);
+  await page.getByRole("button", { name: "Zapisz ofertę", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Usuń z zapisanych", exact: true })).toBeVisible();
+  await page.getByRole("link", { name: "Aplikuj", exact: true }).first().click();
+  await expect(page).toHaveURL(/\/aplikuj\/ai-product-manager$/);
+  const answer =
+    "Przeprowadziłam discovery procesu i wdrożyłam prototyp, którego wyniki omawiałam z zespołem operacyjnym.";
+  await page.getByLabel("Dlaczego pasujesz do tej roli?").fill(answer);
+  await expect(page.getByRole("status").filter({ hasText: "Szkic zapisany" })).toBeVisible();
+  await page.reload();
+  await expect(page.getByLabel("Dlaczego pasujesz do tej roli?")).toHaveValue(answer);
+  await page.setViewportSize({ width: 390, height: 844 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
+    true,
+  );
+  expect(
+    (await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa"]).analyze()).violations,
+  ).toEqual([]);
+  await page.getByRole("checkbox", { name: /Sprawdziłem/ }).check();
+  await page.getByRole("button", { name: "Wyślij aplikację" }).click();
+  await expect(page.getByRole("heading", { name: "Aplikacja wysłana" })).toBeVisible();
+  await page.getByRole("link", { name: "Zobacz zgłoszenie" }).click();
+  await expect(page.getByRole("heading", { name: "Historia procesu" })).toBeVisible();
+  await expect(page.getByText(answer, { exact: true })).toBeVisible();
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.getByRole("button", { name: "Wycofaj aplikację" }).click();
+  await expect(page.getByRole("button", { name: "Wycofaj aplikację" })).toHaveCount(0);
+  await expect(page.getByText("Wycofana", { exact: true })).toBeVisible();
+  const exported = await page.request.get("/api/account/export");
+  expect(exported.ok()).toBe(true);
+  expect((await exported.json()).account.email).toBe(email);
+  await page.goto("/app/settings");
+  await page.getByLabel("Potwierdź hasło przed usunięciem konta").fill(password);
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.getByRole("button", { name: "Poproś o usunięcie konta" }).click();
+  await expect(page.getByRole("button", { name: "Anuluj usunięcie konta" })).toBeVisible();
+  await page.getByRole("button", { name: "Anuluj usunięcie konta" }).click();
+  await expect(page.getByRole("button", { name: "Poproś o usunięcie konta" })).toBeVisible();
+});
+
 test("RLS isolates candidate evidence and prevents role escalation", async () => {
   const a = await confirmedAccount("rls");
   const b = await confirmedAccount("rls");
@@ -146,6 +235,58 @@ test("RLS isolates candidate evidence and prevents role escalation", async () =>
   const roleAfterAttempt = await a.client.from("profiles").select("role").eq("id", a.id).single();
   expect(roleAfterAttempt.error).toBeNull();
   expect(roleAfterAttempt.data?.role).toBe("candidate");
+  const structuredName = await a.client
+    .from("profiles")
+    .select("first_name, last_name, display_name")
+    .eq("id", a.id)
+    .single();
+  expect(structuredName.data).toEqual({
+    first_name: "Test",
+    last_name: "Candidate",
+    display_name: "Test Candidate",
+  });
+});
+
+test("candidate drafts, saved jobs, and deletion requests are private", async () => {
+  const owner = await confirmedAccount("candidate-private");
+  const other = await confirmedAccount("candidate-private");
+  const jobId = "20000000-0000-4000-8000-000000000001";
+  expect(
+    (
+      await owner.client.from("saved_jobs").insert({
+        candidate_id: owner.id,
+        job_id: jobId,
+      })
+    ).error,
+  ).toBeNull();
+  expect(
+    (
+      await owner.client.from("application_drafts").insert({
+        candidate_id: owner.id,
+        job_id: jobId,
+        answer: "Prywatny szkic aplikacji",
+        current_step: 2,
+      })
+    ).error,
+  ).toBeNull();
+  expect(
+    (
+      await owner.client.from("account_deletion_requests").insert({
+        user_id: owner.id,
+      })
+    ).error,
+  ).toBeNull();
+  expect((await other.client.from("saved_jobs").select("job_id")).data).toHaveLength(0);
+  expect((await other.client.from("application_drafts").select("id")).data).toHaveLength(0);
+  expect((await other.client.from("account_deletion_requests").select("id")).data).toHaveLength(0);
+  expect(
+    (
+      await other.client.from("application_drafts").insert({
+        candidate_id: owner.id,
+        job_id: "20000000-0000-4000-8000-000000000002",
+      })
+    ).error,
+  ).not.toBeNull();
 });
 
 test("candidate CV storage and metadata stay private", async () => {
@@ -205,7 +346,7 @@ test("an employer can open the CV only after the candidate applies to their orga
     final_answer:
       "Prowadziłem discovery produktu i wdrożenie, które przyniosło mierzalny wynik operacyjny.",
     target_generation_id: null,
-    source_snapshot: { fixture: true },
+    source_snapshot: { fixture: true, cv: { storagePath: path } },
     source_evidence_ids: [],
     fit_version: "text-v1",
     fit_components: { overlap: 0.5 },
@@ -214,13 +355,31 @@ test("an employer can open the CV only after the candidate applies to their orga
   expect(submitted.error).toBeNull();
   expect(
     (await employer.from("candidate_documents").select("user_id").eq("user_id", candidate.id)).data,
-  ).toHaveLength(1);
+  ).toHaveLength(0);
   expect(
     (await otherEmployer.from("candidate_documents").select("user_id").eq("user_id", candidate.id))
       .data,
   ).toHaveLength(0);
   expect((await employer.storage.from("candidate-cv").download(path)).error).toBeNull();
   expect((await otherEmployer.storage.from("candidate-cv").download(path)).error).not.toBeNull();
+  const replacement = `${candidate.id}/${crypto.randomUUID()}.pdf`;
+  expect(
+    (
+      await candidate.client.storage
+        .from("candidate-cv")
+        .upload(replacement, file, { contentType: "application/pdf" })
+    ).error,
+  ).toBeNull();
+  expect((await employer.storage.from("candidate-cv").download(replacement)).error).not.toBeNull();
+  expect(
+    (
+      await candidate.client.storage
+        .from("candidate-cv")
+        .update(path, file, { contentType: "application/pdf" })
+    ).error,
+  ).not.toBeNull();
+  await candidate.client.storage.from("candidate-cv").remove([path]);
+  expect((await employer.storage.from("candidate-cv").download(path)).error).toBeNull();
 });
 
 test("employers create review jobs only for their organization", async () => {
@@ -309,6 +468,29 @@ test("application submission is atomic, idempotent, and private", async () => {
     .eq("application_id", first.data);
   expect(versions.data).toHaveLength(1);
   expect(scores.data).toHaveLength(1);
+  expect(
+    (
+      await other.client.rpc("withdraw_application", {
+        target_application_id: first.data,
+      })
+    ).error,
+  ).not.toBeNull();
+  expect(
+    (
+      await candidate.client.rpc("withdraw_application", {
+        target_application_id: first.data,
+      })
+    ).error,
+  ).toBeNull();
+  const withdrawn = await candidate.client
+    .from("applications")
+    .select("status, events:application_stage_events(stage)")
+    .eq("id", first.data)
+    .single();
+  expect(withdrawn.data?.status).toBe("withdrawn");
+  expect(withdrawn.data?.events).toEqual(
+    expect.arrayContaining([expect.objectContaining({ stage: "withdrawn" })]),
+  );
 });
 
 test("candidate, organization, operator, anonymous, and signed-out boundaries hold", async () => {
@@ -483,7 +665,8 @@ test("candidate application and employer first-conversation decision work end to
   await expect(page).toHaveURL(/\/app$/);
 
   await page.goto("/app/profil");
-  await page.getByLabel("Imię lub nazwa zawodowa").fill("Kandydat testowy");
+  await page.getByLabel("Imię", { exact: true }).fill("Kandydat");
+  await page.getByLabel("Nazwisko", { exact: true }).fill("testowy");
   await page.getByLabel("Nagłówek").fill("AI Product Manager");
   await page
     .getByLabel("O Tobie")
@@ -512,17 +695,17 @@ test("candidate application and employer first-conversation decision work end to
   await expect(page.getByRole("status").filter({ hasText: "Próbka pracy dodana." })).toBeVisible();
 
   await page.goto("/aplikuj/ai-product-manager");
-  await expect(page.getByText("Wariant: zapisany profil", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Pełny opis roli" })).toBeVisible();
   const answer = page.getByLabel("Dlaczego pasujesz do tej roli?");
   if ((await answer.inputValue()).length < 40) {
     await answer.fill(
       "Prowadziłem discovery procesu finansowego i dowiozłem mierzalne wdrożenie z zespołem operacyjnym.",
     );
   }
-  await page.getByRole("checkbox").check();
+  await page.getByRole("checkbox", { name: /Sprawdziłem/ }).check();
   await page.getByRole("button", { name: "Wyślij aplikację" }).click();
-  await expect(page).toHaveURL(/\/app\/aplikacje\?submitted=1/);
-  await expect(page.getByRole("status")).toContainText("została wysłana");
+  await expect(page).toHaveURL(/\/app\/aplikacje\/[^/]+\/wyslano/);
+  await expect(page.getByRole("heading", { name: "Aplikacja wysłana" })).toBeVisible();
 
   await page.getByRole("button", { name: "Wyloguj się", exact: true }).click();
   await page.getByLabel("Email", { exact: true }).fill("employer@doroboty.local");
@@ -549,20 +732,36 @@ test("candidate application and employer first-conversation decision work end to
 });
 
 test("long-form application remains a complete browser journey", async ({ page }) => {
+  const candidate = await fixtureClient("candidate-longform@doroboty.local");
+  const user = (await candidate.auth.getUser()).data.user!;
+  await candidate
+    .from("candidate_profiles")
+    .update({
+      headline: "AI Engineer",
+      bio: "Buduję systemy AI i ewaluacje jakości.",
+      city: "Kraków",
+    })
+    .eq("user_id", user.id);
+  await candidate.from("candidate_experiences").insert({
+    user_id: user.id,
+    title: "AI Engineer",
+    company_name: "Fixture Labs",
+    description: "Budowałem ewaluacje systemów AI w procesie regulowanym.",
+  });
   await page.goto("/auth/sign-in");
   await page.getByLabel("Email", { exact: true }).fill("candidate-longform@doroboty.local");
   await page.getByLabel("Hasło", { exact: true }).fill(localCasePassword);
   await page.getByRole("button", { name: "Zaloguj się", exact: true }).click();
   await expect(page).toHaveURL(/\/app$/);
   await page.goto("/aplikuj/staff-ai-engineer");
-  await expect(page.getByText("Wariant: pełna odpowiedź", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Napisz odpowiedź" })).toBeVisible();
   await expect(page.getByLabel("Dlaczego pasujesz do tej roli?")).toHaveValue("");
   await page
     .getByLabel("Dlaczego pasujesz do tej roli?")
     .fill("Budowałem ewaluacje systemów AI i wdrożyłem nadzór człowieka w procesie regulowanym.");
-  await page.getByRole("checkbox").check();
+  await page.getByRole("checkbox", { name: /Sprawdziłem/ }).check();
   await page.getByRole("button", { name: "Wyślij aplikację" }).click();
-  await expect(page).toHaveURL(/\/app\/aplikacje\?submitted=1/);
+  await expect(page).toHaveURL(/\/app\/aplikacje\/[^/]+\/wyslano/);
 });
 
 test("candidate and employer core flows meet automated WCAG A and AA", async ({ page }) => {
@@ -702,4 +901,66 @@ test("candidate and employer AI drafts require approval and preserve public sour
     .eq("title", "AI Product Manager — wersja prywatna")
     .single();
   expect(privateVersion.data?.visibility).toBe("private");
+});
+
+test("candidate-critical screens reflow in both themes and expose accessible controls", async ({
+  page,
+}, testInfo) => {
+  test.setTimeout(120000);
+  const candidate = await fixtureClient("candidate@doroboty.local");
+  const { data: applications } = await candidate
+    .from("applications")
+    .select("id")
+    .order("submitted_at", { ascending: false })
+    .limit(1);
+  const applicationId = applications![0].id;
+  await page.goto("/auth/sign-in");
+  await page.getByLabel("Email", { exact: true }).fill("candidate@doroboty.local");
+  await page.getByLabel("Hasło", { exact: true }).fill(localCasePassword);
+  await page.getByRole("button", { name: "Zaloguj się", exact: true }).click();
+  await expect(page).toHaveURL(/\/app$/);
+  const routes = [
+    "/app",
+    "/app/onboarding",
+    "/app/profil",
+    "/app/profil/podglad",
+    "/app/aplikacje",
+    `/app/aplikacje/${applicationId}`,
+    `/app/aplikacje/${applicationId}/wyslano`,
+    "/app/settings",
+    "/app/zapisane",
+    "/aplikuj/growth-lead-ai-products",
+    "/oferty/ai-product-manager",
+  ];
+  for (const width of [390, 1280]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const theme of ["light", "dark"]) {
+      await page.evaluate((value) => localStorage.setItem("theme", value), theme);
+      for (const [index, route] of routes.entries()) {
+        await page.goto(route);
+        await expect(page.locator("h1")).toBeVisible();
+        await expect(page.locator("html")).toHaveClass(new RegExp(theme));
+        expect(
+          await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+          `${route} ${width} ${theme}`,
+        ).toBe(true);
+        expect(
+          (await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa"]).analyze()).violations,
+          `${route} ${width} ${theme}`,
+        ).toEqual([]);
+        if ([0, 2, 9].includes(index))
+          await page.screenshot({
+            path: testInfo.outputPath(`candidate-${index}-${width}-${theme}.png`),
+            fullPage: true,
+          });
+      }
+    }
+  }
+  await page.goto("/app/profil");
+  await page.getByText("Preferencje pracy", { exact: true }).click();
+  await page.getByRole("combobox", { name: "Waluta" }).focus();
+  await page.keyboard.press("ArrowDown");
+  await expect(page.getByRole("option", { name: "EUR", exact: true })).toBeVisible();
+  await page.getByRole("option", { name: "EUR", exact: true }).click();
+  await expect(page.getByRole("combobox", { name: "Waluta" })).toContainText("EUR");
 });

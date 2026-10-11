@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,7 +11,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { BrandMark } from "@/features/public/brand-mark";
+import { captureBrowserAnalytics } from "@/features/analytics/client-event";
 export type AuthMode = "sign-in" | "sign-up" | "forgot-password" | "update-password";
+
+type AuthValues = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  privacyAccepted: boolean;
+};
 const copy = {
   "sign-in": {
     title: "Wracamy do roboty.",
@@ -43,33 +53,56 @@ export function AuthForm({
   nextPath?: string;
 }) {
   const [message, setMessage] = useState("");
-  const schema = z.object({
-    displayName:
-      mode === "sign-up"
-        ? z.string().trim().min(2, "Podaj imię lub nazwę zawodową.").max(120)
-        : z.string().optional(),
-    email: mode === "update-password" ? z.string() : z.email("Podaj prawidłowy adres e-mail."),
-    password:
-      mode === "forgot-password"
-        ? z.string()
-        : z
-            .string()
-            .min(
-              mode === "sign-in" ? 1 : 8,
-              "Podaj hasło — dla nowego konta co najmniej 8 znaków.",
-            ),
-  });
+  const router = useRouter();
+  const schema = z
+    .object({
+      firstName: z.string().trim().max(80),
+      lastName: z.string().trim().max(120),
+      email: z.string(),
+      password: z.string(),
+      privacyAccepted: z.boolean(),
+    })
+    .superRefine((values, context) => {
+      if (mode === "sign-up" && !values.firstName)
+        context.addIssue({ code: "custom", path: ["firstName"], message: "Podaj imię." });
+      if (mode === "sign-up" && !values.lastName)
+        context.addIssue({ code: "custom", path: ["lastName"], message: "Podaj nazwisko." });
+      if (mode !== "update-password" && !z.email().safeParse(values.email).success)
+        context.addIssue({
+          code: "custom",
+          path: ["email"],
+          message: "Podaj prawidłowy adres e-mail.",
+        });
+      if (mode !== "forgot-password" && values.password.length < (mode === "sign-in" ? 1 : 8))
+        context.addIssue({
+          code: "custom",
+          path: ["password"],
+          message: "Podaj hasło — dla nowego konta co najmniej 8 znaków.",
+        });
+      if (mode === "sign-up" && !values.privacyAccepted)
+        context.addIssue({
+          code: "custom",
+          path: ["privacyAccepted"],
+          message: "Zaakceptuj politykę prywatności.",
+        });
+    });
   const {
     register,
     handleSubmit,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm({
+  } = useForm<AuthValues>({
     resolver: zodResolver(schema),
-    defaultValues: { displayName: "", email: "", password: "" },
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      privacyAccepted: false,
+    },
     mode: "onBlur",
   });
-  async function submit(values: { displayName?: string; email: string; password: string }) {
+  async function submit(values: AuthValues) {
     setMessage("");
     try {
       const client = browserClient();
@@ -77,20 +110,29 @@ export function AuthForm({
       if (mode === "sign-in") {
         const { error } = await client.auth.signInWithPassword(values);
         if (error) throw error;
-        window.location.assign(nextPath);
+        router.push(nextPath);
+        router.refresh();
       }
       if (mode === "sign-up") {
+        const onboardingPath = `/app/onboarding?next=${encodeURIComponent(nextPath)}`;
         const { data, error } = await client.auth.signUp({
           email: values.email,
           password: values.password,
           options: {
-            emailRedirectTo: `${callback}?next=${encodeURIComponent(nextPath)}`,
-            data: { display_name: values.displayName?.trim() },
+            emailRedirectTo: `${callback}?next=${encodeURIComponent(onboardingPath)}`,
+            data: {
+              first_name: values.firstName.trim(),
+              last_name: values.lastName.trim(),
+              display_name: `${values.firstName.trim()} ${values.lastName.trim()}`,
+              privacy_accepted_at: new Date().toISOString(),
+            },
           },
         });
         if (error) throw error;
         if (data.session) {
-          window.location.assign(nextPath === "/app" ? "/app/profil" : nextPath);
+          void captureBrowserAnalytics({ event: "registration_completed", properties: {} });
+          router.push(onboardingPath);
+          router.refresh();
           return;
         }
         setMessage(
@@ -109,7 +151,8 @@ export function AuthForm({
       if (mode === "update-password") {
         const { error } = await client.auth.updateUser({ password: values.password });
         if (error) throw error;
-        window.location.assign(nextPath);
+        router.push(nextPath);
+        router.refresh();
       }
     } catch {
       setError("root", {
@@ -160,21 +203,37 @@ export function AuthForm({
           ) : (
             <form className="form-stack" noValidate onSubmit={handleSubmit(submit)}>
               {mode === "sign-up" && (
-                <div className="field">
-                  <Label htmlFor="displayName">Imię lub nazwa zawodowa</Label>
-                  <Input
-                    id="displayName"
-                    autoComplete="name"
-                    placeholder="np. Marta, Product Designer"
-                    aria-invalid={!!errors.displayName}
-                    aria-describedby={errors.displayName ? "display-name-error" : undefined}
-                    {...register("displayName")}
-                  />
-                  {errors.displayName && (
-                    <p id="display-name-error" className="error-message">
-                      {errors.displayName.message}
-                    </p>
-                  )}
+                <div className="grid gap-[var(--gui-space-s)] sm:grid-cols-2">
+                  <div className="field">
+                    <Label htmlFor="firstName">Imię</Label>
+                    <Input
+                      id="firstName"
+                      autoComplete="given-name"
+                      aria-invalid={!!errors.firstName}
+                      aria-describedby={errors.firstName ? "first-name-error" : undefined}
+                      {...register("firstName")}
+                    />
+                    {errors.firstName && (
+                      <p id="first-name-error" className="error-message">
+                        {errors.firstName.message}
+                      </p>
+                    )}
+                  </div>
+                  <div className="field">
+                    <Label htmlFor="lastName">Nazwisko</Label>
+                    <Input
+                      id="lastName"
+                      autoComplete="family-name"
+                      aria-invalid={!!errors.lastName}
+                      aria-describedby={errors.lastName ? "last-name-error" : undefined}
+                      {...register("lastName")}
+                    />
+                    {errors.lastName && (
+                      <p id="last-name-error" className="error-message">
+                        {errors.lastName.message}
+                      </p>
+                    )}
+                  </div>
                 </div>
               )}
               {mode !== "update-password" && (
@@ -214,6 +273,31 @@ export function AuthForm({
                   )}
                 </div>
               )}
+              {mode === "sign-up" && (
+                <div className="field">
+                  <label className="flex items-start gap-[var(--gui-space-xs)] text-sm">
+                    <input
+                      className="mt-0.5 size-4 accent-[var(--gui-color-1)]"
+                      type="checkbox"
+                      aria-invalid={!!errors.privacyAccepted}
+                      aria-describedby={errors.privacyAccepted ? "privacy-error" : undefined}
+                      {...register("privacyAccepted")}
+                    />
+                    <span>
+                      Akceptuję{" "}
+                      <Link className="text-link" href="/polityka-prywatnosci" target="_blank">
+                        politykę prywatności
+                      </Link>
+                      .
+                    </span>
+                  </label>
+                  {errors.privacyAccepted && (
+                    <p id="privacy-error" className="error-message">
+                      {errors.privacyAccepted.message}
+                    </p>
+                  )}
+                </div>
+              )}
               {errors.root && (
                 <p role="alert" className="error-message">
                   {errors.root.message}
@@ -229,10 +313,12 @@ export function AuthForm({
             {mode === "sign-in" ? (
               <>
                 <Link href="/auth/forgot-password">Nie pamiętam hasła</Link>
-                <Link href="/auth/sign-up?next=/app/profil">Załóż konto kandydata</Link>
+                <Link href={`/auth/sign-up?next=${encodeURIComponent(nextPath)}`}>
+                  Załóż konto kandydata
+                </Link>
               </>
             ) : (
-              <Link href="/auth/sign-in">Mam już konto</Link>
+              <Link href={`/auth/sign-in?next=${encodeURIComponent(nextPath)}`}>Mam już konto</Link>
             )}
           </div>
         </div>

@@ -40,6 +40,28 @@ describe("deterministic AI provider", () => {
     );
   });
 
+  it("grounds a sample-only answer in the selected work instead of inventing experience", () => {
+    const text = deterministicText({
+      purpose: "candidate_answer",
+      subjectId: crypto.randomUUID(),
+      source: {
+        headline: "Designer",
+        jobTitle: "Product Designer",
+        experiences: [],
+        workSamples: [
+          {
+            title: "Prototyp",
+            context: "Test z pięcioma osobami.",
+            outcome: "Trzy osoby ukończyły zadanie.",
+          },
+        ],
+      },
+    });
+    expect(text).toContain("Test z pięcioma osobami.");
+    expect(text).toContain("Trzy osoby ukończyły zadanie.");
+    expect(text).not.toContain("sprawdzonego wdrożenia");
+  });
+
   it("rejects empty, non-text, and oversized provider output", () => {
     expect(() => validateAiOutput(42)).toThrow("AI_PROVIDER_INVALID_OUTPUT");
     expect(() => validateAiOutput("   ")).toThrow("AI_PROVIDER_INVALID_OUTPUT");

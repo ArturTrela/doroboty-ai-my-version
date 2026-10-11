@@ -9,6 +9,7 @@ import {
   Building2,
   ChartNoAxesCombined,
   Inbox,
+  Heart,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -50,6 +51,7 @@ export function AppShell({
             ? [
                 { href: `${base}/profil`, label: "Profil", icon: UserRound },
                 { href: `${base}/aplikacje`, label: "Aplikacje", icon: Send },
+                { href: `${base}/zapisane`, label: "Zapisane", icon: Heart },
                 { href: "/oferty", label: "Oferty", icon: BriefcaseBusiness },
               ]
             : [
@@ -130,7 +132,7 @@ export function AppShell({
         </div>
         <nav aria-label="Main navigation">
           {links.map(({ href, label, icon: Icon }) => {
-            const active = href === base ? pathname === base : pathname === href;
+            const active = href === base ? pathname === base : pathname.startsWith(href);
             return (
               <Link
                 key={href}
@@ -179,13 +181,15 @@ export function AppShell({
                 ? "Profil"
                 : pathname.includes("aplikacje")
                   ? "Aplikacje"
-                  : pathname.includes("kandydaci")
-                    ? "Kandydaci"
-                    : pathname.includes("case")
-                      ? "Case"
-                      : pathname === "/components"
-                        ? "Components"
-                        : "Start"}
+                  : pathname.includes("zapisane")
+                    ? "Zapisane"
+                    : pathname.includes("kandydaci")
+                      ? "Kandydaci"
+                      : pathname.includes("case")
+                        ? "Case"
+                        : pathname === "/components"
+                          ? "Components"
+                          : "Start"}
           </span>
           <span className="mode-label">
             <span className="status-dot" />

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, BadgeCheck, BriefcaseBusiness, MapPin } from "lucide-react";
+import { ArrowLeft, BadgeCheck, Bookmark, BriefcaseBusiness, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { ClientAnalyticsEvent } from "@/features/analytics/client-event";
@@ -15,6 +15,9 @@ import {
   seniorityLabels,
 } from "@/features/jobs/presentation";
 import { cn } from "@/lib/utils";
+import { getSupabaseConfig } from "@/lib/env";
+import { serverClient } from "@/lib/supabase/server";
+import { toggleSavedJob } from "@/features/jobs/candidate-job-actions";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -32,6 +35,27 @@ export default async function JobPage({ params }: Props) {
   const job = await getPublishedJob((await params).slug);
   if (!job) notFound();
   const jsonLd = jobJsonLd(job);
+  let role: "candidate" | "employer" | "operator" | null = null;
+  let saved = false;
+  if (getSupabaseConfig().configured) {
+    const client = await serverClient();
+    const {
+      data: { user },
+    } = await client.auth.getUser();
+    if (user) {
+      const [{ data: profile }, { data: savedJob }] = await Promise.all([
+        client.from("profiles").select("role").eq("id", user.id).maybeSingle(),
+        client
+          .from("saved_jobs")
+          .select("job_id")
+          .eq("candidate_id", user.id)
+          .eq("job_id", job.id)
+          .maybeSingle(),
+      ]);
+      role = (profile?.role as typeof role) ?? null;
+      saved = Boolean(savedJob);
+    }
+  }
 
   return (
     <article>
@@ -83,14 +107,47 @@ export default async function JobPage({ params }: Props) {
           <div className="mt-12 rounded-xl bg-muted/40 p-6">
             <h2 className="text-xl font-semibold">Chcesz aplikować?</h2>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Zaloguj się, uzupełnij profil i pokaż doświadczenie związane z tą rolą.
+              {role === "candidate"
+                ? "Przygotuj odpowiedź na podstawie swojego profilu i wybierz doświadczenia, które chcesz pokazać."
+                : role
+                  ? "Aplikacje są dostępne z konta kandydata."
+                  : "Zaloguj się lub utwórz konto, a po autoryzacji wrócisz do tej oferty."}
             </p>
-            <Link
-              href={`/auth/sign-in?next=/aplikuj/${job.slug}`}
-              className={cn(buttonVariants({ size: "lg" }), "mt-5")}
-            >
-              Aplikuj w DoRoboty.ai
-            </Link>
+            <div className="mt-5 flex flex-wrap gap-3">
+              {role === "candidate" ? (
+                <>
+                  <Link href={`/aplikuj/${job.slug}`} className={buttonVariants({ size: "lg" })}>
+                    Aplikuj
+                  </Link>
+                  <form action={toggleSavedJob}>
+                    <input type="hidden" name="jobId" value={job.id} />
+                    <input type="hidden" name="slug" value={job.slug} />
+                    <button
+                      type="submit"
+                      className={buttonVariants({ variant: "outline", size: "lg" })}
+                    >
+                      <Bookmark className={cn("size-4", saved && "fill-current")} />
+                      {saved ? "Usuń z zapisanych" : "Zapisz ofertę"}
+                    </button>
+                  </form>
+                </>
+              ) : !role ? (
+                <>
+                  <Link
+                    href={`/auth/sign-in?next=${encodeURIComponent(`/aplikuj/${job.slug}`)}`}
+                    className={buttonVariants({ size: "lg" })}
+                  >
+                    Zaloguj się i aplikuj
+                  </Link>
+                  <Link
+                    href={`/auth/sign-up?next=${encodeURIComponent(`/aplikuj/${job.slug}`)}`}
+                    className={buttonVariants({ variant: "outline", size: "lg" })}
+                  >
+                    Załóż konto
+                  </Link>
+                </>
+              ) : null}
+            </div>
           </div>
         </div>
         <aside className="h-fit rounded-xl bg-card p-5 shadow-[var(--gui-shadow-m)]">

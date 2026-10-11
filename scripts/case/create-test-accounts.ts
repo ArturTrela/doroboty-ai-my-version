@@ -79,7 +79,12 @@ for (const fixture of fixtures) {
   }
   const profile = await admin
     .from("profiles")
-    .update({ role: fixture.role, display_name: fixture.role })
+    .update({
+      role: fixture.role,
+      display_name: fixture.role === "candidate" ? "Kandydat testowy" : fixture.role,
+      first_name: fixture.role === "candidate" ? "Kandydat" : null,
+      last_name: fixture.role === "candidate" ? "Testowy" : null,
+    })
     .eq("id", user.id);
   if (profile.error) throw profile.error;
   users.set(fixture.email, user.id);

@@ -8,6 +8,8 @@ import { JobMap } from "@/features/jobs/job-map";
 import { hasIndexableFilters, parseJobFilters, type SearchParams } from "@/features/jobs/filters";
 import { getPublishedJobs } from "@/features/jobs/queries";
 import { cn } from "@/lib/utils";
+import { getSupabaseConfig } from "@/lib/env";
+import { serverClient } from "@/lib/supabase/server";
 
 type Props = { searchParams: Promise<SearchParams> };
 
@@ -25,6 +27,27 @@ export default async function JobsPage({ searchParams }: Props) {
   const params = await searchParams;
   const filters = parseJobFilters(params);
   const jobs = await getPublishedJobs(filters);
+  let savedIds: Set<string> | undefined;
+  if (getSupabaseConfig().configured) {
+    const client = await serverClient();
+    const {
+      data: { user },
+    } = await client.auth.getUser();
+    if (user) {
+      const { data: profile } = await client
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+      if (profile?.role === "candidate") {
+        const { data } = await client
+          .from("saved_jobs")
+          .select("job_id")
+          .eq("candidate_id", user.id);
+        savedIds = new Set((data ?? []).map((item) => item.job_id));
+      }
+    }
+  }
   const view =
     (Array.isArray(params.view) ? params.view[0] : params.view) === "map" ? "map" : "list";
   const viewHref = (nextView: "list" | "map") => {
@@ -106,7 +129,7 @@ export default async function JobsPage({ searchParams }: Props) {
         ) : (
           <div className="mt-3 shadow-[var(--gui-divider-top-shadow)]">
             {jobs.map((job) => (
-              <JobCard key={job.id} job={job} />
+              <JobCard key={job.id} job={job} saved={savedIds?.has(job.id)} />
             ))}
           </div>
         )

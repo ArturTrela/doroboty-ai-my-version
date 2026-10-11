@@ -3,6 +3,7 @@ import { AuthForm, type AuthMode } from "@/features/auth/auth-form";
 import { SetupNotice } from "@/components/setup-notice";
 import { getSupabaseConfig } from "@/lib/env";
 import { serverClient } from "@/lib/supabase/server";
+import { safeReturnPath } from "@/features/auth/return-path";
 export const dynamic = "force-dynamic";
 export default async function Page({
   params,
@@ -22,8 +23,7 @@ export default async function Page({
     if (!user) redirect("/auth/forgot-password");
   }
   const query = await searchParams;
-  const nextPath =
-    query.next?.startsWith("/") && !query.next.startsWith("//") ? query.next : "/app";
+  const nextPath = safeReturnPath(query.next);
   return (
     <AuthForm
       key={mode}

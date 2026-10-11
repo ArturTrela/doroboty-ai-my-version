@@ -434,9 +434,13 @@ a {
   gap: 9px;
 }
 .error-message {
-  color: var(--destructive);
+  color: var(--gui-text);
+  background: var(--gui-error-transparent);
+  border-radius: var(--gui-radius-s);
+  padding: var(--gui-space-xs);
   font-size: var(--gui-text-xs);
-  line-height: 1.6;
+  line-height: var(--gui-leading-xs);
+  letter-spacing: var(--gui-tracking-l);
 }
 .form-actions {
   display: flex;

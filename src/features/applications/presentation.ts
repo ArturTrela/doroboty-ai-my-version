@@ -25,6 +25,20 @@ export function applicationStatusLabel(status: string) {
   return applicationStatusLabels[status as ApplicationStatus] ?? "Status nieznany";
 }
 
+export const applicationStatusDescriptions: Record<string, string> = {
+  submitted: "Pracodawca otrzymał aplikację. Na tym etapie nie musisz nic robić.",
+  in_review: "Pracodawca przegląda Twoje zgłoszenie.",
+  interview: "Proces jest na etapie rozmowy. Szczegóły zaproszenia otrzymasz od pracodawcy.",
+  continued: "Pracodawca chce kontynuować proces i skontaktuje się w sprawie kolejnego kroku.",
+  rejected: "Pracodawca zakończył proces dla tej aplikacji.",
+  withdrawn: "Aplikacja została przez Ciebie wycofana i nie bierze już udziału w procesie.",
+  hired: "Proces zakończył się zatrudnieniem.",
+};
+
+export function applicationStatusDescription(status: string) {
+  return applicationStatusDescriptions[status] ?? "Status aplikacji został zaktualizowany.";
+}
+
 export function applicationStageLabel(stage: string) {
   return applicationStageLabels[stage as keyof typeof applicationStageLabels] ?? "Zmiana etapu";
 }

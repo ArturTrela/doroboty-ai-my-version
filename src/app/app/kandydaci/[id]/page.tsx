@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 export const dynamic = "force-dynamic";
 
 type CandidateSnapshot = {
+  cv?: { fileName: string; storagePath: string; uploadedAt: string; sizeBytes?: number };
   profile?: {
     displayName?: string;
     headline?: string;
@@ -62,11 +63,14 @@ export default async function CandidatePreviewPage({
   const events = [...(application.events ?? [])].sort(
     (left, right) => new Date(left.occurred_at).getTime() - new Date(right.occurred_at).getTime(),
   );
-  const { data: document } = await client
-    .from("candidate_documents")
-    .select("file_name, storage_path, size_bytes, uploaded_at")
-    .eq("user_id", application.candidate_id)
-    .maybeSingle();
+  const document = snapshot.cv
+    ? {
+        file_name: snapshot.cv.fileName,
+        storage_path: snapshot.cv.storagePath,
+        size_bytes: snapshot.cv.sizeBytes ?? 0,
+        uploaded_at: snapshot.cv.uploadedAt,
+      }
+    : null;
   const signedUrl = document
     ? (await client.storage.from("candidate-cv").createSignedUrl(document.storage_path, 600)).data
         ?.signedUrl

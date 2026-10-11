@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { requireProfile } from "@/features/auth/session";
 import { generateAiText } from "@/features/ai/provider";
 import {
-  aiJobIdSchema,
+  candidateDraftRequestSchema,
   jobBriefSchema,
   jobDraftApprovalSchema,
   jobDraftSchema,
@@ -19,9 +19,14 @@ export type CandidateDraftResult = {
   generationId?: string;
 };
 
-export async function generateCandidateDraft(jobId: string): Promise<CandidateDraftResult> {
-  const parsedJobId = aiJobIdSchema.safeParse(jobId);
-  if (!parsedJobId.success) return { ok: false, message: "Nieprawidłowa oferta." };
+export async function generateCandidateDraft(input: {
+  jobId: string;
+  experienceIds: string[];
+  workSampleIds: string[];
+}): Promise<CandidateDraftResult> {
+  const parsed = candidateDraftRequestSchema.safeParse(input);
+  if (!parsed.success)
+    return { ok: false, message: "Wybierz dowody, na których ma oprzeć się szkic." };
   const { client, user, profile } = await requireProfile(["candidate"]);
   if (!(await authorizeAiTreatment(client, "candidate_answer", profile.role === "operator"))) {
     return { ok: false, message: "Ten wariant nie ma dostępu do szkicu AI." };
@@ -29,23 +34,42 @@ export async function generateCandidateDraft(jobId: string): Promise<CandidateDr
   const [jobResult, candidateResult, experiencesResult, samplesResult] = await Promise.all([
     client
       .from("jobs")
-      .select("id, title, summary")
-      .eq("id", parsedJobId.data)
+      .select("id, title, summary, description")
+      .eq("id", parsed.data.jobId)
       .eq("publication_status", "published")
       .single(),
     client.from("candidate_profiles").select("headline, bio").eq("user_id", user.id).single(),
     client
       .from("candidate_experiences")
       .select("id, title, company_name, description, measurable_outcome")
-      .eq("user_id", user.id),
+      .eq("user_id", user.id)
+      .in(
+        "id",
+        parsed.data.experienceIds.length
+          ? parsed.data.experienceIds
+          : ["00000000-0000-0000-0000-000000000000"],
+      ),
     client
       .from("candidate_work_samples")
       .select("id, title, context, outcome")
-      .eq("user_id", user.id),
+      .eq("user_id", user.id)
+      .in(
+        "id",
+        parsed.data.workSampleIds.length
+          ? parsed.data.workSampleIds
+          : ["00000000-0000-0000-0000-000000000000"],
+      ),
   ]);
   if (jobResult.error || !jobResult.data)
     return { ok: false, message: "Oferta nie jest dostępna." };
-  if (candidateResult.error || !(experiencesResult.data ?? []).length) {
+  if (
+    candidateResult.error ||
+    experiencesResult.error ||
+    samplesResult.error ||
+    (experiencesResult.data?.length ?? 0) !== parsed.data.experienceIds.length ||
+    (samplesResult.data?.length ?? 0) !== parsed.data.workSampleIds.length ||
+    (experiencesResult.data?.length ?? 0) + (samplesResult.data?.length ?? 0) === 0
+  ) {
     return {
       ok: false,
       message: "Uzupełnij profil i dodaj doświadczenie przed wygenerowaniem szkicu.",
@@ -54,6 +78,7 @@ export async function generateCandidateDraft(jobId: string): Promise<CandidateDr
   const source = {
     jobTitle: jobResult.data.title,
     jobSummary: jobResult.data.summary,
+    jobDescription: jobResult.data.description,
     ...candidateResult.data,
     experiences: experiencesResult.data ?? [],
     workSamples: samplesResult.data ?? [],
@@ -62,7 +87,7 @@ export async function generateCandidateDraft(jobId: string): Promise<CandidateDr
   try {
     await captureAnalytics(user.id, {
       event: "ai_generation_started",
-      properties: { jobId: parsedJobId.data, purpose: "candidate_answer" },
+      properties: { jobId: parsed.data.jobId, purpose: "candidate_answer" },
     });
     const result = await generateAiText({
       purpose: "candidate_answer",
@@ -74,7 +99,7 @@ export async function generateCandidateDraft(jobId: string): Promise<CandidateDr
       .insert({
         purpose: "candidate_answer",
         requested_by: user.id,
-        job_id: parsedJobId.data,
+        job_id: parsed.data.jobId,
         provider: result.provider,
         model: result.model,
         prompt_version: result.promptVersion,
@@ -92,7 +117,7 @@ export async function generateCandidateDraft(jobId: string): Promise<CandidateDr
     await captureAnalytics(user.id, {
       event: "ai_generation_completed",
       properties: {
-        jobId: parsedJobId.data,
+        jobId: parsed.data.jobId,
         purpose: "candidate_answer",
         outcome: "succeeded",
       },
@@ -108,7 +133,7 @@ export async function generateCandidateDraft(jobId: string): Promise<CandidateDr
     await client.from("ai_generations").insert({
       purpose: "candidate_answer",
       requested_by: user.id,
-      job_id: parsedJobId.data,
+      job_id: parsed.data.jobId,
       provider: process.env.AI_PROVIDER ?? "deterministic",
       model: process.env.AI_MODEL ?? "course-fixture-v1",
       prompt_version: "evidence-first-v1",
@@ -120,7 +145,7 @@ export async function generateCandidateDraft(jobId: string): Promise<CandidateDr
     });
     await captureAnalytics(user.id, {
       event: "ai_generation_completed",
-      properties: { jobId: parsedJobId.data, purpose: "candidate_answer", outcome: "failed" },
+      properties: { jobId: parsed.data.jobId, purpose: "candidate_answer", outcome: "failed" },
     });
     return {
       ok: false,
