@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { JobDescription } from "@/features/jobs/job-description";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BadgeCheck, BriefcaseBusiness, MapPin } from "lucide-react";
@@ -152,10 +153,8 @@ export default async function ApplyPage({ params }: { params: Promise<{ slug: st
         </dl>
         <div className="mt-[var(--gui-space-l)] rounded-xl bg-muted/50 p-[var(--gui-space-m)]">
           <h2>Pełny opis roli</h2>
-          <div className="mt-[var(--gui-space-m)] grid gap-[var(--gui-space-m)] text-sm text-muted-foreground">
-            {job.description.split("\n\n").map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
+          <div className="mt-[var(--gui-space-m)]">
+            <JobDescription description={job.description} compact />
           </div>
         </div>
         {!profileReady && (
