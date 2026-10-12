@@ -1179,6 +1179,14 @@ test("optional marketplace volume preserves data and supports candidate applicat
   await expect(page).toHaveURL(/\/app$/);
   await page.goto("/aplikuj/demo-kobalt-labs-ai-product-manager-1");
   await expect(page.getByRole("heading", { name: "Pełny opis roli" })).toBeVisible();
+  await expect(
+    page.locator("[data-job-description]").getByRole("heading", { name: "O firmie", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page
+      .locator("[data-job-description]")
+      .getByRole("heading", { name: "Zakres odpowiedzialności", exact: true }),
+  ).toBeVisible();
   await page
     .getByLabel("Dlaczego pasujesz do tej roli?")
     .fill(

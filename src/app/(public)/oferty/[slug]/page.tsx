@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { JobDescription } from "@/features/jobs/job-description";
 import { CompanyLogo } from "@/features/jobs/company-logo";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -101,10 +102,8 @@ export default async function JobPage({ params }: Props) {
       <div className="mx-auto grid max-w-5xl gap-10 px-5 py-12 lg:grid-cols-[1fr_300px] lg:px-8 lg:py-16">
         <div>
           <h2 className="text-2xl font-semibold">O roli</h2>
-          <div className="mt-5 max-w-2xl space-y-5 text-base leading-7 text-muted-foreground">
-            {job.description.split("\n\n").map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
+          <div className="mt-5 max-w-2xl">
+            <JobDescription description={job.description} />
           </div>
           <div className="mt-12 rounded-xl bg-muted/40 p-6">
             <h2 className="text-xl font-semibold">Chcesz aplikować?</h2>
