@@ -1,7 +1,13 @@
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { JobBriefForm } from "@/features/ai/job-brief-form";
 import { JobDraftWorkspace } from "@/features/ai/job-draft-workspace";
 import { ExperimentExposure } from "@/features/experiments/exposure";
 import { requireProfile } from "@/features/auth/session";
 import { getSupabaseConfig } from "@/lib/env";
+import { EmployerJobForm } from "@/features/jobs/employer-job-form";
+import { Badge } from "@/components/ui/badge";
+import { publicationStatusLabel } from "@/features/jobs/presentation";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +27,12 @@ export default async function EmployerJobsPage() {
       return organization?.company_id ? [organization.company_id] : [];
     });
   }
-  let query = client.from("jobs").select("id, title, company_id").order("title");
+  let query = client
+    .from("jobs")
+    .select(
+      "id, slug, title, company_id, publication_status, updated_at, brief:employer_briefs(source_text, decision_criteria)",
+    )
+    .order("updated_at", { ascending: false });
   if (companyIds) query = query.in("company_id", companyIds);
   const { data, error } = await query;
   if (error) throw new Error("Nie udało się wczytać ofert firmy.");
@@ -31,6 +42,21 @@ export default async function EmployerJobsPage() {
   if (assignmentError) throw new Error("Nie udało się przydzielić wariantu eksperymentu.");
   const treatment = assignment as { id: string; variant: "manual" | "ai_draft" };
   const allowAi = profile.role === "operator" || treatment.variant === "ai_draft";
+  const jobsWithBrief = (data ?? []).map((job) => {
+    const brief = Array.isArray(job.brief) ? job.brief[0] : job.brief;
+    return {
+      id: job.id,
+      title: job.title,
+      brief: brief
+        ? {
+            sourceText: brief.source_text,
+            decisionCriteria: Array.isArray(brief.decision_criteria)
+              ? (brief.decision_criteria as string[])
+              : [],
+          }
+        : undefined,
+    };
+  });
 
   return (
     <div>
@@ -40,11 +66,39 @@ export default async function EmployerJobsPage() {
           <p>Generuj z prywatnego briefu, edytuj i zatwierdzaj świadomie.</p>
         </div>
       </div>
-      {allowAi && profile.role !== "operator" && <ExperimentExposure assignmentId={treatment.id} />}
-      <JobDraftWorkspace
-        jobs={(data ?? []).map((job) => ({ id: job.id, title: job.title }))}
-        allowAi={allowAi}
-      />
+      {profile.role === "employer" ? <EmployerJobForm /> : null}
+      <section className="mt-8">
+        <h2 className="text-xl">Twoje oferty</h2>
+        <div className="mt-3 grid gap-2">
+          {(data ?? []).map((job) => (
+            <Link
+              key={job.id}
+              href={`/app/oferty/${job.id}`}
+              className="flex items-center justify-between gap-4 rounded-lg bg-card p-4 shadow-[var(--gui-edge-shadow)]"
+            >
+              <span>
+                <strong className="font-ui text-sm">{job.title}</strong>
+                <span className="mt-1 block text-xs text-muted-foreground">
+                  Otwórz szczegóły i brief
+                </span>
+              </span>
+              <span className="flex items-center gap-3">
+                <Badge variant="secondary">{publicationStatusLabel(job.publication_status)}</Badge>
+                <ArrowRight className="size-4 text-muted-foreground" />
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+      <div className="mt-10">
+        {allowAi && profile.role !== "operator" && (
+          <ExperimentExposure assignmentId={treatment.id} />
+        )}
+        <div id="brief-source" className="mb-6 scroll-mt-6">
+          <JobBriefForm jobs={jobsWithBrief} />
+        </div>
+        <JobDraftWorkspace jobs={jobsWithBrief} allowAi={allowAi} />
+      </div>
     </div>
   );
 }

@@ -1,16 +1,30 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { BrandMark } from "@/features/public/brand-mark";
+import { PublicSessionNav } from "@/features/public/public-session-nav";
+import { getSupabaseConfig } from "@/lib/env";
+import { serverClient } from "@/lib/supabase/server";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const navigation = [
   { href: "/oferty", label: "Oferty" },
   { href: "/metodologia", label: "Metodologia" },
-  { href: "/auth/sign-in?next=/app/oferty", label: "Dla firm" },
+  { href: "/auth/sign-in?audience=employer&next=/app/oferty", label: "Dla firm" },
 ];
 
-export function PublicShell({ children }: { children: React.ReactNode }) {
+export async function PublicShell({ children }: { children: React.ReactNode }) {
+  let role: "candidate" | "employer" | "operator" | null = null;
+  if (getSupabaseConfig().configured) {
+    const client = await serverClient();
+    const {
+      data: { user },
+    } = await client.auth.getUser();
+    if (user) {
+      const { data } = await client.from("profiles").select("role").eq("id", user.id).maybeSingle();
+      role = (data?.role as typeof role) ?? null;
+    }
+  }
   return (
     <div className="min-h-dvh bg-background text-foreground">
       <a
@@ -39,15 +53,27 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
                 {item.label}
               </Link>
             ))}
-            <Link
-              href="/auth/sign-in"
-              className={cn(
-                buttonVariants({ variant: "outline", size: "lg" }),
-                "text-sm font-medium",
-              )}
-            >
-              Zaloguj się
-            </Link>
+            {role ? (
+              <PublicSessionNav role={role} />
+            ) : (
+              <>
+                <Link
+                  href="/auth/sign-up?audience=candidate&next=/app/onboarding"
+                  className="hidden text-sm font-medium text-[var(--gui-link)] sm:inline"
+                >
+                  Załóż konto
+                </Link>
+                <Link
+                  href="/auth/sign-in?audience=candidate"
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "lg" }),
+                    "text-sm font-medium",
+                  )}
+                >
+                  Zaloguj się
+                </Link>
+              </>
+            )}
           </nav>
         </div>
       </header>

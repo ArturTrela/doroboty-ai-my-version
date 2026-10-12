@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { jobDraftApprovalSchema, jobDraftSchema } from "@/features/ai/schema";
+import { jobBriefSchema, jobDraftApprovalSchema, jobDraftSchema } from "@/features/ai/schema";
 
 const validApproval = {
   jobId: "20000000-0000-4000-8000-000000000001",
@@ -14,6 +14,16 @@ describe("AI action schemas", () => {
   it("accepts controlled draft and approval identifiers", () => {
     expect(jobDraftSchema.safeParse({ jobId: validApproval.jobId }).success).toBe(true);
     expect(jobDraftApprovalSchema.safeParse(validApproval).success).toBe(true);
+  });
+
+  it("normalizes source brief criteria from separate lines", () => {
+    const result = jobBriefSchema.parse({
+      jobId: validApproval.jobId,
+      sourceText:
+        "Potrzebujemy osoby, która przejmie odpowiedzialność za mierzalne wdrożenie produktu AI.",
+      decisionCriteria: "- Wdrożenie produkcyjne\n• Mierzalny rezultat",
+    });
+    expect(result.decisionCriteria).toEqual(["Wdrożenie produkcyjne", "Mierzalny rezultat"]);
   });
 
   it("rejects malformed IDs, short output, and oversized model output", () => {

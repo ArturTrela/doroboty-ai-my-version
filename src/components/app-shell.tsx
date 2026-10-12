@@ -9,18 +9,19 @@ import {
   Building2,
   ChartNoAxesCombined,
   Inbox,
+  Heart,
   LayoutDashboard,
   LogOut,
   Menu,
   Send,
   Settings2,
-  Sparkles,
   UserRound,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { browserClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
+import { BrandMark } from "@/features/public/brand-mark";
 export function AppShell({
   children,
   mode,
@@ -50,6 +51,7 @@ export function AppShell({
             ? [
                 { href: `${base}/profil`, label: "Profil", icon: UserRound },
                 { href: `${base}/aplikacje`, label: "Aplikacje", icon: Send },
+                { href: `${base}/zapisane`, label: "Zapisane", icon: Heart },
                 { href: "/oferty", label: "Oferty", icon: BriefcaseBusiness },
               ]
             : [
@@ -84,11 +86,9 @@ export function AppShell({
       </a>
       <header className="mobile-header">
         <Link href={base} className="brand">
-          <span className="brand-mark">
-            <Sparkles size={18} />
-          </span>
+          <BrandMark />
           DoRoboty
-          <span className="rounded-sm bg-[var(--gui-color-1)] px-1 text-[var(--gui-accent-text)]">
+          <span className="rounded-sm bg-[var(--gui-color-1)] px-1 text-[var(--gui-accent-text-accessible)]">
             .ai
           </span>
         </Link>
@@ -103,13 +103,15 @@ export function AppShell({
           {open ? <X /> : <Menu />}
         </Button>
       </header>
-      <aside id="sidebar" className={cn("sidebar", open && "sidebar-open")}>
+      <aside
+        id="sidebar"
+        aria-label="Nawigacja panelu"
+        className={cn("sidebar", open && "sidebar-open")}
+      >
         <Link href={base} className="brand hidden md:flex">
-          <span className="brand-mark">
-            <Sparkles size={18} />
-          </span>
+          <BrandMark />
           DoRoboty
-          <span className="rounded-sm bg-[var(--gui-color-1)] px-1 text-[var(--gui-accent-text)]">
+          <span className="rounded-sm bg-[var(--gui-color-1)] px-1 text-[var(--gui-accent-text-accessible)]">
             .ai
           </span>
         </Link>
@@ -130,7 +132,7 @@ export function AppShell({
         </div>
         <nav aria-label="Main navigation">
           {links.map(({ href, label, icon: Icon }) => {
-            const active = href === base ? pathname === base : pathname === href;
+            const active = href === base ? pathname === base : pathname.startsWith(href);
             return (
               <Link
                 key={href}
@@ -170,7 +172,7 @@ export function AppShell({
         </div>
       </aside>
       <div className="workspace">
-        <div className="topbar">
+        <header className="topbar">
           <span>
             DoRoboty.ai <span className="px-3 text-border">/</span>{" "}
             {pathname.includes("settings")
@@ -179,19 +181,21 @@ export function AppShell({
                 ? "Profil"
                 : pathname.includes("aplikacje")
                   ? "Aplikacje"
-                  : pathname.includes("kandydaci")
-                    ? "Kandydaci"
-                    : pathname.includes("case")
-                      ? "Case"
-                      : pathname === "/components"
-                        ? "Components"
-                        : "Start"}
+                  : pathname.includes("zapisane")
+                    ? "Zapisane"
+                    : pathname.includes("kandydaci")
+                      ? "Kandydaci"
+                      : pathname.includes("case")
+                        ? "Case"
+                        : pathname === "/components"
+                          ? "Components"
+                          : "Start"}
           </span>
           <span className="mode-label">
             <span className="status-dot" />
             {mode === "demo" ? "Tryb demo" : "Bezpieczna sesja"}
           </span>
-        </div>
+        </header>
         <main id="main" className="main-content">
           {children}
         </main>

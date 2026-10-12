@@ -1,0 +1,107 @@
+{
+  "mode": "built-in imagegen",
+  "useCase": "logo-brand",
+  "transparent_background": true,
+  "prompts": [
+    {
+      "slug": "demo-kobalt-labs",
+      "prompt": "Create one original brand symbol for the fictional company Kobalt Labs, for use at 40–80px in a job marketplace. Concept: interlocking cobalt-blue hexagonal laboratory symbol. Minimal flat vector-like graphic, strong clean silhouette, balanced negative space, solid mid-tone saturated color readable on white and charcoal. Center the symbol, occupying about 80% of a square canvas. Transparent background, no wordmark, no text, no letters except the requested geometric N, no border, no gradients, no shadows, no mockup, no decorative background. Only one standalone logo, not a contact sheet."
+    },
+    {
+      "slug": "demo-orbita-cloud",
+      "prompt": "Create one original brand symbol for the fictional company Orbita Cloud, for use at 40–80px in a job marketplace. Concept: violet orbital ring around a compact cloud. Minimal flat vector-like graphic, strong clean silhouette, balanced negative space, solid mid-tone saturated color readable on white and charcoal. Center the symbol, occupying about 80% of a square canvas. Transparent background, no wordmark, no text, no letters except the requested geometric N, no border, no gradients, no shadows, no mockup, no decorative background. Only one standalone logo, not a contact sheet."
+    },
+    {
+      "slug": "demo-splot-data",
+      "prompt": "Create one original brand symbol for the fictional company Splot Data, for use at 40–80px in a job marketplace. Concept: teal woven ribbons in a compact data knot. Minimal flat vector-like graphic, strong clean silhouette, balanced negative space, solid mid-tone saturated color readable on white and charcoal. Center the symbol, occupying about 80% of a square canvas. Transparent background, no wordmark, no text, no letters except the requested geometric N, no border, no gradients, no shadows, no mockup, no decorative background. Only one standalone logo, not a contact sheet."
+    },
+    {
+      "slug": "demo-iskra-systems",
+      "prompt": "Create one original brand symbol for the fictional company Iskra Systems, for use at 40–80px in a job marketplace. Concept: orange geometric spark. Minimal flat vector-like graphic, strong clean silhouette, balanced negative space, solid mid-tone saturated color readable on white and charcoal. Center the symbol, occupying about 80% of a square canvas. Transparent background, no wordmark, no text, no letters except the requested geometric N, no border, no gradients, no shadows, no mockup, no decorative background. Only one standalone logo, not a contact sheet."
+    },
+    {
+      "slug": "demo-pryzmat-studio",
+      "prompt": "Create one original brand symbol for the fictional company Pryzmat Studio, for use at 40–80px in a job marketplace. Concept: magenta triangular prism. Minimal flat vector-like graphic, strong clean silhouette, balanced negative space, solid mid-tone saturated color readable on white and charcoal. Center the symbol, occupying about 80% of a square canvas. Transparent background, no wordmark, no text, no letters except the requested geometric N, no border, no gradients, no shadows, no mockup, no decorative background. Only one standalone logo, not a contact sheet."
+    },
+    {
+      "slug": "demo-foton-works",
+      "prompt": "Create one original brand symbol for the fictional company Foton Works, for use at 40–80px in a job marketplace. Concept: golden photon rays around a small center. Minimal flat vector-like graphic, strong clean silhouette, balanced negative space, solid mid-tone saturated color readable on white and charcoal. Center the symbol, occupying about 80% of a square canvas. Transparent background, no wordmark, no text, no letters except the requested geometric N, no border, no gradients, no shadows, no mockup, no decorative background. Only one standalone logo, not a contact sheet."
+    },
+    {
+      "slug": "demo-latarnia-digital",
+      "prompt": "Create one original brand symbol for the fictional company Latarnia Digital, for use at 40–80px in a job marketplace. Concept: blue simplified lighthouse beam. Minimal flat vector-like graphic, strong clean silhouette, balanced negative space, solid mid-tone saturated color readable on white and charcoal. Center the symbol, occupying about 80% of a square canvas. Transparent background, no wordmark, no text, no letters except the requested geometric N, no border, no gradients, no shadows, no mockup, no decorative background. Only one standalone logo, not a contact sheet."
+    },
+    {
+      "slug": "demo-mewa-analytics",
+      "prompt": "Create one original brand symbol for the fictional company Mewa Analytics, for use at 40–80px in a job marketplace. Concept: cyan geometric gull wings. Minimal flat vector-like graphic, strong clean silhouette, balanced negative space, solid mid-tone saturated color readable on white and charcoal. Center the symbol, occupying about 80% of a square canvas. Transparent background, no wordmark, no text, no letters except the requested geometric N, no border, no gradients, no shadows, no mockup, no decorative background. Only one standalone logo, not a contact sheet."
+    },
+    {
+      "slug": "demo-neon-flow",
+      "prompt": "Create one original brand symbol for the fictional company Neon Flow, for use at 40–80px in a job marketplace. Concept: lime flowing angular N. Minimal flat vector-like graphic, strong clean silhouette, balanced negative space, solid mid-tone saturated color readable on white and charcoal. Center the symbol, occupying about 80% of a square canvas. Transparent background, no wordmark, no text, no letters except the requested geometric N, no border, no gradients, no shadows, no mockup, no decorative background. Only one standalone logo, not a contact sheet."
+    },
+    {
+      "slug": "demo-wektor-ai",
+      "prompt": "Create one original brand symbol for the fictional company Wektor AI, for use at 40–80px in a job marketplace. Concept: royal-blue vector arrow. Minimal flat vector-like graphic, strong clean silhouette, balanced negative space, solid mid-tone saturated color readable on white and charcoal. Center the symbol, occupying about 80% of a square canvas. Transparent background, no wordmark, no text, no letters except the requested geometric N, no border, no gradients, no shadows, no mockup, no decorative background. Only one standalone logo, not a contact sheet."
+    },
+    {
+      "slug": "demo-bursztyn-tech",
+      "prompt": "Create one original brand symbol for the fictional company Bursztyn Tech, for use at 40–80px in a job marketplace. Concept: amber faceted gemstone. Minimal flat vector-like graphic, strong clean silhouette, balanced negative space, solid mid-tone saturated color readable on white and charcoal. Center the symbol, occupying about 80% of a square canvas. Transparent background, no wordmark, no text, no letters except the requested geometric N, no border, no gradients, no shadows, no mockup, no decorative background. Only one standalone logo, not a contact sheet."
+    },
+    {
+      "slug": "demo-mozaika-products",
+      "prompt": "Create one original brand symbol for the fictional company Mozaika Products, for use at 40–80px in a job marketplace. Concept: coral tiled mosaic square. Minimal flat vector-like graphic, strong clean silhouette, balanced negative space, solid mid-tone saturated color readable on white and charcoal. Center the symbol, occupying about 80% of a square canvas. Transparent background, no wordmark, no text, no letters except the requested geometric N, no border, no gradients, no shadows, no mockup, no decorative background. Only one standalone logo, not a contact sheet."
+    },
+    {
+      "slug": "demo-kompas-automation",
+      "prompt": "Create one original brand symbol for the fictional company Kompas Automation, for use at 40–80px in a job marketplace. Concept: turquoise four-point compass. Minimal flat vector-like graphic, strong clean silhouette, balanced negative space, solid mid-tone saturated color readable on white and charcoal. Center the symbol, occupying about 80% of a square canvas. Transparent background, no wordmark, no text, no letters except the requested geometric N, no border, no gradients, no shadows, no mockup, no decorative background. Only one standalone logo, not a contact sheet."
+    },
+    {
+      "slug": "demo-zorza-platform",
+      "prompt": "Create one original brand symbol for the fictional company Zorza Platform, for use at 40–80px in a job marketplace. Concept: purple layered aurora ribbons. Minimal flat vector-like graphic, strong clean silhouette, balanced negative space, solid mid-tone saturated color readable on white and charcoal. Center the symbol, occupying about 80% of a square canvas. Transparent background, no wordmark, no text, no letters except the requested geometric N, no border, no gradients, no shadows, no mockup, no decorative background. Only one standalone logo, not a contact sheet."
+    },
+    {
+      "slug": "demo-puls-insights",
+      "prompt": "Create one original brand symbol for the fictional company Puls Insights, for use at 40–80px in a job marketplace. Concept: pink compact pulse waveform. Minimal flat vector-like graphic, strong clean silhouette, balanced negative space, solid mid-tone saturated color readable on white and charcoal. Center the symbol, occupying about 80% of a square canvas. Transparent background, no wordmark, no text, no letters except the requested geometric N, no border, no gradients, no shadows, no mockup, no decorative background. Only one standalone logo, not a contact sheet."
+    },
+    {
+      "slug": "demo-tandem-software",
+      "prompt": "Create one original brand symbol for the fictional company Tandem Software, for use at 40–80px in a job marketplace. Concept: blue linked parallel loops. Minimal flat vector-like graphic, strong clean silhouette, balanced negative space, solid mid-tone saturated color readable on white and charcoal. Center the symbol, occupying about 80% of a square canvas. Transparent background, no wordmark, no text, no letters except the requested geometric N, no border, no gradients, no shadows, no mockup, no decorative background. Only one standalone logo, not a contact sheet."
+    },
+    {
+      "slug": "demo-szlak-robotics",
+      "prompt": "Create one original brand symbol for the fictional company Szlak Robotics, for use at 40–80px in a job marketplace. Concept: orange robotic path of three rounded nodes. Minimal flat vector-like graphic, strong clean silhouette, balanced negative space, solid mid-tone saturated color readable on white and charcoal. Center the symbol, occupying about 80% of a square canvas. Transparent background, no wordmark, no text, no letters except the requested geometric N, no border, no gradients, no shadows, no mockup, no decorative background. Only one standalone logo, not a contact sheet."
+    },
+    {
+      "slug": "demo-zefir-design",
+      "prompt": "Create one original brand symbol for the fictional company Zefir Design, for use at 40–80px in a job marketplace. Concept: mint flowing wind swirl. Minimal flat vector-like graphic, strong clean silhouette, balanced negative space, solid mid-tone saturated color readable on white and charcoal. Center the symbol, occupying about 80% of a square canvas. Transparent background, no wordmark, no text, no letters except the requested geometric N, no border, no gradients, no shadows, no mockup, no decorative background. Only one standalone logo, not a contact sheet."
+    },
+    {
+      "slug": "demo-rytm-commerce",
+      "prompt": "Create one original brand symbol for the fictional company Rytm Commerce, for use at 40–80px in a job marketplace. Concept: violet three rising rhythm bars. Minimal flat vector-like graphic, strong clean silhouette, balanced negative space, solid mid-tone saturated color readable on white and charcoal. Center the symbol, occupying about 80% of a square canvas. Transparent background, no wordmark, no text, no letters except the requested geometric N, no border, no gradients, no shadows, no mockup, no decorative background. Only one standalone logo, not a contact sheet."
+    },
+    {
+      "slug": "demo-most-intelligence",
+      "prompt": "Create one original brand symbol for the fictional company Most Intelligence, for use at 40–80px in a job marketplace. Concept: teal abstract bridge arch. Minimal flat vector-like graphic, strong clean silhouette, balanced negative space, solid mid-tone saturated color readable on white and charcoal. Center the symbol, occupying about 80% of a square canvas. Transparent background, no wordmark, no text, no letters except the requested geometric N, no border, no gradients, no shadows, no mockup, no decorative background. Only one standalone logo, not a contact sheet."
+    },
+    {
+      "slug": "demo-lumen-tools",
+      "prompt": "Create one original brand symbol for the fictional company Lumen Tools, for use at 40–80px in a job marketplace. Concept: yellow radiating rounded sun. Minimal flat vector-like graphic, strong clean silhouette, balanced negative space, solid mid-tone saturated color readable on white and charcoal. Center the symbol, occupying about 80% of a square canvas. Transparent background, no wordmark, no text, no letters except the requested geometric N, no border, no gradients, no shadows, no mockup, no decorative background. Only one standalone logo, not a contact sheet."
+    },
+    {
+      "slug": "demo-echo-operations",
+      "prompt": "Create one original brand symbol for the fictional company Echo Operations, for use at 40–80px in a job marketplace. Concept: indigo nested echo arcs. Minimal flat vector-like graphic, strong clean silhouette, balanced negative space, solid mid-tone saturated color readable on white and charcoal. Center the symbol, occupying about 80% of a square canvas. Transparent background, no wordmark, no text, no letters except the requested geometric N, no border, no gradients, no shadows, no mockup, no decorative background. Only one standalone logo, not a contact sheet."
+    },
+    {
+      "slug": "demo-atlas-discovery",
+      "prompt": "Create one original brand symbol for the fictional company Atlas Discovery, for use at 40–80px in a job marketplace. Concept: green globe meridians. Minimal flat vector-like graphic, strong clean silhouette, balanced negative space, solid mid-tone saturated color readable on white and charcoal. Center the symbol, occupying about 80% of a square canvas. Transparent background, no wordmark, no text, no letters except the requested geometric N, no border, no gradients, no shadows, no mockup, no decorative background. Only one standalone logo, not a contact sheet."
+    },
+    {
+      "slug": "demo-delta-research",
+      "prompt": "Create one original brand symbol for the fictional company Delta Research, for use at 40–80px in a job marketplace. Concept: red open triangular delta. Minimal flat vector-like graphic, strong clean silhouette, balanced negative space, solid mid-tone saturated color readable on white and charcoal. Center the symbol, occupying about 80% of a square canvas. Transparent background, no wordmark, no text, no letters except the requested geometric N, no border, no gradients, no shadows, no mockup, no decorative background. Only one standalone logo, not a contact sheet."
+    },
+    {
+      "slug": "demo-punkt-solutions",
+      "prompt": "Create one original brand symbol for the fictional company Punkt Solutions, for use at 40–80px in a job marketplace. Concept: blue central dot framed by four rounded corners. Minimal flat vector-like graphic, strong clean silhouette, balanced negative space, solid mid-tone saturated color readable on white and charcoal. Center the symbol, occupying about 80% of a square canvas. Transparent background, no wordmark, no text, no letters except the requested geometric N, no border, no gradients, no shadows, no mockup, no decorative background. Only one standalone logo, not a contact sheet."
+    }
+  ]
+}

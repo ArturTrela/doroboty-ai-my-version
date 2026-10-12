@@ -7,7 +7,8 @@ import {
   MapPin,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { toggleSavedJob } from "@/features/jobs/candidate-job-actions";
 import type { JobWithCompany } from "@/features/jobs/types";
 import {
   categoryLabels,
@@ -18,6 +19,7 @@ import {
   seniorityLabels,
 } from "@/features/jobs/presentation";
 import { cn } from "@/lib/utils";
+import { CompanyLogo } from "@/features/jobs/company-logo";
 
 const relativeFormatter = new Intl.RelativeTimeFormat("pl", { numeric: "auto" });
 
@@ -28,24 +30,20 @@ function publishedLabel(value: string) {
   return `Dodano ${relativeFormatter.format(weeks, "week")}`;
 }
 
-export function JobCard({ job }: { job: JobWithCompany }) {
-  const initials = job.company.name
-    .split(/\s+/)
-    .map((word) => word[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-
+export function JobCard({ job, saved }: { job: JobWithCompany; saved?: boolean }) {
   return (
     <article className="group grid gap-5 py-5 shadow-[var(--gui-divider-bottom-shadow)] transition-colors hover:bg-muted/35 sm:grid-cols-[56px_minmax(0,1.35fr)_minmax(220px,0.8fr)_auto] sm:items-center sm:px-1">
-      <div className="flex size-14 items-center justify-center rounded-lg bg-muted text-sm font-semibold tracking-[var(--gui-tracking-xl)] text-foreground">
-        {initials}
-      </div>
+      <CompanyLogo company={job.company} />
 
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-2">
           <h3 className="text-base font-semibold tracking-[var(--gui-tracking-s)] sm:text-lg">
-            {job.title}
+            <Link
+              className="rounded-sm transition-colors hover:text-[var(--gui-link)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--gui-focus)]"
+              href={`/oferty/${job.slug}`}
+            >
+              {job.title}
+            </Link>
           </h3>
           {job.verificationStatus === "employer_verified" && (
             <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
@@ -95,6 +93,20 @@ export function JobCard({ job }: { job: JobWithCompany }) {
           Zobacz rolę{" "}
           <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
         </Link>
+        {saved !== undefined && (
+          <form action={toggleSavedJob} className="mt-2">
+            <input type="hidden" name="jobId" value={job.id} />
+            <input type="hidden" name="slug" value={job.slug} />
+            <Button
+              type="submit"
+              variant="ghost"
+              size="sm"
+              aria-label={`${saved ? "Usuń z zapisanych" : "Zapisz ofertę"}: ${job.title}`}
+            >
+              {saved ? "Usuń z zapisanych" : "Zapisz ofertę"}
+            </Button>
+          </form>
+        )}
       </div>
     </article>
   );

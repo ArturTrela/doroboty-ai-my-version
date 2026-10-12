@@ -1,10 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CalendarDays, ChevronsUpDown } from "lucide-react";
+import { redirect } from "next/navigation";
+import { CalendarDays, ChevronsUpDown, List, Map } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
 import { JobCard } from "@/features/jobs/job-card";
 import { JobFiltersForm } from "@/features/jobs/job-filters";
+import { JobMap } from "@/features/jobs/job-map";
+import { JobPagination } from "@/features/jobs/job-pagination";
+import { jobListingHref, paginateJobs } from "@/features/jobs/pagination";
 import { hasIndexableFilters, parseJobFilters, type SearchParams } from "@/features/jobs/filters";
 import { getPublishedJobs } from "@/features/jobs/queries";
+import { cn } from "@/lib/utils";
+import { getSupabaseConfig } from "@/lib/env";
+import { serverClient } from "@/lib/supabase/server";
 
 type Props = { searchParams: Promise<SearchParams> };
 
@@ -19,8 +27,35 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 }
 
 export default async function JobsPage({ searchParams }: Props) {
-  const filters = parseJobFilters(await searchParams);
+  const params = await searchParams;
+  const filters = parseJobFilters(params);
   const jobs = await getPublishedJobs(filters);
+  const view =
+    (Array.isArray(params.view) ? params.view[0] : params.view) === "map" ? "map" : "list";
+  const pagination = paginateJobs(jobs, filters.page);
+  if (view === "list" && pagination.page !== filters.page)
+    redirect(jobListingHref(filters, pagination.page));
+  let savedIds: Set<string> | undefined;
+  if (getSupabaseConfig().configured) {
+    const client = await serverClient();
+    const {
+      data: { user },
+    } = await client.auth.getUser();
+    if (user) {
+      const { data: profile } = await client
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+      if (profile?.role === "candidate") {
+        const { data } = await client
+          .from("saved_jobs")
+          .select("job_id")
+          .eq("candidate_id", user.id);
+        savedIds = new Set((data ?? []).map((item) => item.job_id));
+      }
+    }
+  }
 
   return (
     <section className="mx-auto max-w-[1360px] px-5 py-9 lg:px-8">
@@ -54,22 +89,49 @@ export default async function JobsPage({ searchParams }: Props) {
         </div>
       </div>
       <div className="mt-8">
-        <JobFiltersForm filters={filters} />
+        <JobFiltersForm filters={filters} view={view} />
       </div>
       <div className="mt-7 flex items-center justify-between gap-4 text-sm">
         <p className="font-semibold" role="status">
           {jobs.length === 1 ? "1 oferta" : `${jobs.length} ofert`}
         </p>
-        <span className="inline-flex items-center gap-2 text-muted-foreground">
-          <ChevronsUpDown className="size-4" /> Sortuj: najnowsze
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="mr-2 hidden items-center gap-2 text-muted-foreground sm:inline-flex">
+            <ChevronsUpDown className="size-4" /> Sortuj: najnowsze
+          </span>
+          <Link
+            aria-current={view === "list" ? "page" : undefined}
+            className={cn(
+              buttonVariants({ variant: view === "list" ? "secondary" : "ghost", size: "sm" }),
+            )}
+            href={jobListingHref(filters)}
+          >
+            <List className="size-4" /> Lista
+          </Link>
+          <Link
+            aria-current={view === "map" ? "page" : undefined}
+            className={cn(
+              buttonVariants({ variant: view === "map" ? "secondary" : "ghost", size: "sm" }),
+            )}
+            href={jobListingHref(filters, 1, "map")}
+          >
+            <Map className="size-4" /> Mapa
+          </Link>
+        </div>
       </div>
       {jobs.length > 0 ? (
-        <div className="mt-3 shadow-[var(--gui-divider-top-shadow)]">
-          {jobs.map((job) => (
-            <JobCard key={job.id} job={job} />
-          ))}
-        </div>
+        view === "map" ? (
+          <JobMap jobs={jobs} />
+        ) : (
+          <>
+            <div className="mt-3 shadow-[var(--gui-divider-top-shadow)]">
+              {pagination.items.map((job) => (
+                <JobCard key={job.id} job={job} saved={savedIds?.has(job.id)} />
+              ))}
+            </div>
+            <JobPagination pagination={pagination} filters={filters} />
+          </>
+        )
       ) : (
         <div className="mt-6 rounded-lg bg-muted/30 p-10 text-center">
           <h2 className="text-xl font-semibold">Brak ofert dla tych filtrów</h2>

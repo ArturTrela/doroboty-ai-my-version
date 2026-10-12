@@ -3,6 +3,18 @@
 This repository is the AIPH3 teaching application, not the public DoRoboty.ai production site.
 Read `BRIEF.md`, `docs/case/CASE_PROTOCOL.md`, and `TODO.md` before planning product work.
 
+## Product Behavior Register
+
+`FEATURES.md` is the maintained register of current flows and functionality, not a roadmap.
+Read the relevant entries before changing product behavior. In the same change and commit,
+update it whenever a flow, feature, route, permission, integration, feature gate, or
+user-visible behavior is added, changed, removed, or hidden. Keep stable entry IDs,
+role/route/data boundaries, conditions, limitations, and source/test references accurate.
+Distinguish implemented, conditional, hidden, partial, and tooling behavior; never infer
+test execution or deployment status from source coverage. Include the register update in
+acceptance criteria and the final review. For a change with no behavioral impact, explicitly
+record that the register was reviewed and no update was needed in the task/review note.
+
 ## Agentic Workflow
 
 For anything larger than a one-line change:

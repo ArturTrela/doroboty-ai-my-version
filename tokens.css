@@ -123,6 +123,8 @@
   --gui-edge: var(--gui-neutral-4);
   --gui-accent: var(--gui-color-1);
   --gui-accent-text: var(--gui-neutral-2);
+  /* Untitled's supplied light accent text misses AA on cyan at small sizes. */
+  --gui-accent-text-accessible: var(--gui-neutral-10);
   --gui-danger: var(--gui-error);
   --gui-focus: var(--gui-color-1);
   --gui-link: var(--gui-color-2);
@@ -306,6 +308,7 @@
   --gui-control-disabled: var(--gui-neutral-3);
   --gui-control-readonly: var(--gui-neutral-2);
   --gui-link: var(--gui-color-1);
+  --gui-accent-text-accessible: var(--gui-neutral-2);
   --popover: var(--gui-neutral-2);
   --primary-foreground: var(--gui-neutral-1);
   --sidebar-primary-foreground: var(--gui-neutral-1);

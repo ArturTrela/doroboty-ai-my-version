@@ -16,7 +16,8 @@ test("table: search, filters, selection, pagination, and no persistence", async 
   await page.getByRole("textbox", { name: "Search documents" }).fill("design");
   await expect(page.locator("tbody tr")).toHaveCount(1);
   await expect(page.getByText("Page 1 of 1")).toBeVisible();
-  await page.getByLabel("Filter by status").selectOption("done");
+  await page.getByRole("combobox", { name: "Filter by status" }).click();
+  await page.getByRole("option", { name: "Done", exact: true }).click();
   await expect(page.getByRole("heading", { name: "No matching documents" })).toBeVisible();
   await page.getByRole("button", { name: "Clear filters" }).click();
   await expect(page.locator("tbody tr")).toHaveCount(10);

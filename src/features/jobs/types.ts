@@ -49,6 +49,7 @@ export type Job = {
   function: JobFunction;
   remoteStatus: RemoteStatus;
   locations: string[];
+  coordinates?: { latitude: number; longitude: number };
   seniority: SeniorityLevel;
   contract: ContractType;
   salaryMin?: number;

@@ -9,6 +9,8 @@ describe("application schemas", () => {
         variant: "long_form",
         answer: "Za krótko",
         confirmed: "yes",
+        selectedExperienceIds: ["30000000-0000-4000-8000-000000000001"],
+        selectedWorkSampleIds: [],
       }).success,
     ).toBe(false);
     expect(
@@ -18,6 +20,8 @@ describe("application schemas", () => {
         answer:
           "Prowadziłam wdrożenie od discovery do produkcji i zmniejszyłam czas procesu o 30 procent.",
         confirmed: "yes",
+        selectedExperienceIds: ["30000000-0000-4000-8000-000000000001"],
+        selectedWorkSampleIds: [],
       }).success,
     ).toBe(true);
   });

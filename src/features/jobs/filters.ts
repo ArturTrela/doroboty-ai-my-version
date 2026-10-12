@@ -23,7 +23,7 @@ const filterSchema = z.object({
   contract: z.enum(contractTypes).optional(),
   location: z.string().trim().max(80).optional(),
   query: z.string().trim().max(100).optional(),
-  page: z.coerce.number().int().min(1).max(100).catch(1),
+  page: z.coerce.number().int().min(1).max(Number.MAX_SAFE_INTEGER).catch(1),
 });
 
 export function parseJobFilters(params: SearchParams): JobFilters {

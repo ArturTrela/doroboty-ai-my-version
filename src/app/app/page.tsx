@@ -1,7 +1,16 @@
 import Link from "next/link";
-import { ArrowRight, BriefcaseBusiness, Inbox, Send, UserRound } from "lucide-react";
+import {
+  ArrowRight,
+  BriefcaseBusiness,
+  CheckCircle2,
+  Heart,
+  Inbox,
+  Send,
+  UserRound,
+} from "lucide-react";
 import { requireProfile } from "@/features/auth/session";
 import { getSupabaseConfig } from "@/lib/env";
+import { applicationStatusLabel } from "@/features/applications/presentation";
 
 export const dynamic = "force-dynamic";
 
@@ -15,6 +24,51 @@ export default async function WorkspaceHome() {
         .select("id", { count: "exact", head: true })
         .eq("candidate_id", user.id)
     : await client.from("applications").select("id", { count: "exact", head: true });
+  const candidateData = isCandidate
+    ? await Promise.all([
+        client
+          .from("candidate_profiles")
+          .select("headline, bio, city")
+          .eq("user_id", user.id)
+          .single(),
+        client
+          .from("candidate_experiences")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", user.id),
+        client
+          .from("candidate_documents")
+          .select("user_id", { count: "exact", head: true })
+          .eq("user_id", user.id),
+        client
+          .from("saved_jobs")
+          .select("job_id", { count: "exact", head: true })
+          .eq("candidate_id", user.id),
+        client
+          .from("applications")
+          .select("id, status, submitted_at, job:jobs(title)")
+          .eq("candidate_id", user.id)
+          .order("updated_at", { ascending: false })
+          .limit(3),
+        client
+          .from("application_drafts")
+          .select("id, updated_at, job:jobs(title, slug)")
+          .eq("candidate_id", user.id)
+          .order("updated_at", { ascending: false })
+          .limit(5),
+      ])
+    : null;
+  const profileComplete = candidateData
+    ? [
+        Boolean(profile.first_name && profile.last_name),
+        Boolean(
+          candidateData[0].data?.headline &&
+          candidateData[0].data?.bio &&
+          candidateData[0].data?.city,
+        ),
+        (candidateData[1].count ?? 0) > 0,
+        (candidateData[2].count ?? 0) > 0,
+      ].filter(Boolean).length
+    : 0;
 
   return (
     <div>
@@ -28,13 +82,19 @@ export default async function WorkspaceHome() {
           </p>
         </div>
       </div>
-      <div className="grid gap-5 md:grid-cols-3">
+      <div className="grid gap-[var(--gui-space-m)] md:grid-cols-3">
         <DashboardCard
           icon={isCandidate ? UserRound : Inbox}
-          title={isCandidate ? "Uzupełnij profil" : "Przejrzyj kandydatów"}
+          title={
+            isCandidate
+              ? profileComplete === 4
+                ? "Profil gotowy"
+                : "Dokończ profil"
+              : "Przejrzyj kandydatów"
+          }
           body={
             isCandidate
-              ? "Dodaj doświadczenia i ich mierzalne efekty."
+              ? `${profileComplete}/4 kluczowe obszary profilu są gotowe.`
               : `${count ?? 0} aplikacji jest dostępnych w Twojej organizacji.`
           }
           href={isCandidate ? "/app/profil" : "/app/kandydaci"}
@@ -49,6 +109,14 @@ export default async function WorkspaceHome() {
           }
           href={isCandidate ? "/app/aplikacje" : "/app/kandydaci"}
         />
+        {isCandidate && (
+          <DashboardCard
+            icon={Heart}
+            title="Zapisane oferty"
+            body={`Masz ${candidateData?.[3].count ?? 0} zapisanych ofert.`}
+            href="/app/zapisane"
+          />
+        )}
         <DashboardCard
           icon={BriefcaseBusiness}
           title="Rynek DoRoboty.ai"
@@ -56,10 +124,72 @@ export default async function WorkspaceHome() {
           href="/oferty"
         />
       </div>
+      {isCandidate && (
+        <section className="mt-[var(--gui-space-l)] rounded-[var(--gui-radius-l)] bg-card p-[var(--gui-space-l)]">
+          <h2>Szkice aplikacji</h2>
+          {(candidateData?.[5].data ?? []).length ? (
+            <ul className="mt-[var(--gui-space-m)] grid gap-[var(--gui-space-s)]">
+              {(candidateData?.[5].data ?? []).map((draft) => {
+                const job = Array.isArray(draft.job) ? draft.job[0] : draft.job;
+                return (
+                  <li key={draft.id}>
+                    {job?.slug ? (
+                      <Link className="text-link" href={`/aplikuj/${job.slug}`}>
+                        Wznów aplikację: {job.title}
+                      </Link>
+                    ) : (
+                      "Oferta nie jest już dostępna"
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p className="mt-[var(--gui-space-m)] text-muted-foreground">
+              Nie masz niedokończonych aplikacji.
+            </p>
+          )}
+        </section>
+      )}
+      {isCandidate && (
+        <section className="mt-[var(--gui-space-l)] rounded-[var(--gui-radius-l)] bg-card p-[var(--gui-space-l)]">
+          <div className="flex items-center justify-between gap-[var(--gui-space-m)]">
+            <h2>Ostatnia aktywność</h2>
+            <Link className="text-link" href="/app/aplikacje">
+              Wszystkie aplikacje
+            </Link>
+          </div>
+          {(candidateData?.[4].data ?? []).length ? (
+            <ul className="mt-[var(--gui-space-m)] grid gap-[var(--gui-space-s)]">
+              {(candidateData?.[4].data ?? []).map((application) => {
+                const job = Array.isArray(application.job) ? application.job[0] : application.job;
+                return (
+                  <li
+                    key={application.id}
+                    className="flex items-center gap-[var(--gui-space-s)] rounded-lg bg-secondary p-[var(--gui-space-s)]"
+                  >
+                    <CheckCircle2 className="size-5" />
+                    <span>
+                      <strong className="block">{job?.title ?? "Oferta"}</strong>
+                      <span className="text-sm text-muted-foreground">
+                        {applicationStatusLabel(application.status)}
+                      </span>
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p className="mt-[var(--gui-space-m)] text-muted-foreground">
+              Po wysłaniu pierwszej aplikacji zobaczysz tutaj jej status.
+            </p>
+          )}
+        </section>
+      )}
       {profile.role === "operator" && (
-        <section className="mt-8 rounded-[var(--gui-radius-m)] bg-secondary p-[var(--gui-space-l)]">
+        <section className="mt-[var(--gui-space-l)] rounded-[var(--gui-radius-m)] bg-secondary p-[var(--gui-space-l)]">
           <h2>Stan środowiska</h2>
-          <ul className="mt-4 grid gap-2 font-ui text-sm sm:grid-cols-3">
+          <ul className="mt-[var(--gui-space-m)] grid gap-[var(--gui-space-xs)] font-ui text-sm sm:grid-cols-3">
             <li>
               <strong>Supabase:</strong> podłączony
             </li>

@@ -14,6 +14,18 @@ describe("analytics contract", () => {
         properties: { jobId: id, category: "build", title: "secret" },
       }),
     ).toBeNull();
+    expect(
+      parseAnalyticsEvent({
+        event: "application_draft_saved",
+        properties: { jobId: id, step: 3 },
+      }),
+    ).not.toBeNull();
+    expect(
+      parseAnalyticsEvent({
+        event: "candidate_profile_updated",
+        properties: { section: "profile", email: "secret@example.com" },
+      }),
+    ).toBeNull();
   });
 
   it("rejects PII and query-bearing URLs recursively", () => {

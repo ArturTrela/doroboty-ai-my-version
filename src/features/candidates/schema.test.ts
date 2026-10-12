@@ -5,11 +5,20 @@ describe("candidate evidence schemas", () => {
   it("accepts a complete candidate profile", () => {
     expect(
       candidateProfileSchema.safeParse({
-        displayName: "Anna Kowalska",
+        firstName: "Anna",
+        lastName: "Kowalska",
         headline: "Senior Product Manager",
         bio: "Prowadzę produkty B2B od discovery do mierzalnego wdrożenia.",
         city: "Warszawa",
         experienceYears: "8",
+        preferredFunctions: ["product"],
+        preferredCategories: ["build"],
+        preferredSeniority: ["senior"],
+        preferredLocations: ["Warszawa"],
+        preferredRemote: ["hybrid"],
+        preferredContracts: ["employment"],
+        salaryExpectationMin: "18000",
+        salaryExpectationCurrency: "PLN",
       }).success,
     ).toBe(true);
   });

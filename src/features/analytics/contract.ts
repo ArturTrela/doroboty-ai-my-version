@@ -6,6 +6,19 @@ const variant = z.enum(["long_form", "one_click"]);
 const purpose = z.enum(["job_draft", "candidate_answer"]);
 
 export const analyticsEventSchema = z.discriminatedUnion("event", [
+  z.object({ event: z.literal("registration_completed"), properties: z.object({}).strict() }),
+  z.object({
+    event: z.literal("candidate_onboarding_viewed"),
+    properties: z.object({ completedSteps: z.number().int().min(0).max(4) }).strict(),
+  }),
+  z.object({
+    event: z.literal("candidate_profile_readiness"),
+    properties: z.object({ ready: z.boolean() }).strict(),
+  }),
+  z.object({
+    event: z.literal("application_reviewed"),
+    properties: z.object({ jobId, usedAi: z.boolean() }).strict(),
+  }),
   z.object({ event: z.literal("job_viewed"), properties: z.object({ jobId, category }).strict() }),
   z.object({
     event: z.literal("application_started"),
@@ -16,6 +29,21 @@ export const analyticsEventSchema = z.discriminatedUnion("event", [
     properties: z.object({ jobId, variant, usedAi: z.boolean() }).strict(),
   }),
   z.object({ event: z.literal("one_click_used"), properties: z.object({ jobId }).strict() }),
+  z.object({
+    event: z.literal("candidate_profile_updated"),
+    properties: z
+      .object({ section: z.enum(["profile", "experience", "work_sample", "cv"]) })
+      .strict(),
+  }),
+  z.object({
+    event: z.literal("job_saved"),
+    properties: z.object({ jobId, saved: z.boolean() }).strict(),
+  }),
+  z.object({
+    event: z.literal("application_draft_saved"),
+    properties: z.object({ jobId, step: z.number().int().min(1).max(4) }).strict(),
+  }),
+  z.object({ event: z.literal("application_withdrawn"), properties: z.object({ jobId }).strict() }),
   z.object({
     event: z.literal("ai_generation_started"),
     properties: z.object({ jobId, purpose }).strict(),
