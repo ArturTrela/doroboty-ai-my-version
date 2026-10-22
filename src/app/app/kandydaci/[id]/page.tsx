@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, BriefcaseBusiness, Download, FileText, MapPin, UserRound } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { MatchScore } from "@/features/applications/match-score-view";
 import { buttonVariants } from "@/components/ui/button";
 import { CandidateStageActions } from "@/features/applications/candidate-stage-actions";
 import {
@@ -52,7 +53,7 @@ export default async function CandidatePreviewPage({
   const { data: application, error } = await client
     .from("applications")
     .select(
-      "id, candidate_id, status, variant, answer, source_snapshot, submitted_at, job:jobs(id, title, slug), events:application_stage_events(id, stage, occurred_at, note)",
+      "id, candidate_id, status, variant, answer, source_snapshot, submitted_at, scores:fit_scores(id, score, version, calculated_at), job:jobs(id, title, slug), events:application_stage_events(id, stage, occurred_at, note)",
     )
     .eq("id", id)
     .maybeSingle();
@@ -164,7 +165,8 @@ export default async function CandidatePreviewPage({
           ) : null}
         </div>
 
-        <aside aria-label="CV i historia procesu" className="grid h-fit gap-6">
+        <aside aria-label="Match Score, CV i historia procesu" className="grid h-fit gap-6">
+          <MatchScore scores={application.scores} />
           <section className="rounded-xl bg-card p-5 shadow-[var(--gui-shadow-m)]">
             <div className="flex items-start justify-between gap-3">
               <div>

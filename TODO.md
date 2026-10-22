@@ -479,7 +479,7 @@ M11-34 requires a real first-time participant. The fresh-account automated journ
       candidate-readable timeline.
 - [x] **M11-16 [P0]** Replace process jargon with candidate copy that explains each status, what has
       happened, whether the candidate needs to act, and what may happen next. Never expose employer
-      notes or internal scoring.
+      notes. Shared saved Match Score is visible under UX-03; no automated decisions.
 - [x] **M11-17 [P0]** Add a dedicated submission confirmation page with a receipt, link to the saved
       application, next-step expectations, and a return path to jobs.
 - [x] **M11-18 [P0]** Add a controlled application-withdrawal action for eligible stages, with
@@ -554,6 +554,15 @@ M11-34 requires a real first-time participant. The fresh-account automated journ
 ---
 
 ## External dependencies and decisions
+
+- [x] **UX-03** Enable immediate candidate registration without signup mail in local
+      auth configuration; show the saved Match Score in candidate list/detail/receipt and
+      employer inbox/detail, with neutral wording, missing/zero states and isolation tests.
+      Keep the existing versioned proxy and employer-only hiring decisions. See
+      `docs/tasks/registration-match-score.md` for actual verification and release evidence.
+- [ ] **UX-04** After an explicit deployment decision, release UX-03 to the hosted app and
+      separately verify Confirm email is disabled in the intended cloud Supabase project.
+      Local config changes alone do not update cloud Auth.
 
 - [x] **UX-02** Separate employer/candidate authentication entry points, explain account-role
       mismatches instead of silently redirecting, and support explicit local-session account switching.

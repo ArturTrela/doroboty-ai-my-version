@@ -55,4 +55,4 @@ Read, in order:
 
 ## Before sharing
 
-Run `./scripts/verify`, create a new test account, confirm the email, complete one candidate flow, and verify a second account cannot read it. Share only synthetic data and test accounts. Remove test notes containing names, emails, phone numbers, or private URLs.
+Run `./scripts/verify`, create a new test account without email confirmation, complete one candidate flow, and verify a second account cannot read it. Keep Confirm email disabled for the synthetic teaching app. Share only synthetic data and test accounts. Remove test notes containing names, emails, phone numbers, or private URLs.
