@@ -36,7 +36,8 @@ const copy = {
   },
   "sign-up": {
     title: "Zacznij od konkretu.",
-    description: "Załóż konto kandydata w DoRoboty.ai.",
+    description:
+      "Załóż konto kandydata. Bez linku aktywacyjnego — po rejestracji przejdziesz do profilu.",
     action: "Załóż konto",
   },
   "forgot-password": {

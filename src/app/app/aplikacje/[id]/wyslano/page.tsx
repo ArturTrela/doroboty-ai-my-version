@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CheckCircle2 } from "lucide-react";
+import { MatchScore } from "@/features/applications/match-score-view";
 import { buttonVariants } from "@/components/ui/button";
 import { requireProfile } from "@/features/auth/session";
 
@@ -15,7 +16,9 @@ export default async function ApplicationReceiptPage({
   const { id } = await params;
   const { data } = await client
     .from("applications")
-    .select("id, submitted_at, job:jobs(title)")
+    .select(
+      "id, submitted_at, scores:fit_scores(id, score, version, calculated_at), job:jobs(title)",
+    )
     .eq("id", id)
     .eq("candidate_id", user.id)
     .maybeSingle();
@@ -32,6 +35,9 @@ export default async function ApplicationReceiptPage({
       <p className="mt-[var(--gui-space-s)] text-sm text-muted-foreground">
         Na koncie zobaczysz kolejne zmiany statusu. Na tym etapie nie musisz nic robić.
       </p>
+      <div className="mt-[var(--gui-space-l)] text-left">
+        <MatchScore scores={data.scores} />
+      </div>
       <div className="mt-[var(--gui-space-l)] flex flex-wrap justify-center gap-[var(--gui-space-s)]">
         <Link className={buttonVariants()} href={`/app/aplikacje/${data.id}`}>
           Zobacz zgłoszenie

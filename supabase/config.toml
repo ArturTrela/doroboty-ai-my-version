@@ -29,7 +29,7 @@ enable_signup = true
 minimum_password_length = 8
 [auth.email]
 enable_signup = true
-enable_confirmations = true
+enable_confirmations = false
 double_confirm_changes = true
 max_frequency = "1s"
 [auth.email.template.confirmation]

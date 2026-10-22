@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
+import { MatchScore } from "@/features/applications/match-score-view";
 import {
   applicationStatusClass,
   applicationStatusDescription,
@@ -32,7 +33,7 @@ export default async function ApplicationsPage({
   let request = client
     .from("applications")
     .select(
-      "id, status, variant, submitted_at, updated_at, answer, job:jobs(title, slug), events:application_stage_events(stage, occurred_at)",
+      "id, status, variant, submitted_at, updated_at, answer, scores:fit_scores(id, score, version, calculated_at), job:jobs(title, slug), events:application_stage_events(stage, occurred_at)",
     )
     .eq("candidate_id", user.id)
     .order("submitted_at", { ascending: false });
@@ -122,6 +123,7 @@ export default async function ApplicationsPage({
                     {applicationStatusLabel(application.status)}
                   </span>
                 </div>
+                <MatchScore compact scores={application.scores} />
                 <p className="mt-[var(--gui-space-m)] text-sm text-muted-foreground">
                   {applicationStatusDescription(application.status)}
                 </p>

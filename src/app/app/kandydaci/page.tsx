@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, BriefcaseBusiness, UserRoundSearch } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { MatchScore } from "@/features/applications/match-score-view";
 import { buttonVariants } from "@/components/ui/button";
 import { FormSelect } from "@/components/ui/form-select";
 import { CandidateStageActions } from "@/features/applications/candidate-stage-actions";
@@ -38,7 +39,7 @@ export default async function EmployerInboxPage({
   let query = client
     .from("applications")
     .select(
-      "id, status, variant, answer, source_snapshot, submitted_at, job_id, job:jobs(title, slug), events:application_stage_events(stage, occurred_at, note)",
+      "id, status, variant, answer, source_snapshot, submitted_at, job_id, scores:fit_scores(id, score, version, calculated_at), job:jobs(title, slug), events:application_stage_events(stage, occurred_at, note)",
     )
     .order("submitted_at", { ascending: false });
   if (status) query = query.eq("status", status);
@@ -132,6 +133,7 @@ export default async function EmployerInboxPage({
                     {applicationStatusLabel(application.status)}
                   </Badge>
                 </div>
+                <MatchScore compact scores={application.scores} />
                 <div className="mt-5 grid gap-5 lg:grid-cols-2">
                   <section>
                     <h3 className="font-ui font-semibold">Odpowiedź</h3>

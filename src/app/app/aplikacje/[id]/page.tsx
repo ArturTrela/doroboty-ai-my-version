@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, FileText } from "lucide-react";
+import { MatchScore } from "@/features/applications/match-score-view";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { WithdrawApplicationForm } from "@/features/applications/withdraw-form";
@@ -46,7 +47,7 @@ export default async function ApplicationDetailPage({
   const { data: application, error } = await client
     .from("applications")
     .select(
-      "id, status, variant, answer, source_snapshot, submitted_at, updated_at, answer_generation_id, job:jobs(title, slug, company:companies(name)), events:application_stage_events(id, stage, occurred_at)",
+      "id, status, variant, answer, source_snapshot, submitted_at, updated_at, answer_generation_id, scores:fit_scores(id, score, version, calculated_at), job:jobs(title, slug, company:companies(name)), events:application_stage_events(id, stage, occurred_at)",
     )
     .eq("id", id)
     .eq("candidate_id", user.id)
@@ -87,6 +88,9 @@ export default async function ApplicationDetailPage({
         >
           {applicationStatusLabel(application.status)}
         </span>
+      </div>
+      <div className="mb-[var(--gui-space-l)]">
+        <MatchScore scores={application.scores} />
       </div>
       <section className="rounded-xl bg-card p-[var(--gui-space-l)] shadow-[var(--gui-shadow-m)]">
         <h2>Co dzieje się teraz</h2>

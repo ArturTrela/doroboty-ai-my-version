@@ -52,25 +52,27 @@ async function confirmedAccount(prefix = "account") {
     auth: { persistSession: false, autoRefreshToken: false },
   });
   const email = `${prefix}-${crypto.randomUUID()}@example.test`;
-  expect(
-    (
-      await client.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: "http://127.0.0.1:3107/auth/callback?next=/app",
-          data: { first_name: "Test", last_name: "Candidate" },
-        },
-      })
-    ).error,
-  ).toBeNull();
-  const url = new URL(await emailLink(email, "signup"));
-  const confirmation = await client.auth.verifyOtp({
-    token_hash: (url.searchParams.get("token_hash") ?? url.searchParams.get("token"))!,
-    type: "signup",
+  const registration = await client.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo: "http://127.0.0.1:3107/auth/callback?next=/app",
+      data: { first_name: "Test", last_name: "Candidate" },
+    },
   });
-  expect(confirmation.error).toBeNull();
-  return { client, id: confirmation.data.user!.id };
+  expect(registration.error).toBeNull();
+  expect(registration.data.session).not.toBeNull();
+  return { client, id: registration.data.user!.id };
+}
+
+async function expectNoSignupMail(address: string) {
+  const response = await fetch(`${mail}/api/v1/messages`);
+  const data = await response.json();
+  expect(
+    (data.messages ?? []).some((message: { To?: { Address: string }[] }) =>
+      message.To?.some((to) => to.Address === address),
+    ),
+  ).toBe(false);
 }
 
 async function fixtureClient(email: string) {
@@ -81,7 +83,9 @@ async function fixtureClient(email: string) {
   expect(result.error).toBeNull();
   return client;
 }
-test("sign-up, email confirmation, dashboard, sign-in, and password recovery", async ({ page }) => {
+test("sign-up creates an immediate session without mail; sign-in and password recovery still work", async ({
+  page,
+}) => {
   const email = `browser-${crypto.randomUUID()}@example.com`;
   await page.goto("/app");
   await expect(page).toHaveURL(/auth\/sign-in/);
@@ -92,11 +96,8 @@ test("sign-up, email confirmation, dashboard, sign-in, and password recovery", a
   await page.getByLabel("Hasło", { exact: true }).fill(password);
   await page.getByLabel(/Akceptuję politykę prywatności/).check();
   await page.getByRole("button", { name: "Załóż konto", exact: true }).click();
-  await expect(page.getByRole("status")).toContainText("Sprawdź skrzynkę");
-  await page.getByRole("link", { name: "Przejdź do logowania" }).click();
-  await expect(page.getByRole("button", { name: "Zaloguj się", exact: true })).toBeVisible();
-  await page.goto(await emailLink(email, "signup"));
   await expect(page).toHaveURL(/\/app\/onboarding/);
+  await expectNoSignupMail(email);
   await expect(page.getByRole("heading", { name: "Przygotuj profil" })).toBeVisible();
   await page.goto("/app");
   await expect(page.getByRole("heading", { name: /Cześć/ })).toBeVisible();
@@ -154,9 +155,8 @@ test("first-time candidate returns from registration, resumes a draft, and withd
   await page.getByLabel("Hasło", { exact: true }).fill(password);
   await page.getByLabel(/Akceptuję politykę prywatności/).check();
   await page.getByRole("button", { name: "Załóż konto", exact: true }).click();
-  await expect(page.getByRole("status")).toContainText("Sprawdź skrzynkę");
-  await page.goto(await emailLink(email, "signup"));
   await expect(page).toHaveURL(/onboarding.*ai-product-manager/);
+  await expectNoSignupMail(email);
   await page.getByRole("link", { name: "Kontynuuj konfigurację" }).click();
   await page.getByLabel("Nagłówek").fill("Product Manager");
   await page.getByLabel("O Tobie").fill("Prowadzę discovery produktów i mierzę rezultaty wdrożeń.");
@@ -204,7 +204,10 @@ test("first-time candidate returns from registration, resumes a draft, and withd
   await page.getByRole("checkbox", { name: /Sprawdziłem/ }).check();
   await page.getByRole("button", { name: "Wyślij aplikację" }).click();
   await expect(page.getByRole("heading", { name: "Aplikacja wysłana" })).toBeVisible();
+  const receiptScore = await page.locator("[data-match-score-value]").innerText();
+  expect(receiptScore).toContain("%");
   await page.getByRole("link", { name: "Zobacz zgłoszenie" }).click();
+  await expect(page.locator("[data-match-score-value]")).toHaveText(receiptScore);
   await expect(page.getByRole("heading", { name: "Historia procesu" })).toBeVisible();
   await expect(page.getByText(answer, { exact: true })).toBeVisible();
   page.once("dialog", (dialog) => dialog.accept());
@@ -469,6 +472,23 @@ test("application submission is atomic, idempotent, and private", async () => {
     .eq("application_id", first.data);
   expect(versions.data).toHaveLength(1);
   expect(scores.data).toHaveLength(1);
+  const employer = await fixtureClient("employer@doroboty.local");
+  const otherEmployer = await fixtureClient("employer-other@doroboty.local");
+  const anonymous = createClient(api, key, { auth: { persistSession: false } });
+  expect(
+    (await employer.from("fit_scores").select("score").eq("application_id", first.data)).data,
+  ).toEqual([{ score: 0.5 }]);
+  expect(
+    (await other.client.from("fit_scores").select("id").eq("application_id", first.data)).data,
+  ).toHaveLength(0);
+  expect(
+    (await otherEmployer.from("fit_scores").select("id").eq("application_id", first.data)).data,
+  ).toHaveLength(0);
+  const publicScore = await anonymous
+    .from("fit_scores")
+    .select("id")
+    .eq("application_id", first.data);
+  expect(publicScore.data ?? []).toHaveLength(0);
   expect(
     (
       await other.client.rpc("withdraw_application", {
@@ -652,7 +672,7 @@ test("future AI assignments cannot be exposed before their release", async () =>
 });
 test("invalid confirmation links do not redirect outside the application", async ({ page }) => {
   await page.goto("/auth/callback?token_hash=invalid&type=signup&next=https://example.com");
-  await expect(page).toHaveURL(/127.0.0.1:3107\/auth\/sign-in\?error=link/);
+  await expect(page).toHaveURL(`${test.info().project.use.baseURL}/auth/sign-in?error=link`);
   await expect(page.locator("main").getByRole("alert")).toContainText("wygasł");
 });
 
@@ -809,6 +829,19 @@ test("candidate application and employer first-conversation decision work end to
   await page.getByRole("button", { name: "Wyślij aplikację" }).click();
   await expect(page).toHaveURL(/\/app\/aplikacje\/[^/]+\/wyslano/);
   await expect(page.getByRole("heading", { name: "Aplikacja wysłana" })).toBeVisible();
+  const savedScore = await page.locator("[data-match-score-value]").innerText();
+  expect(savedScore).toContain("%");
+  const receiptUrl = new URL(page.url());
+  const applicationPath = receiptUrl.pathname.replace(/\/wyslano$/, "");
+  await page.goto(applicationPath);
+  await expect(page.locator("[data-match-score-value]")).toHaveText(savedScore);
+  await page.goto("/app/aplikacje");
+  await expect(
+    page
+      .getByRole("article")
+      .filter({ has: page.getByRole("link", { name: "AI Product Manager", exact: true }) })
+      .locator("[data-match-score-value]"),
+  ).toHaveText(savedScore);
 
   await page.getByRole("button", { name: "Wyloguj się", exact: true }).click();
   await page.getByLabel("Email", { exact: true }).fill("employer@doroboty.local");
@@ -821,6 +854,7 @@ test("candidate application and employer first-conversation decision work end to
     .getByRole("article")
     .filter({ has: page.getByRole("heading", { name: "Kandydat testowy" }) })
     .filter({ hasText: "AI Product Manager" });
+  await expect(application.locator("[data-match-score-value]")).toHaveText(savedScore);
   await application.getByRole("button", { name: "Oznacz jako przejrzaną" }).click();
   await expect(application.getByText("W przeglądzie", { exact: true })).toBeVisible();
   await application.getByRole("button", { name: "Zaproś na rozmowę" }).click();
@@ -828,6 +862,9 @@ test("candidate application and employer first-conversation decision work end to
   await application.getByRole("button", { name: "Przenieś do kolejnego etapu" }).click();
   await expect(application.getByText("Kolejny etap", { exact: true })).toBeVisible();
   await application.getByRole("link", { name: "Zobacz profil i CV" }).click();
+  await expect(page).toHaveURL(/\/app\/kandydaci\/[^/]+$/);
+  await expect(page.locator("[data-match-score-value]")).toHaveText(savedScore);
+  await expect(page.getByText("Dopasowanie kandydata do roli", { exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "CV", exact: true })).toBeVisible();
   await expect(page.getByText("CV-candidate.pdf", { exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "Otwórz CV w nowej karcie" })).toBeVisible();
