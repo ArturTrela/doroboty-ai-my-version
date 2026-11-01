@@ -1,3 +1,4 @@
+import { originalJobDescriptions } from "./original-job-copy.ts";
 import type { Company, Job, JobWithCompany } from "@/features/jobs/types";
 
 export const companies: Company[] = [
@@ -43,8 +44,7 @@ export const jobs: Job[] = [
     companyId: companies[0].id,
     title: "AI Product Manager",
     summary: "Poprowadź produkt od problemu operacyjnego do mierzalnego wdrożenia AI.",
-    description:
-      "Szukamy osoby, która połączy discovery, analizę danych i współpracę z zespołem inżynierskim. W pierwszym kwartale wybierzesz jeden proces finansowy, zbudujesz prototyp z klientami i zdefiniujesz kryteria bezpiecznego wdrożenia.\n\nNie oczekujemy znajomości każdego modelu. Oczekujemy umiejętności stawiania hipotez, prowadzenia eksperymentów i podejmowania decyzji na podstawie zachowania użytkowników.",
+    description: originalJobDescriptions["ai-product-manager"],
     category: "lead",
     function: "product",
     remoteStatus: "hybrid",
@@ -68,8 +68,7 @@ export const jobs: Job[] = [
     companyId: companies[1].id,
     title: "Staff AI Engineer",
     summary: "Buduj systemy wspierające dokumentację kliniczną — z ewaluacją, nie magią.",
-    description:
-      "Dołączysz do zespołu platformowego odpowiedzialnego za bezpieczne użycie modeli językowych. Zaprojektujesz ewaluacje, obserwowalność i mechanizmy human-in-the-loop dla funkcji używanych przez personel medyczny.\n\nNajważniejsze będą dla nas doświadczenie produkcyjne, rozumienie ograniczeń modeli oraz umiejętność współpracy z ekspertami domenowymi.",
+    description: originalJobDescriptions["staff-ai-engineer"],
     category: "build",
     function: "engineering",
     remoteStatus: "remote",
@@ -93,8 +92,7 @@ export const jobs: Job[] = [
     companyId: companies[2].id,
     title: "Senior Product Designer — AI",
     summary: "Projektuj doświadczenia, w których użytkownik rozumie i kontroluje działanie AI.",
-    description:
-      "Będziesz prowadzić projekty od badań po wdrożenie, pracując bezpośrednio z klientami B2B. Szukamy osoby, która umie prototypować zachowanie systemów AI, projektować momenty kontroli i testować z realnymi użytkownikami.\n\nPortfolio powinno pokazywać tok rozumowania, kompromisy i efekt, nie tylko końcowe ekrany.",
+    description: originalJobDescriptions["senior-product-designer-ai"],
     category: "apply",
     function: "design",
     remoteStatus: "hybrid",
@@ -118,8 +116,7 @@ export const jobs: Job[] = [
     companyId: companies[0].id,
     title: "AI Operations Specialist",
     summary: "Automatyzuj powtarzalne procesy i ucz zespół bezpiecznej pracy z AI.",
-    description:
-      "Zmapujesz procesy w finansach i obsłudze klienta, zbudujesz małe automatyzacje i będziesz mierzyć ich jakość. To rola dla osoby, która potrafi łączyć narzędzia no-code, analizę danych i uważność na potrzeby ludzi.\n\nWażniejsza od liczby certyfikatów jest umiejętność pokazania wdrożenia oraz jego mierzalnego efektu.",
+    description: originalJobDescriptions["ai-operations-specialist"],
     category: "apply",
     function: "operations",
     remoteStatus: "onsite",
@@ -143,8 +140,7 @@ export const jobs: Job[] = [
     companyId: companies[1].id,
     title: "Growth Lead — AI Products",
     summary: "Znajdź powtarzalny sposób docierania do zespołów medycznych.",
-    description:
-      "Poprowadzisz eksperymenty wzrostowe dla nowej linii produktów. Będziesz współpracować z produktem, sprzedażą i compliance, aby budować pętle uczenia zamiast kampanii oderwanych od doświadczenia użytkownika.\n\nSzukamy osoby, która umie używać AI do przyspieszenia pracy, ale potrafi też rozpoznać, kiedy automatyzacja obniża jakość sygnału.",
+    description: originalJobDescriptions["growth-lead-ai-products"],
     category: "lead",
     function: "marketing",
     remoteStatus: "remote",
@@ -168,8 +164,7 @@ export const jobs: Job[] = [
     companyId: companies[2].id,
     title: "Machine Learning Engineer",
     summary: "Wdrażaj małe, dobrze zmierzone funkcje ML w produktach klientów.",
-    description:
-      "Będziesz pracować w małym zespole nad prototypami, pipeline'ami danych i ewaluacją. Projekty szybko przechodzą od eksperymentu do produkcji, dlatego liczy się odpowiedzialność za cały cykl życia rozwiązania.\n\nDobrze odnajdzie się tu osoba z solidnym Pythonem i doświadczeniem w pracy z zespołem produktowym.",
+    description: originalJobDescriptions["machine-learning-engineer"],
     category: "build",
     function: "data",
     remoteStatus: "hybrid",

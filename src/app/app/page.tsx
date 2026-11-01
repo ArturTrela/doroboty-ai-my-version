@@ -57,18 +57,7 @@ export default async function WorkspaceHome() {
           .limit(5),
       ])
     : null;
-  const profileComplete = candidateData
-    ? [
-        Boolean(profile.first_name && profile.last_name),
-        Boolean(
-          candidateData[0].data?.headline &&
-          candidateData[0].data?.bio &&
-          candidateData[0].data?.city,
-        ),
-        (candidateData[1].count ?? 0) > 0,
-        (candidateData[2].count ?? 0) > 0,
-      ].filter(Boolean).length
-    : 0;
+  const hasCv = (candidateData?.[2].count ?? 0) > 0;
 
   return (
     <div>
@@ -77,7 +66,7 @@ export default async function WorkspaceHome() {
           <h1>Cześć{profile.display_name ? `, ${profile.display_name}` : ""}.</h1>
           <p>
             {isCandidate
-              ? "Pokaż konkretną pracę i aplikuj świadomie."
+              ? "Twoje CV, aplikacje i zapisane oferty."
               : "Podejmuj decyzje na podstawie źródłowego doświadczenia."}
           </p>
         </div>
@@ -85,19 +74,15 @@ export default async function WorkspaceHome() {
       <div className="grid gap-[var(--gui-space-m)] md:grid-cols-3">
         <DashboardCard
           icon={isCandidate ? UserRound : Inbox}
-          title={
-            isCandidate
-              ? profileComplete === 4
-                ? "Profil gotowy"
-                : "Dokończ profil"
-              : "Przejrzyj kandydatów"
-          }
+          title={isCandidate ? (hasCv ? "CV gotowe" : "Dodaj CV") : "Przejrzyj kandydatów"}
           body={
             isCandidate
-              ? `${profileComplete}/4 kluczowe obszary profilu są gotowe.`
+              ? hasCv
+                ? "CV z profilu dołączymy do Twojej aplikacji."
+                : "Dodaj CV, z którego skorzystasz przy aplikowaniu."
               : `${count ?? 0} aplikacji jest dostępnych w Twojej organizacji.`
           }
-          href={isCandidate ? "/app/profil" : "/app/kandydaci"}
+          href={isCandidate ? "/app/profil#cv" : "/app/kandydaci"}
         />
         <DashboardCard
           icon={isCandidate ? Send : BriefcaseBusiness}

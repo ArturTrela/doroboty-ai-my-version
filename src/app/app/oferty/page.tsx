@@ -2,7 +2,6 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { JobBriefForm } from "@/features/ai/job-brief-form";
 import { JobDraftWorkspace } from "@/features/ai/job-draft-workspace";
-import { ExperimentExposure } from "@/features/experiments/exposure";
 import { requireProfile } from "@/features/auth/session";
 import { getSupabaseConfig } from "@/lib/env";
 import { EmployerJobForm } from "@/features/jobs/employer-job-form";
@@ -36,12 +35,6 @@ export default async function EmployerJobsPage() {
   if (companyIds) query = query.in("company_id", companyIds);
   const { data, error } = await query;
   if (error) throw new Error("Nie udało się wczytać ofert firmy.");
-  const { data: assignment, error: assignmentError } = await client.rpc("assign_experiment", {
-    target_surface: "employer_job_copy",
-  });
-  if (assignmentError) throw new Error("Nie udało się przydzielić wariantu eksperymentu.");
-  const treatment = assignment as { id: string; variant: "manual" | "ai_draft" };
-  const allowAi = profile.role === "operator" || treatment.variant === "ai_draft";
   const jobsWithBrief = (data ?? []).map((job) => {
     const brief = Array.isArray(job.brief) ? job.brief[0] : job.brief;
     return {
@@ -91,13 +84,10 @@ export default async function EmployerJobsPage() {
         </div>
       </section>
       <div className="mt-10">
-        {allowAi && profile.role !== "operator" && (
-          <ExperimentExposure assignmentId={treatment.id} />
-        )}
         <div id="brief-source" className="mb-6 scroll-mt-6">
           <JobBriefForm jobs={jobsWithBrief} />
         </div>
-        <JobDraftWorkspace jobs={jobsWithBrief} allowAi={allowAi} />
+        <JobDraftWorkspace jobs={jobsWithBrief} />
       </div>
     </div>
   );

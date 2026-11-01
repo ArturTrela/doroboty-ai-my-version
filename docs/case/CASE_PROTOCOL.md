@@ -9,6 +9,45 @@ This protocol keeps the application, data, weekly reveals, and teaching narrativ
 It defines what the system must make observable, what participants may see at each stage,
 and which conclusions must remain open until supported by evidence.
 
+## Live product access
+
+Wojtek's 2026-11-01 product decision supersedes the original live experiment design:
+all candidates can use application drafting and all employers/authorized operators can
+use job drafting immediately. Case stages only control teaching evidence, not assistant
+availability. Source evidence, authenticated roles, ownership and human approval remain
+required. Historical synthetic cohort comparisons remain part of the teaching material.
+
+## Live Match Score override — 2026-11-01
+
+Wojtek explicitly requested an evidence-based hybrid assessment for new live applications.
+The live product now supports employer-approved, offer-version-specific criteria, assessment
+of submitted CV/experience by an LLM, and deterministic weighted scoring with reasons,
+source citations, coverage and unknown states. This request supersedes the earlier
+restriction on shipping a completed evidence-based assessment in the baseline product.
+It does not change historical teaching datasets, staged comparisons or their text-Jaccard
+method. Never relabel or recalculate historical results as hybrid scores, combine the two
+methods into one trend, or present either as a validated hiring probability. The source
+application's AI-assisted prose and private AI drafting notes are not assessment inputs.
+
+## Live presentation override — 2026-11-01
+
+Wojtek requested a simple candidate list with colored Match Scores and short AI
+summaries. Hide completeness, criterion analyses, quotations and technical metadata
+from user views while retaining evidence-based calculation and source provenance.
+Candidate/job examples should read as ordinary recruitment records; do not put
+synthetic/fictional/test notices into visible job descriptions or candidate profiles.
+Development documentation and research fixtures still preserve their provenance.
+
+## Shared candidate source override — 2026-11-01
+
+Wojtek requested a single source bundle for both application writing and Match Score:
+CV plus candidate-authored notes from the existing application editor. Remove the
+separate additional-experience input and profile section. Keep source notes distinct
+from generated/edited output, preserve them through regeneration and draft recovery,
+and require regeneration when the saved CV/source bundle no longer matches. Raw
+source notes remain candidate-private; employers see the approved application, CV,
+score and summary. Existing submitted records and scores remain historical snapshots.
+
 ## Narrative contract
 
 The case uses one marketplace stream:
@@ -45,7 +84,6 @@ Participant sees:
 
 Participant must not yet see:
 
-- AI writing assistance;
 - the later text-provenance comparison;
 - the final work-evidence direction.
 
@@ -73,13 +111,13 @@ This stage must support several plausible explanations. It must not state the fi
 
 ### Stage D — AI writing assistance
 
-The product introduces two separately assignable interventions:
+The teaching material examines two interventions, both already available in the live product:
 
 - employer job-post drafting from a private source brief;
-- candidate “why I fit” drafting from source experience.
+- candidate application drafting from the saved CV and optional free-form notes. Structured experience entry is hidden from the live flow; historical source evidence remains available for teaching analysis.
 
 Every use stores source text, generated text, final approved text, edits, model metadata,
-and experiment exposure. Human approval is mandatory.
+and approval metadata. Human approval is mandatory.
 
 ### Stage E — Measurement and twist
 
@@ -113,8 +151,9 @@ finished version of them.
 - All shared course data is synthetic and deterministic.
 - IDs remain stable across stage snapshots unless a migration explicitly changes them.
 - Timestamps permit cohort and before/after analysis.
-- Experiment assignment and actual exposure are stored separately.
-- Employer AI and candidate AI are independently assignable.
+- Historical synthetic experiment assignment and exposure remain distinct analysis fields;
+  the live product no longer assigns groups or records experiment exposures.
+- Both live assistants are available independently by authenticated role.
 - Source, generated, edited, and published/submitted text are separate immutable versions.
 - The source employer brief contains information not guaranteed to appear in the public job
   post.

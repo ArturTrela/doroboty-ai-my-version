@@ -33,7 +33,7 @@ export default async function ApplicationsPage({
   let request = client
     .from("applications")
     .select(
-      "id, status, variant, submitted_at, updated_at, answer, scores:fit_scores(id, score, version, calculated_at), job:jobs(title, slug), events:application_stage_events(stage, occurred_at)",
+      "id, status, variant, submitted_at, updated_at, answer, scores:fit_scores(id, score, version, calculated_at, status, components, attempts, processing_started_at), job:jobs(title, slug), events:application_stage_events(stage, occurred_at)",
     )
     .eq("candidate_id", user.id)
     .order("submitted_at", { ascending: false });

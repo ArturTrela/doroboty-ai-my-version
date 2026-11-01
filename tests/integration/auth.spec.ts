@@ -2,11 +2,12 @@ import { test, expect } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
 import AxeBuilder from "@axe-core/playwright";
 import { execFileSync } from "node:child_process";
+import { LOCAL_TEST_PASSWORD } from "../../scripts/lib/local-database.ts";
 const api = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
-const mail = process.env.LOCAL_MAIL_URL ?? "http://127.0.0.1:54324";
+const mail = process.env.LOCAL_MAIL_URL ?? "http://127.0.0.1:58324";
 const password = "Local-test-password-483!";
-const localCasePassword = "DoRoboty-local-only-2026!";
+const localCasePassword = LOCAL_TEST_PASSWORD;
 const labelsForRelease = (release: string) =>
   ({
     baseline: "Baseline",
@@ -164,13 +165,7 @@ test("first-time candidate returns from registration, resumes a draft, and withd
   await page.getByLabel("Lata doświadczenia").fill("4");
   await page.getByRole("button", { name: "Zapisz profil" }).click();
   await expect(page.getByRole("status").filter({ hasText: "Profil zapisany" })).toBeVisible();
-  await page.getByLabel("Rola", { exact: true }).fill("Product Manager");
-  await page.getByLabel("Firma lub projekt").fill("Synthetic Labs");
-  await page
-    .getByLabel("Co zrobiłeś / zrobiłaś")
-    .fill("Przeprowadziłam discovery procesu i wdrożyłam prototyp z zespołem operacyjnym.");
-  await page.getByRole("button", { name: "Dodaj doświadczenie" }).click();
-  await expect(page.getByRole("status").filter({ hasText: "Doświadczenie dodane" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Dodaj doświadczenie" })).toHaveCount(0);
   await page.locator('input[type="file"]').setInputFiles({
     name: "pierwsze-cv.pdf",
     mimeType: "application/pdf",
@@ -190,10 +185,10 @@ test("first-time candidate returns from registration, resumes a draft, and withd
   await expect(page).toHaveURL(/\/aplikuj\/ai-product-manager$/);
   const answer =
     "Przeprowadziłam discovery procesu i wdrożyłam prototyp, którego wyniki omawiałam z zespołem operacyjnym.";
-  await page.getByLabel("Dlaczego pasujesz do tej roli?").fill(answer);
+  await page.getByLabel("Twoja aplikacja").fill(answer);
   await expect(page.getByRole("status").filter({ hasText: "Szkic zapisany" })).toBeVisible();
   await page.reload();
-  await expect(page.getByLabel("Dlaczego pasujesz do tej roli?")).toHaveValue(answer);
+  await expect(page.getByLabel("Twoja aplikacja")).toHaveValue(answer);
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
     true,
@@ -205,7 +200,7 @@ test("first-time candidate returns from registration, resumes a draft, and withd
   await page.getByRole("button", { name: "Wyślij aplikację" }).click();
   await expect(page.getByRole("heading", { name: "Aplikacja wysłana" })).toBeVisible();
   const receiptScore = await page.locator("[data-match-score-value]").innerText();
-  expect(receiptScore).toContain("%");
+  expect(receiptScore).toBe("Brak wyniku");
   await page.getByRole("link", { name: "Zobacz zgłoszenie" }).click();
   await expect(page.locator("[data-match-score-value]")).toHaveText(receiptScore);
   await expect(page.getByRole("heading", { name: "Historia procesu" })).toBeVisible();
@@ -579,7 +574,11 @@ test("AI provenance is private, immutable, costed, and role constrained", async 
     provider: "deterministic",
     model: "course-fixture-v1",
     prompt_version: "evidence-first-v1",
-    source_payload: { fixture: true },
+    source_payload: {
+      fixture: true,
+      cvText: "Private CV source",
+      candidateNotes: "Private unapproved notes",
+    },
     output_text: "Tekst źródłowy pozostaje oddzielony od tej wygenerowanej wersji odpowiedzi.",
     latency_ms: 4,
     input_tokens: 12,
@@ -596,7 +595,7 @@ test("AI provenance is private, immutable, costed, and role constrained", async 
   expect(
     (await employer.from("ai_generations").select("estimated_cost_usd").eq("id", generationId))
       .data,
-  ).toHaveLength(1);
+  ).toHaveLength(0);
   await candidate.client
     .from("ai_generations")
     .update({ output_text: "Niedozwolona zmiana" })
@@ -620,6 +619,25 @@ test("AI provenance is private, immutable, costed, and role constrained", async 
       "Kandydat nie jest członkiem organizacji i nie może zatwierdzić wersji tekstu oferty.",
   });
   expect(forbiddenApproval.error).not.toBeNull();
+  const sent = await candidate.client.rpc("submit_application_with_evidence", {
+    target_job_id: row.job_id,
+    target_variant: "one_click",
+    final_answer:
+      "Przesyłam świadomie zatwierdzoną aplikację opartą na moim CV i własnym doświadczeniu.",
+    target_generation_id: generationId,
+    source_snapshot: { fixture: true },
+    source_evidence_ids: [],
+    fit_version: "token-jaccard-v1",
+    fit_components: {},
+    fit_score: 0.2,
+  });
+  expect(sent.error).toBeNull();
+  expect((await employer.from("applications").select("id").eq("id", sent.data!)).data).toHaveLength(
+    1,
+  );
+  expect(
+    (await employer.from("ai_generations").select("source_payload").eq("id", generationId)).data,
+  ).toHaveLength(0);
 });
 
 test("anonymous users cannot read employer briefs", async () => {
@@ -628,48 +646,6 @@ test("anonymous users cannot read employer briefs", async () => {
   expect(briefs.data ?? []).toHaveLength(0);
 });
 
-test("experiment assignment is stable and exposure is idempotent", async () => {
-  const account = await confirmedAccount("experiment");
-  const first = await account.client.rpc("assign_experiment", {
-    target_surface: "application_flow",
-  });
-  const second = await account.client.rpc("assign_experiment", {
-    target_surface: "application_flow",
-  });
-  expect(first.error).toBeNull();
-  expect(second.error).toBeNull();
-  expect(second.data.id).toBe(first.data.id);
-  expect(second.data.variant).toBe(first.data.variant);
-  const exposureA = await account.client.rpc("record_experiment_exposure", {
-    target_assignment_id: first.data.id,
-    target_application_id: null,
-  });
-  const exposureB = await account.client.rpc("record_experiment_exposure", {
-    target_assignment_id: first.data.id,
-    target_application_id: null,
-  });
-  expect(exposureA.error).toBeNull();
-  expect(exposureB.data).toBe(exposureA.data);
-});
-
-test("future AI assignments cannot be exposed before their release", async () => {
-  const candidate = await fixtureClient("candidate@doroboty.local");
-  const future = await candidate
-    .from("experiment_assignments")
-    .select("id")
-    .eq("surface", "candidate_answer")
-    .eq("release_key", "post_ai")
-    .single();
-  expect(future.error).toBeNull();
-  const exposure = await candidate.rpc("record_experiment_exposure", {
-    target_assignment_id: future.data!.id,
-    target_application_id: null,
-  });
-  expect(exposure.error).not.toBeNull();
-  expect((await candidate.rpc("can_use_ai", { target_surface: "candidate_answer" })).data).toBe(
-    false,
-  );
-});
 test("invalid confirmation links do not redirect outside the application", async ({ page }) => {
   await page.goto("/auth/callback?token_hash=invalid&type=signup&next=https://example.com");
   await expect(page).toHaveURL(`${test.info().project.use.baseURL}/auth/sign-in?error=link`);
@@ -801,15 +777,7 @@ test("candidate application and employer first-conversation decision work end to
   await page.getByRole("button", { name: "Zapisz profil" }).click();
   await expect(page.getByRole("status")).toContainText("zapisany");
 
-  await page.getByLabel("Rola", { exact: true }).fill("Product Manager");
-  await page.getByLabel("Firma lub projekt").fill("Fixture Labs");
-  await page
-    .getByLabel("Co zrobiłeś / zrobiłaś")
-    .fill("Zmapowałem proces finansowy, przetestowałem prototyp i poprowadziłem wdrożenie.");
-  await page.getByLabel("Mierzalny efekt (opcjonalnie)").fill("Czas obsługi spadł o 20 procent.");
-  await page.getByRole("button", { name: "Dodaj doświadczenie" }).click();
-  await expect(page.getByRole("status").filter({ hasText: "Doświadczenie dodane." })).toBeVisible();
-
+  await expect(page.getByRole("button", { name: "Dodaj doświadczenie" })).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "Próbki pracy", exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Dodaj próbkę" })).toHaveCount(0);
   await page.getByRole("link", { name: "Podgląd dla pracodawcy" }).click();
@@ -817,9 +785,9 @@ test("candidate application and employer first-conversation decision work end to
   await expect(page.getByRole("heading", { name: "Próbki pracy", exact: true })).toHaveCount(0);
 
   await page.goto("/aplikuj/ai-product-manager");
-  await expect(page.getByRole("heading", { name: "Pełny opis roli" })).toBeVisible();
+  await page.getByText("Pełny opis roli", { exact: true }).click();
   await expect(page.locator('input[name="selectedWorkSampleIds"]')).toHaveCount(0);
-  const answer = page.getByLabel("Dlaczego pasujesz do tej roli?");
+  const answer = page.getByLabel("Twoja aplikacja");
   if ((await answer.inputValue()).length < 40) {
     await answer.fill(
       "Prowadziłem discovery procesu finansowego i dowiozłem mierzalne wdrożenie z zespołem operacyjnym.",
@@ -830,7 +798,7 @@ test("candidate application and employer first-conversation decision work end to
   await expect(page).toHaveURL(/\/app\/aplikacje\/[^/]+\/wyslano/);
   await expect(page.getByRole("heading", { name: "Aplikacja wysłana" })).toBeVisible();
   const savedScore = await page.locator("[data-match-score-value]").innerText();
-  expect(savedScore).toContain("%");
+  expect(savedScore).toBe("Brak wyniku");
   const receiptUrl = new URL(page.url());
   const applicationPath = receiptUrl.pathname.replace(/\/wyslano$/, "");
   await page.goto(applicationPath);
@@ -855,23 +823,28 @@ test("candidate application and employer first-conversation decision work end to
     .filter({ has: page.getByRole("heading", { name: "Kandydat testowy" }) })
     .filter({ hasText: "AI Product Manager" });
   await expect(application.locator("[data-match-score-value]")).toHaveText(savedScore);
-  await application.getByRole("button", { name: "Oznacz jako przejrzaną" }).click();
-  await expect(application.getByText("W przeglądzie", { exact: true })).toBeVisible();
-  await application.getByRole("button", { name: "Zaproś na rozmowę" }).click();
-  await application.getByRole("button", { name: "Potwierdź odbytą rozmowę" }).click();
-  await application.getByRole("button", { name: "Przenieś do kolejnego etapu" }).click();
-  await expect(application.getByText("Kolejny etap", { exact: true })).toBeVisible();
-  await application.getByRole("link", { name: "Zobacz profil i CV" }).click();
+  await expect(application.getByText("Podsumowanie AI", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Oznacz jako przejrzaną" })).toHaveCount(0);
+  await application.getByRole("link", { name: "Profil i CV", exact: true }).click();
+  await expect(page).toHaveURL(/\/app\/kandydaci\/[^/]+$/);
+  await page.getByRole("button", { name: "Oznacz jako przejrzaną" }).click();
+  await expect(page.getByText("W przeglądzie", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Zaproś na rozmowę" }).click();
+  await page.getByRole("button", { name: "Potwierdź odbytą rozmowę" }).click();
+  await page.getByRole("button", { name: "Przenieś do kolejnego etapu" }).click();
+  await expect(page.getByText("Kolejny etap", { exact: true })).toBeVisible();
   await expect(page).toHaveURL(/\/app\/kandydaci\/[^/]+$/);
   await expect(page.locator("[data-match-score-value]")).toHaveText(savedScore);
-  await expect(page.getByText("Dopasowanie kandydata do roli", { exact: true })).toBeVisible();
+  await expect(page.getByText("Podsumowanie AI", { exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "CV", exact: true })).toBeVisible();
   await expect(page.getByText("CV-candidate.pdf", { exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "Otwórz CV w nowej karcie" })).toBeVisible();
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 });
 
-test("long-form application remains a complete browser journey", async ({ page }) => {
+test("a saved CV opens one blank application field without separate evidence requirements", async ({
+  page,
+}) => {
   const candidate = await fixtureClient("candidate-longform@doroboty.local");
   const user = (await candidate.auth.getUser()).data.user!;
   await candidate
@@ -894,10 +867,11 @@ test("long-form application remains a complete browser journey", async ({ page }
   await page.getByRole("button", { name: "Zaloguj się", exact: true }).click();
   await expect(page).toHaveURL(/\/app$/);
   await page.goto("/aplikuj/staff-ai-engineer");
-  await expect(page.getByRole("heading", { name: "Napisz odpowiedź" })).toBeVisible();
-  await expect(page.getByLabel("Dlaczego pasujesz do tej roli?")).toHaveValue("");
+  await expect(page.getByRole("heading", { name: "Twoje CV", exact: true })).toBeVisible();
+  await expect(page.getByLabel("Twoja aplikacja")).toHaveValue("");
+  await expect(page.locator('input[name="variant"]')).toHaveValue("one_click");
   await page
-    .getByLabel("Dlaczego pasujesz do tej roli?")
+    .getByLabel("Twoja aplikacja")
     .fill("Budowałem ewaluacje systemów AI i wdrożyłem nadzór człowieka w procesie regulowanym.");
   await page.getByRole("checkbox", { name: /Sprawdziłem/ }).check();
   await page.getByRole("button", { name: "Wyślij aplikację" }).click();
@@ -981,35 +955,72 @@ test("only an operator can inspect and release every case stage", async ({ page 
   }
 });
 
-test("candidate and employer AI drafts require approval and preserve public source truth", async ({
+test("AI assistants work at baseline for every eligible account and preserve approval", async ({
   page,
 }) => {
   const operator = await fixtureClient("operator@doroboty.local");
-  const release = await operator.rpc("release_case", { target_release: "demo_day" });
+  const release = await operator.rpc("release_case", { target_release: "baseline" });
   expect(release.error).toBeNull();
-  const candidate = await fixtureClient("candidate@doroboty.local");
-  const candidateApplicationsBefore = await candidate
-    .from("applications")
-    .select("id", { count: "exact", head: true })
-    .eq("job_id", "20000000-0000-4000-8000-000000000004");
-
-  await page.goto("/auth/sign-in");
-  await page.getByLabel("Email", { exact: true }).fill("candidate@doroboty.local");
-  await page.getByLabel("Hasło", { exact: true }).fill(localCasePassword);
-  await page.getByRole("button", { name: "Zaloguj się", exact: true }).click();
-  await expect(page).toHaveURL(/\/app$/);
-  await page.goto("/aplikuj/ai-operations-specialist");
-  await page.getByRole("button", { name: "Przygotuj szkic z AI" }).click();
-  await expect(page.getByRole("status").filter({ hasText: "Szkic gotowy." })).toBeVisible();
-  await expect(page.getByLabel("Dlaczego pasujesz do tej roli?")).not.toHaveValue("");
-  const candidateApplicationsAfter = await candidate
-    .from("applications")
-    .select("id", { count: "exact", head: true })
-    .eq("job_id", "20000000-0000-4000-8000-000000000004");
-  expect(candidateApplicationsAfter.count).toBe(candidateApplicationsBefore.count);
-
-  await page.goto("/app");
-  await page.getByRole("button", { name: "Wyloguj się", exact: true }).click();
+  for (const email of ["candidate@doroboty.local", "candidate-longform@doroboty.local"]) {
+    const candidate = await fixtureClient(email);
+    const user = (await candidate.auth.getUser()).data.user!;
+    await candidate.from("candidate_experiences").delete().eq("user_id", user.id);
+    const profile = await candidate
+      .from("candidate_profiles")
+      .update({ headline: "", bio: "" })
+      .eq("user_id", user.id);
+    expect(profile.error).toBeNull();
+    const before = await candidate
+      .from("applications")
+      .select("id", { count: "exact", head: true });
+    await page.goto("/auth/sign-in");
+    await page.getByLabel("Email", { exact: true }).fill(email);
+    await page.getByLabel("Hasło", { exact: true }).fill(localCasePassword);
+    await page.getByRole("button", { name: "Zaloguj się", exact: true }).click();
+    await expect(page).toHaveURL(/\/app$/);
+    await page.goto("/aplikuj/ai-operations-specialist");
+    await page.getByRole("button", { name: "Pomóż mi napisać aplikację" }).click();
+    await expect(page.getByRole("status").filter({ hasText: "Szkic gotowy." })).toBeVisible();
+    await expect(page.getByLabel("Twoja aplikacja")).not.toHaveValue("");
+    const cvGeneration = await candidate
+      .from("ai_generations")
+      .select("source_payload")
+      .eq("requested_by", user.id)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
+    expect(cvGeneration.data?.source_payload).toMatchObject({
+      cvReadStatus: "available",
+      candidateNotes: "",
+    });
+    const notes =
+      "Dodatkowo prowadziłem szkolenia zespołu operacyjnego i skróciłem czas obsługi o 20 procent.";
+    await page.getByRole("button", { name: "Edytuj dopiski", exact: true }).click();
+    await page.getByLabel("Twoja aplikacja").fill(notes);
+    await page.getByRole("button", { name: "Pomóż mi napisać aplikację", exact: true }).click();
+    await expect(page.getByLabel("Twoja aplikacja")).not.toHaveValue(notes);
+    const generatedAnswer = await page.getByLabel("Twoja aplikacja").inputValue();
+    await expect
+      .poll(async () => {
+        const draft = await candidate
+          .from("application_drafts")
+          .select("answer")
+          .eq("candidate_id", user.id)
+          .eq("job_id", "20000000-0000-4000-8000-000000000004")
+          .single();
+        return draft.data?.answer;
+      })
+      .toBe(generatedAnswer);
+    await expect(page.getByRole("status").filter({ hasText: "Szkic zapisany" })).toBeVisible();
+    await page.reload();
+    await expect(page.getByRole("button", { name: "Edytuj dopiski", exact: true })).toBeVisible();
+    await page.getByRole("button", { name: "Edytuj dopiski", exact: true }).click();
+    await expect(page.getByLabel("Twoja aplikacja")).toHaveValue(notes);
+    const after = await candidate.from("applications").select("id", { count: "exact", head: true });
+    expect(after.count).toBe(before.count);
+    await page.goto("/app");
+    await page.getByRole("button", { name: "Wyloguj się", exact: true }).click();
+  }
   const employer = await fixtureClient("employer@doroboty.local");
   const originalJob = await employer
     .from("jobs")
@@ -1041,6 +1052,72 @@ test("candidate and employer AI drafts require approval and preserve public sour
     .eq("title", "AI Product Manager — wersja prywatna")
     .single();
   expect(privateVersion.data?.visibility).toBe("private");
+});
+
+test("application AI recovers from missing or unreadable CV using the same notes field", async ({
+  page,
+}) => {
+  const { client, id } = await confirmedAccount("cv-fallback");
+  const email = (await client.auth.getUser()).data.user!.email!;
+  await page.goto("/auth/sign-in");
+  await page.getByLabel("Email", { exact: true }).fill(email);
+  await page.getByLabel("Hasło", { exact: true }).fill(password);
+  await page.getByRole("button", { name: "Zaloguj się", exact: true }).click();
+  await expect(page).toHaveURL(/\/app$/);
+  await page.goto("/aplikuj/ai-operations-specialist");
+  await expect(page.getByRole("button", { name: "Pomóż mi napisać aplikację" })).toBeDisabled();
+  const notes = "Przeszkoliłem osiem osób z zespołu i usprawniłem obsługę zgłoszeń klientów.";
+  await page.getByLabel("Twoja aplikacja").fill(notes);
+  await page.getByRole("button", { name: "Pomóż mi napisać aplikację" }).click();
+  await expect(page.getByRole("status").filter({ hasText: "Szkic gotowy." })).toBeVisible();
+  expect(await page.getByLabel("Twoja aplikacja").inputValue()).toContain(notes);
+  const missing = await client
+    .from("ai_generations")
+    .select("source_payload")
+    .eq("requested_by", id)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .single();
+  expect(missing.data?.source_payload).toMatchObject({
+    cvReadStatus: "missing",
+    cvText: null,
+    candidateNotes: notes,
+  });
+  await page.getByRole("button", { name: "Edytuj dopiski", exact: true }).click();
+  await expect(page.getByLabel("Twoja aplikacja")).toHaveValue(notes);
+
+  await page.goto("/app/profil");
+  await page.locator('input[type="file"]').setInputFiles({
+    name: "unreadable-cv.pdf",
+    mimeType: "application/pdf",
+    buffer: Buffer.from("%PDF-1.4 synthetic unreadable fixture"),
+  });
+  await page.getByRole("button", { name: "Dodaj CV", exact: true }).click();
+  await expect(page.getByRole("status").filter({ hasText: "CV zapisane" })).toBeVisible();
+  await page.goto("/aplikuj/staff-ai-engineer");
+  await page.getByRole("button", { name: "Pomóż mi napisać aplikację" }).click();
+  await expect(
+    page.getByRole("status").filter({ hasText: "Nie udało się odczytać tekstu CV" }),
+  ).toBeVisible();
+  await expect(page.getByLabel("Twoja aplikacja")).toHaveValue("");
+  await page.getByLabel("Twoja aplikacja").fill(notes);
+  await page.getByRole("button", { name: "Pomóż mi napisać aplikację" }).click();
+  await expect(
+    page.getByRole("status").filter({ hasText: "Szkic gotowy na podstawie Twojego tekstu" }),
+  ).toBeVisible();
+  const unreadable = await client
+    .from("ai_generations")
+    .select("source_payload")
+    .eq("requested_by", id)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .single();
+  expect(unreadable.data?.source_payload).toMatchObject({
+    cvReadStatus: "unreadable",
+    cvText: null,
+    candidateNotes: notes,
+  });
+  expect((await client.from("applications").select("id")).data).toEqual([]);
 });
 
 test("candidate-critical screens reflow in both themes and expose accessible controls", async ({
@@ -1116,7 +1193,7 @@ test("optional marketplace volume preserves data and supports candidate applicat
   const visitor = createClient(api, key, { auth: { persistSession: false } });
   const jobs = await visitor
     .from("jobs")
-    .select("id, company_id, slug, map_latitude, map_longitude")
+    .select("id, company_id, slug, description, map_latitude, map_longitude")
     .like("slug", "demo-%");
   expect(jobs.error).toBeNull();
   expect(jobs.data).toHaveLength(100);
@@ -1215,17 +1292,22 @@ test("optional marketplace volume preserves data and supports candidate applicat
   await page.getByRole("button", { name: "Zaloguj się", exact: true }).click();
   await expect(page).toHaveURL(/\/app$/);
   await page.goto("/aplikuj/demo-kobalt-labs-ai-product-manager-1");
-  await expect(page.getByRole("heading", { name: "Pełny opis roli" })).toBeVisible();
-  await expect(
-    page.locator("[data-job-description]").getByRole("heading", { name: "O firmie", exact: true }),
-  ).toBeVisible();
-  await expect(
-    page
-      .locator("[data-job-description]")
-      .getByRole("heading", { name: "Zakres odpowiedzialności", exact: true }),
-  ).toBeVisible();
+  await page.getByText("Pełny opis roli", { exact: true }).click();
+  const appliedJob = jobs.data!.find(
+    (job) => job.slug === "demo-kobalt-labs-ai-product-manager-1",
+  )!;
+  const expectedHeadings = [...appliedJob.description.matchAll(/^### (.+)$/gm)].map(
+    (match) => match[1],
+  );
+  expect(expectedHeadings.length).toBeGreaterThan(0);
+  const applicationContext = page.locator("[data-job-description]");
+  await expect(applicationContext.getByRole("heading")).toHaveText(expectedHeadings);
+  await expect(applicationContext.getByRole("listitem").first()).toBeVisible();
+  await expect(applicationContext.locator("p").last()).toHaveText(
+    appliedJob.description.split("\n\n").at(-1)!,
+  );
   await page
-    .getByLabel("Dlaczego pasujesz do tej roli?")
+    .getByLabel("Twoja aplikacja")
     .fill(
       "Prowadziłem discovery produktu i wdrożyłem prototyp z zespołem. Potrafię mierzyć efekt i opisać ograniczenia rozwiązania.",
     );

@@ -17,7 +17,7 @@ export default async function ApplicationReceiptPage({
   const { data } = await client
     .from("applications")
     .select(
-      "id, submitted_at, scores:fit_scores(id, score, version, calculated_at), job:jobs(title)",
+      "id, submitted_at, scores:fit_scores(id, score, version, calculated_at, status, components, attempts, processing_started_at), job:jobs(title)",
     )
     .eq("id", id)
     .eq("candidate_id", user.id)
@@ -36,7 +36,7 @@ export default async function ApplicationReceiptPage({
         Na koncie zobaczysz kolejne zmiany statusu. Na tym etapie nie musisz nic robić.
       </p>
       <div className="mt-[var(--gui-space-l)] text-left">
-        <MatchScore scores={data.scores} />
+        <MatchScore scores={data.scores} applicationId={data.id} canRetry />
       </div>
       <div className="mt-[var(--gui-space-l)] flex flex-wrap justify-center gap-[var(--gui-space-s)]">
         <Link className={buttonVariants()} href={`/app/aplikacje/${data.id}`}>

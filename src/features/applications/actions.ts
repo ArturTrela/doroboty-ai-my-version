@@ -8,7 +8,15 @@ import {
   employerStageSchema,
 } from "@/features/applications/schema";
 import { requireProfile } from "@/features/auth/session";
-import { calculateTextFit } from "@/features/ai/text-fit";
+import { after } from "next/server";
+import { readCvDocumentText } from "@/features/candidates/cv-text.server";
+import {
+  candidateSourceSchema,
+  candidateMatchSources,
+  sameCvSource,
+  type CandidateSource,
+} from "./sources";
+import { assessApplication } from "@/features/matching/assess.server";
 import { captureAnalytics } from "@/features/analytics/server";
 import { z } from "zod";
 
@@ -24,6 +32,7 @@ export async function submitApplication(
     jobId: formData.get("jobId"),
     variant: formData.get("variant"),
     answer: formData.get("answer"),
+    candidateNotes: formData.get("candidateNotes") || "",
     aiGenerationId: formData.get("aiGenerationId") || "",
     confirmed: formData.get("confirmed"),
     selectedExperienceIds: formData.getAll("selectedExperienceIds"),
@@ -78,10 +87,9 @@ export async function submitApplication(
     return { ok: false, message: "Oferta nie ma aktywnej organizacji." };
   if (candidateResult.error) return { ok: false, message: "Najpierw uzupełnij profil kandydata." };
   if (
-    !candidateResult.data?.headline ||
-    !candidateResult.data?.bio ||
     experiencesResult.error ||
     samplesResult.error ||
+    documentResult.error ||
     (experiencesResult.data?.length ?? 0) !== parsed.data.selectedExperienceIds.length ||
     (samplesResult.data?.length ?? 0) !== parsed.data.selectedWorkSampleIds.length
   ) {
@@ -91,10 +99,11 @@ export async function submitApplication(
     };
   }
 
+  let sharedSource: CandidateSource;
   if (parsed.data.aiGenerationId) {
     const { data: generation } = await client
       .from("ai_generations")
-      .select("id")
+      .select("id, source_payload")
       .eq("id", parsed.data.aiGenerationId)
       .eq("requested_by", user.id)
       .eq("job_id", parsed.data.jobId)
@@ -102,12 +111,46 @@ export async function submitApplication(
       .eq("status", "succeeded")
       .maybeSingle();
     if (!generation)
-      return { ok: false, message: "Szkic AI wygasł. Wygeneruj go ponownie lub usuń." };
+      return {
+        ok: false,
+        message: "Szkic AI wygasł. Wygeneruj go ponownie lub wróć do swoich dopisków.",
+      };
+    const stored = candidateSourceSchema.safeParse(generation.source_payload);
+    const document = documentResult.data;
+    const currentCv = document
+      ? {
+          fileName: document.file_name,
+          storagePath: document.storage_path,
+          uploadedAt: document.uploaded_at,
+          sizeBytes: document.size_bytes,
+        }
+      : null;
+    if (
+      !stored.success ||
+      stored.data.candidateNotes !== parsed.data.candidateNotes ||
+      !sameCvSource(stored.data.cvSnapshot, currentCv)
+    )
+      return {
+        ok: false,
+        message:
+          "CV lub dopiski zmieniły się od przygotowania szkicu. Wygeneruj aplikację ponownie, aby użyć ich także w Match Score.",
+      };
+    sharedSource = stored.data;
+  } else {
+    const cv = await readCvDocumentText(client, user.id, documentResult.data);
+    sharedSource = candidateSourceSchema.parse({
+      candidateNotes: parsed.data.answer,
+      cvText: cv.status === "available" ? cv.text : null,
+      cvReadStatus: cv.status,
+      cvSnapshot: cv.snapshot,
+    });
   }
 
   const company = job.company as unknown as { name: string } | { name: string }[];
   const sourceSnapshot = {
     capturedAt: new Date().toISOString(),
+    sourceVersion: "cv-and-notes-v2",
+    sourceGenerationId: parsed.data.aiGenerationId || null,
     job: {
       id: job.id,
       title: job.title,
@@ -132,36 +175,25 @@ export async function submitApplication(
     },
     experiences: experiencesResult.data ?? [],
     workSamples: samplesResult.data ?? [],
-    cv: documentResult.data
-      ? {
-          fileName: documentResult.data.file_name,
-          storagePath: documentResult.data.storage_path,
-          uploadedAt: documentResult.data.uploaded_at,
-          sizeBytes: documentResult.data.size_bytes,
-        }
-      : null,
+    cv: sharedSource.cvSnapshot,
   };
   const evidenceIds = [
     ...(experiencesResult.data ?? []).map((item) => item.id),
     ...(samplesResult.data ?? []).map((item) => item.id),
   ];
-  const fit = calculateTextFit(
-    `${job.title} ${job.summary} ${job.description}`,
-    parsed.data.answer,
-  );
-  const { data: applicationId, error } = await client.rpc("submit_application_with_evidence", {
+  const matchSources = candidateMatchSources(sharedSource);
+  const { data: applicationId, error } = await client.rpc("submit_hybrid_application", {
     target_job_id: parsed.data.jobId,
     target_variant: parsed.data.variant,
     final_answer: parsed.data.answer,
     target_generation_id: parsed.data.aiGenerationId || null,
     source_snapshot: sourceSnapshot,
     source_evidence_ids: evidenceIds,
-    fit_version: fit.version,
-    fit_components: fit.components,
-    fit_score: fit.score,
+    match_sources: matchSources,
   });
   if (error?.code === "23505") return { ok: false, message: "Masz już aplikację na tę ofertę." };
   if (error) return { ok: false, message: "Nie udało się wysłać aplikacji. Spróbuj ponownie." };
+  after(() => assessApplication(client, user.id, applicationId));
   await client
     .from("application_drafts")
     .delete()
@@ -205,6 +237,7 @@ export async function saveApplicationDraft(input: unknown): Promise<{ ok: boolea
       candidate_id: user.id,
       job_id: parsed.data.jobId,
       answer: parsed.data.answer,
+      experience_notes: parsed.data.candidateNotes.slice(0, 11000),
       selected_experience_ids: parsed.data.selectedExperienceIds,
       selected_work_sample_ids: parsed.data.selectedWorkSampleIds,
       ai_generation_id: parsed.data.aiGenerationId || null,

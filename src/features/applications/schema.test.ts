@@ -2,6 +2,17 @@ import { describe, expect, it } from "vitest";
 import { applicationSchema, employerStageSchema } from "@/features/applications/schema";
 
 describe("application schemas", () => {
+  it("accepts a reviewed application without separate experience records", () => {
+    const result = applicationSchema.parse({
+      jobId: "20000000-0000-4000-8000-000000000001",
+      variant: "one_click",
+      answer: "W CV opisałam wdrożenie produktu. Chętnie rozwinę ten projekt podczas rozmowy.",
+      confirmed: "yes",
+    });
+    expect(result.selectedExperienceIds).toEqual([]);
+    expect(result.selectedWorkSampleIds).toEqual([]);
+  });
+
   it("requires deliberate confirmation and a meaningful answer", () => {
     expect(
       applicationSchema.safeParse({

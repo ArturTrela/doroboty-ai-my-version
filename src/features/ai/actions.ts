@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { requireProfile } from "@/features/auth/session";
 import { generateAiText } from "@/features/ai/provider";
+import { readCandidateCvText } from "@/features/candidates/cv-text.server";
+import { aiPromptVersion } from "@/features/ai/prompts";
 import {
   candidateDraftRequestSchema,
   jobBriefSchema,
@@ -10,7 +12,6 @@ import {
   jobDraftSchema,
 } from "@/features/ai/schema";
 import { captureAnalytics } from "@/features/analytics/server";
-import { authorizeAiTreatment } from "@/features/experiments/server";
 
 export type CandidateDraftResult = {
   ok: boolean;
@@ -21,68 +22,48 @@ export type CandidateDraftResult = {
 
 export async function generateCandidateDraft(input: {
   jobId: string;
-  experienceIds: string[];
-  workSampleIds: string[];
+  candidateNotes: string;
 }): Promise<CandidateDraftResult> {
   const parsed = candidateDraftRequestSchema.safeParse(input);
-  if (!parsed.success)
-    return { ok: false, message: "Wybierz dowody, na których ma oprzeć się szkic." };
-  const { client, user, profile } = await requireProfile(["candidate"]);
-  if (!(await authorizeAiTreatment(client, "candidate_answer", profile.role === "operator"))) {
-    return { ok: false, message: "Ten wariant nie ma dostępu do szkicu AI." };
-  }
-  const [jobResult, candidateResult, experiencesResult, samplesResult] = await Promise.all([
-    client
-      .from("jobs")
-      .select("id, title, summary, description")
-      .eq("id", parsed.data.jobId)
-      .eq("publication_status", "published")
-      .single(),
-    client.from("candidate_profiles").select("headline, bio").eq("user_id", user.id).single(),
-    client
-      .from("candidate_experiences")
-      .select("id, title, company_name, description, measurable_outcome")
-      .eq("user_id", user.id)
-      .in(
-        "id",
-        parsed.data.experienceIds.length
-          ? parsed.data.experienceIds
-          : ["00000000-0000-0000-0000-000000000000"],
-      ),
-    client
-      .from("candidate_work_samples")
-      .select("id, title, context, outcome")
-      .eq("user_id", user.id)
-      .in(
-        "id",
-        parsed.data.workSampleIds.length
-          ? parsed.data.workSampleIds
-          : ["00000000-0000-0000-0000-000000000000"],
-      ),
-  ]);
-  if (jobResult.error || !jobResult.data)
-    return { ok: false, message: "Oferta nie jest dostępna." };
-  if (
-    candidateResult.error ||
-    experiencesResult.error ||
-    samplesResult.error ||
-    (experiencesResult.data?.length ?? 0) !== parsed.data.experienceIds.length ||
-    (samplesResult.data?.length ?? 0) !== parsed.data.workSampleIds.length ||
-    (experiencesResult.data?.length ?? 0) + (samplesResult.data?.length ?? 0) === 0
-  ) {
+  if (!parsed.success) return { ok: false, message: "Sprawdź treść aplikacji i dopiski." };
+  const { client, user } = await requireProfile(["candidate"]);
+  const { data: job, error: jobError } = await client
+    .from("jobs")
+    .select("id, title, summary, description, expiry_at")
+    .eq("id", parsed.data.jobId)
+    .eq("publication_status", "published")
+    .single();
+  if (jobError || !job || (job.expiry_at && new Date(job.expiry_at).getTime() <= Date.now()))
+    return { ok: false, message: "Oferta nie jest już dostępna." };
+
+  let cv;
+  try {
+    cv = await readCandidateCvText(client, user.id);
+  } catch {
     return {
       ok: false,
-      message: "Uzupełnij profil i dodaj doświadczenie przed wygenerowaniem szkicu.",
+      message: "Nie udało się wczytać CV. Spróbuj ponownie; Twój tekst pozostaje w polu.",
+    };
+  }
+  if (cv.status !== "available" && parsed.data.candidateNotes.length < 20) {
+    return {
+      ok: false,
+      message:
+        cv.status === "unreadable"
+          ? "Nie udało się odczytać tekstu CV. Dopisz tutaj swoje doświadczenie albo wgraj PDF z zaznaczalnym tekstem."
+          : "Dodaj CV w profilu albo opisz tutaj krótko swoje doświadczenie, a AI pomoże ułożyć aplikację.",
     };
   }
   const source = {
-    jobTitle: jobResult.data.title,
-    jobSummary: jobResult.data.summary,
-    jobDescription: jobResult.data.description,
-    ...candidateResult.data,
-    experiences: experiencesResult.data ?? [],
-    workSamples: samplesResult.data ?? [],
+    jobTitle: job.title,
+    jobSummary: job.summary,
+    jobDescription: job.description,
+    cvFileName: cv.status === "missing" ? null : cv.fileName,
+    cvText: cv.status === "available" ? cv.text : null,
+    cvReadStatus: cv.status,
+    candidateNotes: parsed.data.candidateNotes,
   };
+  const sourcePayload = { ...source, cvSnapshot: cv.snapshot };
 
   try {
     await captureAnalytics(user.id, {
@@ -94,6 +75,8 @@ export async function generateCandidateDraft(input: {
       subjectId: user.id,
       source,
     });
+    if (result.text.length < 40 || result.text.length > 5000)
+      throw new Error("AI_PROVIDER_INVALID_OUTPUT");
     const { data, error } = await client
       .from("ai_generations")
       .insert({
@@ -103,7 +86,7 @@ export async function generateCandidateDraft(input: {
         provider: result.provider,
         model: result.model,
         prompt_version: result.promptVersion,
-        source_payload: source,
+        source_payload: sourcePayload,
         output_text: result.text,
         latency_ms: result.latencyMs,
         input_tokens: result.inputTokens ?? null,
@@ -124,7 +107,10 @@ export async function generateCandidateDraft(input: {
     });
     return {
       ok: true,
-      message: "Szkic gotowy. Sprawdź i popraw go przed wysłaniem.",
+      message:
+        cv.status === "unreadable"
+          ? "Szkic gotowy na podstawie Twojego tekstu. Nie udało się odczytać CV; sprawdź treść przed wysłaniem."
+          : "Szkic gotowy. Sprawdź i popraw go przed wysłaniem.",
       text: result.text,
       generationId: data.id,
     };
@@ -136,8 +122,8 @@ export async function generateCandidateDraft(input: {
       job_id: parsed.data.jobId,
       provider: process.env.AI_PROVIDER ?? "deterministic",
       model: process.env.AI_MODEL ?? "course-fixture-v1",
-      prompt_version: "evidence-first-v1",
-      source_payload: source,
+      prompt_version: aiPromptVersion("candidate_answer"),
+      source_payload: sourcePayload,
       output_text: null,
       latency_ms: 0,
       status: "failed",
@@ -197,10 +183,7 @@ export async function generateJobDraft(
   _previous: JobDraftState,
   formData: FormData,
 ): Promise<JobDraftState> {
-  const { client, user, profile } = await requireProfile(["employer", "operator"]);
-  if (!(await authorizeAiTreatment(client, "employer_job_copy", profile.role === "operator"))) {
-    return { ok: false, message: "Ten wariant nie ma dostępu do szkicu AI." };
-  }
+  const { client, user } = await requireProfile(["employer", "operator"]);
   const parsed = jobDraftSchema.safeParse({ jobId: formData.get("jobId") });
   if (!parsed.success) return { ok: false, message: "Wybierz ofertę." };
   const { data: job, error } = await client

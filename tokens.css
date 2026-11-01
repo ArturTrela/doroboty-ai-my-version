@@ -9,10 +9,10 @@
   --icon-regular-display: inline;
   --icon-bold-display: none;
 
-  --gui-font-brand: "Timeless Grotesk", sans-serif;
-  --gui-font-ui: "Timeless Grotesk", sans-serif;
-  --gui-font-editorial: "Timeless Grotesk", sans-serif;
-  --gui-font-data: "Timeless Grotesk", sans-serif;
+  --gui-font-brand: var(--font-timeless);
+  --gui-font-ui: var(--font-timeless);
+  --gui-font-editorial: var(--font-timeless);
+  --gui-font-data: var(--font-timeless);
   --font-ui: var(--gui-font-ui);
   --font-brand: var(--gui-font-brand);
   --font-editorial: var(--gui-font-editorial);
@@ -104,6 +104,9 @@
   --gui-color-3-transparent: #ffed9b33;
   --gui-color-4: #ffb5aa;
   --gui-color-4-transparent: #ffb5aa33;
+  /* Match Score orange extends the existing red/yellow/green status palette. */
+  --gui-match-orange: #f28b23;
+  --gui-match-orange-transparent: #f28b2333;
   --gui-success: #00906c;
   --gui-warning: #ffea00;
   --gui-warning-transparent: #ffea0033;

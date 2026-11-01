@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { approveJobDraft, generateJobDraft, type JobDraftState } from "@/features/ai/actions";
 import { Button } from "@/components/ui/button";
+import { AiThinkingIndicator } from "@/features/ai/ai-thinking-indicator";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FormSelect } from "@/components/ui/form-select";
@@ -26,70 +27,54 @@ function isApprovedDraft(state: JobDraftState): state is ApprovedDraftState {
   );
 }
 
-export function JobDraftWorkspace({
-  jobs,
-  allowAi,
-}: {
-  jobs: { id: string; title: string }[];
-  allowAi: boolean;
-}) {
+export function JobDraftWorkspace({ jobs }: { jobs: { id: string; title: string }[] }) {
   const [state, action, pending] = useActionState(generateJobDraft, initialState);
   return (
     <div className="grid gap-6 lg:grid-cols-[0.7fr_1.3fr]">
-      {!allowAi ? (
-        <div className="empty-state lg:col-span-2">
-          <h2>Wariant ręczny</h2>
+      <form
+        action={action}
+        className="form-stack h-fit rounded-xl bg-card p-6 shadow-[var(--gui-shadow-m)]"
+      >
+        <h2>Szkic z briefu</h2>
+        <p>
+          Model widzi prywatny brief i kryteria decyzji. Wygenerowany tekst nie publikuje się
+          automatycznie.
+        </p>
+        <div className="field">
+          <Label htmlFor="jobId">Oferta</Label>
+          <FormSelect
+            id="jobId"
+            name="jobId"
+            ariaLabel="Oferta do wygenerowania"
+            required
+            defaultValue={jobs[0]?.id}
+            options={jobs.map((job) => ({ value: job.id, label: job.title }))}
+          />
+        </div>
+        <Button type="submit" aria-busy={pending} disabled={pending || !jobs.length}>
+          {pending ? "Generuję…" : "Wygeneruj szkic"}
+        </Button>
+        {pending ? (
+          <AiThinkingIndicator>AI przygotowuje szkic ogłoszenia…</AiThinkingIndicator>
+        ) : state.message ? (
+          <p
+            role={state.ok ? "status" : "alert"}
+            className={state.ok ? "success-panel" : "error-message"}
+          >
+            {state.message}
+          </p>
+        ) : null}
+      </form>
+      {isApprovedDraft(state) ? (
+        <ApprovalForm key={state.generationId} state={state} />
+      ) : (
+        <div className="empty-state">
+          <h2>Szkic pojawi się tutaj</h2>
           <p>
-            W tej kohorcie tekst oferty powstaje bez asysty AI. Źródłowy brief i publikacja
-            pozostają rozdzielone.
+            Przed zatwierdzeniem porównaj go z briefem i przywróć kryteria, których model nie
+            zachował.
           </p>
         </div>
-      ) : (
-        <>
-          <form
-            action={action}
-            className="form-stack h-fit rounded-xl bg-card p-6 shadow-[var(--gui-shadow-m)]"
-          >
-            <h2>Szkic z briefu</h2>
-            <p>
-              Model widzi prywatny brief i kryteria decyzji. Wygenerowany tekst nie publikuje się
-              automatycznie.
-            </p>
-            <div className="field">
-              <Label htmlFor="jobId">Oferta</Label>
-              <FormSelect
-                id="jobId"
-                name="jobId"
-                ariaLabel="Oferta do wygenerowania"
-                required
-                defaultValue={jobs[0]?.id}
-                options={jobs.map((job) => ({ value: job.id, label: job.title }))}
-              />
-            </div>
-            <Button type="submit" disabled={pending || !jobs.length}>
-              {pending ? "Generuję…" : "Wygeneruj szkic"}
-            </Button>
-            {state.message && (
-              <p
-                role={state.ok ? "status" : "alert"}
-                className={state.ok ? "success-panel" : "error-message"}
-              >
-                {state.message}
-              </p>
-            )}
-          </form>
-          {isApprovedDraft(state) ? (
-            <ApprovalForm key={state.generationId} state={state} />
-          ) : (
-            <div className="empty-state">
-              <h2>Szkic pojawi się tutaj</h2>
-              <p>
-                Przed zatwierdzeniem porównaj go z briefem i przywróć kryteria, których model nie
-                zachował.
-              </p>
-            </div>
-          )}
-        </>
       )}
     </div>
   );

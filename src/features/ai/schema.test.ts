@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { jobBriefSchema, jobDraftApprovalSchema, jobDraftSchema } from "@/features/ai/schema";
+import {
+  candidateDraftRequestSchema,
+  jobBriefSchema,
+  jobDraftApprovalSchema,
+  jobDraftSchema,
+} from "@/features/ai/schema";
 
 const validApproval = {
   jobId: "20000000-0000-4000-8000-000000000001",
@@ -11,6 +16,23 @@ const validApproval = {
 };
 
 describe("AI action schemas", () => {
+  it("accepts CV-only drafting and bounded additional notes without evidence IDs", () => {
+    expect(candidateDraftRequestSchema.parse({ jobId: validApproval.jobId }).candidateNotes).toBe(
+      "",
+    );
+    expect(
+      candidateDraftRequestSchema.parse({
+        jobId: validApproval.jobId,
+        candidateNotes: "  Dodatkowy projekt.  ",
+      }).candidateNotes,
+    ).toBe("Dodatkowy projekt.");
+    expect(
+      candidateDraftRequestSchema.safeParse({
+        jobId: validApproval.jobId,
+        candidateNotes: "x".repeat(11001),
+      }).success,
+    ).toBe(false);
+  });
   it("accepts controlled draft and approval identifiers", () => {
     expect(jobDraftSchema.safeParse({ jobId: validApproval.jobId }).success).toBe(true);
     expect(jobDraftApprovalSchema.safeParse(validApproval).success).toBe(true);

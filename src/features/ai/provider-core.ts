@@ -1,4 +1,5 @@
-export type AiPurpose = "job_draft" | "candidate_answer";
+export type AiPurpose =
+  "job_draft" | "candidate_answer" | "match_criteria" | "match_assessment" | "match_summary";
 
 export type AiTextRequest = {
   purpose: AiPurpose;
@@ -8,7 +9,7 @@ export type AiTextRequest = {
 
 export const AI_POLICY = Object.freeze({
   hourlyRequestsPerSubject: 20,
-  timeoutMs: 15_000,
+  timeoutMs: 30_000,
   maxOutputCharacters: 30_000,
   maxAttempts: 1,
 });
@@ -86,7 +87,35 @@ export function aiAuditEntry(entry: Omit<AiAuditEntry, "event">): AiAuditEntry {
 }
 
 export function deterministicText(request: AiTextRequest) {
+  if (request.purpose === "match_summary") return JSON.stringify({ summary: null });
+  if (request.purpose === "match_criteria") {
+    const description = String(request.source.description ?? "");
+    const text = description.slice(0, 280).trim();
+    return JSON.stringify({
+      criteria: [
+        { id: "c1", text: text.slice(0, 280), weight: 1, required: false, sourceQuote: text },
+      ],
+    });
+  }
+  if (request.purpose === "match_assessment") {
+    const criteria = request.source.criteria as { id: string }[];
+    return JSON.stringify({
+      assessments: criteria.map((item) => ({
+        criterionId: item.id,
+        assessment: "unknown",
+        reason:
+          "Tryb testowy nie ocenia kompetencji. Włącz dostawcę AI, aby przeanalizować materiały.",
+        evidence: [],
+      })),
+    });
+  }
   if (request.purpose === "candidate_answer") {
+    if ("cvText" in request.source || "candidateNotes" in request.source) {
+      const jobTitle = String(request.source.jobTitle ?? "wybrane stanowisko");
+      const notes = String(request.source.candidateNotes ?? "").trim();
+      const cv = String(request.source.cvText ?? "").trim();
+      return `Aplikuję na stanowisko ${jobTitle}. ${[cv.slice(0, 1200), notes].filter(Boolean).join("\n\n").slice(0, 2100)}`;
+    }
     const jobTitle = String(request.source.jobTitle ?? "tej roli");
     const headline = String(request.source.headline ?? "specjalista produktu");
     const experience = Array.isArray(request.source.experiences)

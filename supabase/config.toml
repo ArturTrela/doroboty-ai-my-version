@@ -1,13 +1,13 @@
-project_id = "doroboty-ai-case"
+project_id = "doroboty-ai-local"
 [api]
 enabled = true
-port = 55321
+port = 58321
 schemas = ["public", "graphql_public"]
 extra_search_path = ["public", "extensions"]
 max_rows = 1000
 [db]
-port = 55322
-shadow_port = 55320
+port = 58322
+shadow_port = 58320
 major_version = 17
 [db.migrations]
 enabled = true
@@ -16,15 +16,15 @@ enabled = true
 sql_paths = ["./seed.sql"]
 [studio]
 enabled = true
-port = 55323
+port = 58323
 api_url = "http://127.0.0.1"
 [local_smtp]
 enabled = true
-port = 55324
+port = 58324
 [auth]
 enabled = true
-site_url = "http://127.0.0.1:3000"
-additional_redirect_urls = ["http://127.0.0.1:3000/**", "http://localhost:3000/**", "http://127.0.0.1:3107/**"]
+site_url = "http://127.0.0.1:3001"
+additional_redirect_urls = ["http://127.0.0.1:3001/**", "http://localhost:3001/**", "http://127.0.0.1:3107/**"]
 enable_signup = true
 minimum_password_length = 8
 [auth.email]

@@ -77,10 +77,6 @@ const candidateRole = (
 if (!roleEscalationRejected || candidateRole !== "candidate") {
   throw new Error("Candidate was able to change their controlled profile role.");
 }
-const assignment = (
-  await db.query("select (public.assign_experiment('application_flow')).id as id")
-).rows[0];
-await db.query("select public.record_experiment_exposure($1, null)", [assignment.id]);
 const submitted = await db.query(`select public.submit_application_with_evidence(
   '20000000-0000-4000-8000-000000000001', 'long_form',
   'Prowadziłem discovery procesu i dowiozłem mierzalne wdrożenie z zespołem operacyjnym.',
@@ -116,6 +112,227 @@ const employerAApplications = (await db.query("select id from public.application
 if (employerAApplications.length !== 1 || employerAApplications[0].id !== applicationId) {
   throw new Error("Organization RLS did not isolate employer applications.");
 }
+// Assistants must work at baseline, without assignments, for each authorized account.
+await actAs(operator);
+await db.query("select public.release_case('baseline')");
+for (const candidateId of [candidateA, candidateB]) {
+  await actAs(candidateId);
+  await db.query(
+    `insert into public.ai_generations
+    (purpose, requested_by, job_id, provider, model, prompt_version, source_payload, output_text, latency_ms, status)
+    values ('candidate_answer', $1, '20000000-0000-4000-8000-000000000001',
+      'deterministic', 'course-fixture-v1', 'evidence-first-v1', '{}', 'Candidate draft', 0, 'succeeded')`,
+    [candidateId],
+  );
+}
+await actAs(employerA);
+const privateDrafts = (
+  await db.query("select id from public.ai_generations where purpose = 'candidate_answer'")
+).rows;
+if (privateDrafts.length)
+  throw new Error("An employer can read a candidate's private CV/AI notes.");
+await db.query(
+  `insert into public.ai_generations
+  (purpose, requested_by, job_id, provider, model, prompt_version, source_payload, output_text, latency_ms, status)
+  values ('job_draft', $1, '20000000-0000-4000-8000-000000000001',
+    'deterministic', 'course-fixture-v1', 'evidence-first-v1', '{}', 'Employer draft', 0, 'succeeded')`,
+  [employerA],
+);
+let foreignDraftBlocked = false;
+try {
+  await db.query(
+    `insert into public.ai_generations
+    (purpose, requested_by, job_id, provider, model, prompt_version, source_payload, output_text, latency_ms, status)
+    values ('job_draft', $1, '20000000-0000-4000-8000-000000000002',
+      'deterministic', 'course-fixture-v1', 'evidence-first-v1', '{}', 'Forbidden draft', 0, 'succeeded')`,
+    [employerA],
+  );
+} catch {
+  foreignDraftBlocked = true;
+}
+if (!foreignDraftBlocked)
+  throw new Error("Employer gained AI access to another organization's job.");
+// Hybrid matching: approval, immutable snapshots, leases, terminal states and RLS.
+await actAs(employerA);
+const rubricJob = (
+  await db.query(
+    "select title, summary, description from public.jobs where id = '20000000-0000-4000-8000-000000000001'",
+  )
+).rows[0];
+const hybridCriteria = [
+  { id: "c1", text: rubricJob.title, weight: 3, required: true, sourceQuote: rubricJob.title },
+];
+const approveRubric = async (snapshot = rubricJob, criteria = hybridCriteria) =>
+  db.query(
+    "select public.approve_match_rubric('20000000-0000-4000-8000-000000000001', $1::jsonb, $2::jsonb) as id",
+    [JSON.stringify(snapshot), JSON.stringify(criteria)],
+  );
+await approveRubric();
+let staleRubricBlocked = false;
+try {
+  await approveRubric({ ...rubricJob, title: "Stale offer" });
+} catch {
+  staleRubricBlocked = true;
+}
+if (!staleRubricBlocked) throw new Error("Matching criteria accepted a stale offer snapshot.");
+await actAs(employerB);
+let foreignRubricBlocked = false;
+try {
+  await approveRubric();
+} catch {
+  foreignRubricBlocked = true;
+}
+if (!foreignRubricBlocked) throw new Error("Employer approved criteria for another organization.");
+const candidateC = "70000000-0000-4000-8000-000000000006";
+await db.exec(
+  `reset role; insert into auth.users (id, raw_user_meta_data) values ('${candidateC}', '{"display_name":"Candidate C"}')`,
+);
+await actAs(candidateC);
+let candidateRubricBlocked = false;
+try {
+  await approveRubric();
+} catch {
+  candidateRubricBlocked = true;
+}
+if (!candidateRubricBlocked) throw new Error("Candidate approved an employer's matching criteria.");
+const privateSources = [{ id: "cv", label: "CV", text: "Synthetic private candidate CV." }];
+const hybridApplication = (
+  await db.query(
+    `select public.submit_hybrid_application(
+ '20000000-0000-4000-8000-000000000001', 'long_form',
+ 'Synthetic application answer long enough for the database contract.', null,
+ '{"cv":{"fileName":"synthetic.pdf"}}', '{}', $1::jsonb) as id`,
+    [JSON.stringify(privateSources)],
+  )
+).rows[0].id;
+await db.exec("reset role");
+const workerSecret = (await db.query("select secret from private.match_worker_config")).rows[0]
+  .secret;
+await actAs(candidateC);
+const claimHybrid = () =>
+  db.query("select public.claim_match_assessment($1, $2) as claim", [
+    hybridApplication,
+    workerSecret,
+  ]);
+let unsignedClaimBlocked = false;
+try {
+  await db.query("select public.claim_match_assessment($1, '')", [hybridApplication]);
+} catch {
+  unsignedClaimBlocked = true;
+}
+if (!unsignedClaimBlocked)
+  throw new Error("An unsigned candidate request acquired a matching worker lease.");
+let legacyForgeryBlocked = false;
+try {
+  await db.query(`select public.submit_application_with_evidence(
+  '20000000-0000-4000-8000-000000000002', 'long_form',
+  'Synthetic forged hybrid application text long enough for validation.',
+  null, '{}', '{}', 'evidence-hybrid-v1', '{}', 1
+)`);
+} catch {
+  legacyForgeryBlocked = true;
+}
+if (!legacyForgeryBlocked)
+  throw new Error("Legacy submission allowed a forged completed hybrid score.");
+const firstClaim = (await claimHybrid()).rows[0].claim;
+if (
+  !firstClaim ||
+  firstClaim.components.criteria[0].weight !== 3 ||
+  firstClaim.sources[0].text !== privateSources[0].text
+)
+  throw new Error("Hybrid submission did not snapshot its approved rubric and private sources.");
+if ((await claimHybrid()).rows[0].claim !== null)
+  throw new Error("Concurrent matching workers acquired the same task.");
+await actAs(candidateB);
+if ((await claimHybrid()).rows[0].claim !== null)
+  throw new Error("Another candidate claimed a matching task.");
+if (
+  (
+    await db.query("select * from public.application_match_inputs where application_id = $1", [
+      hybridApplication,
+    ])
+  ).rows.length
+)
+  throw new Error("Matching inputs leaked across candidates.");
+await actAs(employerA);
+if (
+  (
+    await db.query("select * from public.application_match_inputs where application_id = $1", [
+      hybridApplication,
+    ])
+  ).rows.length
+)
+  throw new Error("Employer read private raw matching inputs.");
+if ((await claimHybrid()).rows[0].claim !== null)
+  throw new Error("Employer claimed a candidate's matching task.");
+const completeHybrid = (runId, status, score, components) =>
+  db.query("select public.complete_match_assessment($1, $2, $3, $4, $5::jsonb, $6) as saved", [
+    firstClaim.scoreId,
+    runId,
+    status,
+    score,
+    JSON.stringify(components),
+    workerSecret,
+  ]);
+if ((await completeHybrid(firstClaim.runId, "completed", 1, {})).rows[0].saved)
+  throw new Error("Employer replaced a candidate's assessment.");
+await actAs(candidateC);
+if ((await completeHybrid(crypto.randomUUID(), "completed", 1, {})).rows[0].saved)
+  throw new Error("A stale matching lease saved an assessment.");
+await completeHybrid(firstClaim.runId, "failed", null, firstClaim.components);
+const secondClaim = (await claimHybrid()).rows[0].claim;
+if (!secondClaim || secondClaim.runId === firstClaim.runId)
+  throw new Error("A failed matching task cannot be retried safely.");
+const resultDetails = {
+  ...firstClaim.components,
+  coverage: 1,
+  minimumCoverage: 0.7,
+  provider: "test",
+  model: "fixture",
+  promptVersion: "evidence-hybrid-v1",
+  criteria: hybridCriteria.map((item) => ({
+    ...item,
+    assessment: "met",
+    reason: "Synthetic supporting experience.",
+    evidence: [{ sourceId: "cv", label: "CV", quote: privateSources[0].text }],
+  })),
+};
+if (!(await completeHybrid(secondClaim.runId, "completed", 1, resultDetails)).rows[0].saved)
+  throw new Error("Could not save the claimed matching assessment.");
+if ((await completeHybrid(secondClaim.runId, "completed", 0, resultDetails)).rows[0].saved)
+  throw new Error("A terminal matching score was overwritten.");
+if ((await claimHybrid()).rows[0].claim !== null)
+  throw new Error("A completed matching task was rerun.");
+await actAs(employerA);
+const sharedScore = (
+  await db.query("select score, components from public.fit_scores where application_id = $1", [
+    hybridApplication,
+  ])
+).rows[0];
+if (
+  Number(sharedScore?.score) !== 1 ||
+  sharedScore.components.criteria[0].evidence[0].label !== "CV"
+)
+  throw new Error("Involved employer cannot read the saved score with its evidence.");
+await actAs(employerB);
+if (
+  (await db.query("select * from public.fit_scores where application_id = $1", [hybridApplication]))
+    .rows.length
+)
+  throw new Error("Foreign employer read a hybrid matching score.");
+await db.exec("reset role");
+console.log(
+  "Hybrid matching passed: approval, stale/foreign rubric rejection, private sources, leases, retries, immutable results and tenant isolation.",
+);
+const liveExperimentFunctions = (
+  await db.query(`select proname from pg_proc
+  where pronamespace = 'public'::regnamespace
+    and proname in ('assign_experiment', 'record_experiment_exposure', 'can_use_ai')`)
+).rows;
+if (liveExperimentFunctions.length) throw new Error("Live experiment RPCs were not retired.");
+const exposures = (await db.query("select count(*)::int as count from public.experiment_exposures"))
+  .rows[0].count;
+if (exposures !== 0) throw new Error("Application submission still records experiment exposure.");
 await actAs(operator);
 for (const release of ["baseline", "post_one_click", "discovery", "post_ai", "pilot", "demo_day"]) {
   await db.query("select public.release_case($1)", [release]);

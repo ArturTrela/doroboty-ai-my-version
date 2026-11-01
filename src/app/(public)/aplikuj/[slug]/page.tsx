@@ -1,14 +1,13 @@
+import { restoreCandidateSources } from "@/features/applications/sources";
 import type { Metadata } from "next";
 import { JobDescription } from "@/features/jobs/job-description";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { BadgeCheck, BriefcaseBusiness, MapPin } from "lucide-react";
+import { BriefcaseBusiness, MapPin } from "lucide-react";
 import { ApplicationForm } from "@/features/applications/application-form";
 import { requireProfile } from "@/features/auth/session";
 import { getPublishedJob } from "@/features/jobs/queries";
-import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
-import { candidateWorkSamplesEnabled } from "@/features/candidates/features";
 import {
   contractLabels,
   formatSalary,
@@ -22,7 +21,7 @@ export const metadata: Metadata = { title: "Aplikuj", robots: { index: false, fo
 export default async function ApplyPage({ params }: { params: Promise<{ slug: string }> }) {
   const job = await getPublishedJob((await params).slug);
   if (!job) notFound();
-  const { client, user, profile } = await requireProfile(["candidate"]);
+  const { client, user } = await requireProfile(["candidate"]);
   if (isJobExpired(job.expiryAt))
     return (
       <section className="mx-auto max-w-2xl p-[var(--gui-space-l)]">
@@ -35,32 +34,12 @@ export default async function ApplyPage({ params }: { params: Promise<{ slug: st
         </Link>
       </section>
     );
-  const [
-    { data: candidate },
-    { data: experiences },
-    { data: samples },
-    { data: document },
-    { data: draft },
-    { data: existing },
-    flowAssignment,
-    aiAssignment,
-  ] = await Promise.all([
+  const [documentResult, draftResult, existingResult] = await Promise.all([
     client
-      .from("candidate_profiles")
-      .select("headline, bio, city, experience_years, language_background")
+      .from("candidate_documents")
+      .select("file_name, storage_path, size_bytes, uploaded_at")
       .eq("user_id", user.id)
-      .single(),
-    client
-      .from("candidate_experiences")
-      .select("id, title, company_name, description, measurable_outcome")
-      .eq("user_id", user.id)
-      .order("sort_order"),
-    client
-      .from("candidate_work_samples")
-      .select("id, title, url, context, outcome")
-      .eq("user_id", user.id)
-      .order("sort_order"),
-    client.from("candidate_documents").select("file_name").eq("user_id", user.id).maybeSingle(),
+      .maybeSingle(),
     client
       .from("application_drafts")
       .select("*")
@@ -73,12 +52,12 @@ export default async function ApplyPage({ params }: { params: Promise<{ slug: st
       .eq("candidate_id", user.id)
       .eq("job_id", job.id)
       .maybeSingle(),
-    client.rpc("assign_experiment", { target_surface: "application_flow" }),
-    client.rpc("assign_experiment", { target_surface: "candidate_answer" }),
   ]);
-  const profileReady = Boolean(
-    candidate?.headline && candidate?.bio && (experiences ?? []).length > 0,
-  );
+  if (documentResult.error || draftResult.error || existingResult.error)
+    throw new Error("Nie udało się wczytać aplikacji. Spróbuj ponownie.");
+  const document = documentResult.data;
+  const draft = draftResult.data;
+  const existing = existingResult.data;
   if (existing) {
     return (
       <section className="mx-auto max-w-2xl px-[var(--gui-space-m)] py-[var(--gui-space-xxl)]">
@@ -97,20 +76,33 @@ export default async function ApplyPage({ params }: { params: Promise<{ slug: st
       </section>
     );
   }
-  if (flowAssignment.error || aiAssignment.error)
-    throw new Error("Nie udało się przydzielić wariantu eksperymentu.");
-  const flow = flowAssignment.data as { id: string; variant: "long_form" | "one_click" };
-  const ai = aiAssignment.data as { id: string; variant: "manual" | "ai_draft" };
-  const variant = flow.variant === "one_click" && profileReady ? "one_click" : "long_form";
-  const suggestedAnswer =
-    variant === "one_click"
-      ? `${candidate?.headline}. ${candidate?.bio} Chcę podczas rozmowy pokazać konkretne decyzje i wyniki.`
-      : "";
-  const initialAnswer = draft?.answer ?? suggestedAnswer;
-  const defaultExperienceIds = draft
-    ? draft.selected_experience_ids
-    : (experiences ?? []).slice(0, 1).map((item) => item.id);
+  const variant = document ? "one_click" : "long_form";
+  const cvDownloadUrl = document
+    ? (await client.storage.from("candidate-cv").createSignedUrl(document.storage_path, 600)).data
+        ?.signedUrl
+    : undefined;
+  let generationSource: unknown;
+  if (draft?.ai_generation_id) {
+    const { data: generation } = await client
+      .from("ai_generations")
+      .select("source_payload")
+      .eq("id", draft.ai_generation_id)
+      .eq("requested_by", user.id)
+      .eq("job_id", job.id)
+      .eq("purpose", "candidate_answer")
+      .maybeSingle();
+    generationSource = generation?.source_payload;
+  }
 
+  const currentCv = document
+    ? {
+        fileName: document.file_name,
+        storagePath: document.storage_path,
+        sizeBytes: document.size_bytes,
+        uploadedAt: document.uploaded_at,
+      }
+    : null;
+  const restoredSources = restoreCandidateSources(draft, generationSource, currentCv);
   return (
     <section className="mx-auto grid max-w-7xl gap-[var(--gui-space-l)] px-[var(--gui-space-m)] py-[var(--gui-space-xl)] lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:px-[var(--gui-space-l)] lg:py-[var(--gui-space-xxl)]">
       <aside className="h-fit lg:sticky lg:top-6">
@@ -140,74 +132,27 @@ export default async function ApplyPage({ params }: { params: Promise<{ slug: st
             <dt className="font-medium">Wynagrodzenie</dt>
             <dd className="mt-[var(--gui-space-xxs)] text-muted-foreground">{formatSalary(job)}</dd>
           </div>
-          {job.verificationStatus === "employer_verified" && (
-            <div>
-              <dt className="sr-only">Weryfikacja</dt>
-              <dd>
-                <Badge variant="outline">
-                  <BadgeCheck /> Zweryfikowana przez firmę
-                </Badge>
-              </dd>
-            </div>
-          )}
         </dl>
-        <div className="mt-[var(--gui-space-l)] rounded-xl bg-muted/50 p-[var(--gui-space-m)]">
-          <h2>Pełny opis roli</h2>
+        <details className="mt-[var(--gui-space-l)] rounded-xl bg-muted/50 p-[var(--gui-space-m)]">
+          <summary className="cursor-pointer">
+            <h2 className="inline">Pełny opis roli</h2>
+          </summary>
           <div className="mt-[var(--gui-space-m)]">
             <JobDescription description={job.description} compact />
           </div>
-        </div>
-        {!profileReady && (
-          <div className="mt-[var(--gui-space-l)] rounded-lg bg-muted/40 p-[var(--gui-space-m)]">
-            <strong className="font-medium">Uzupełnij profil</strong>
-            <p className="mt-[var(--gui-space-xs)] text-sm text-muted-foreground">
-              One-click będzie dostępny po dodaniu opisu i doświadczenia.
-            </p>
-            <Link
-              className="mt-[var(--gui-space-s)] inline-block text-sm font-medium text-[var(--gui-link)] hover:underline"
-              href="/app/profil"
-            >
-              Przejdź do profilu
-            </Link>
-          </div>
-        )}
+        </details>
       </aside>
       <div>
         <ApplicationForm
           jobId={job.id}
-          profileReady={profileReady}
           variant={variant}
-          allowAi={ai.variant === "ai_draft"}
-          assignmentIds={[...(flow.variant === variant ? [flow.id] : []), ai.id]}
-          initialAnswer={initialAnswer}
-          profileSummary={{
-            displayName: profile.display_name ?? "",
-            headline: candidate?.headline ?? "",
-            bio: candidate?.bio ?? "",
-            city: candidate?.city ?? "",
-            years: candidate?.experience_years ?? 0,
-            language: candidate?.language_background ?? "",
-          }}
-          experiences={(experiences ?? []).map((item) => ({
-            id: item.id,
-            title: item.title,
-            subtitle: item.company_name,
-            description: item.description,
-            outcome: item.measurable_outcome,
-          }))}
-          workSamples={(candidateWorkSamplesEnabled ? (samples ?? []) : []).map((item) => ({
-            id: item.id,
-            title: item.title,
-            subtitle: item.context,
-            url: item.url,
-            outcome: item.outcome,
-          }))}
-          initialExperienceIds={defaultExperienceIds}
-          initialWorkSampleIds={
-            candidateWorkSamplesEnabled ? (draft?.selected_work_sample_ids ?? []) : []
-          }
+          initialAnswer={restoredSources.answer}
+          initialCandidateNotes={restoredSources.candidateNotes}
+          initialSourceChanged={restoredSources.sourceChanged}
           initialGenerationId={draft?.ai_generation_id ?? undefined}
           cvFileName={document?.file_name}
+          cvDownloadUrl={cvDownloadUrl}
+          profileHref={`/app/profil?next=${encodeURIComponent(`/aplikuj/${job.slug}`)}#cv`}
           draftUpdatedAt={draft?.updated_at}
         />
       </div>

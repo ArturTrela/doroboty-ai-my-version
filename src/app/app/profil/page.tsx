@@ -11,7 +11,10 @@ import { buttonVariants } from "@/components/ui/button";
 import { requireProfile } from "@/features/auth/session";
 import { getSupabaseConfig } from "@/lib/env";
 import { safeReturnPath } from "@/features/auth/return-path";
-import { candidateWorkSamplesEnabled } from "@/features/candidates/features";
+import {
+  candidateExperiencesEnabled,
+  candidateWorkSamplesEnabled,
+} from "@/features/candidates/features";
 
 export const dynamic = "force-dynamic";
 
@@ -46,12 +49,6 @@ export default async function CandidateProfilePage({
   const experiences = experiencesResult.data ?? [];
   const samples = samplesResult.data ?? [];
   const candidate = candidateResult.data;
-  const completed = [
-    Boolean(profile.first_name && profile.last_name),
-    Boolean(candidate.headline && candidate.bio && candidate.city),
-    experiences.length > 0,
-    Boolean(document),
-  ].filter(Boolean).length;
   const signedUrl = document
     ? (await client.storage.from("candidate-cv").createSignedUrl(document.storage_path, 600)).data
         ?.signedUrl
@@ -62,7 +59,6 @@ export default async function CandidateProfilePage({
       <div className="page-heading">
         <div>
           <h1>Twój profil</h1>
-          <p>{completed}/4 kluczowe obszary gotowe do aplikowania.</p>
         </div>
         <Link className={buttonVariants({ variant: "outline" })} href="/app/profil/podglad">
           <Eye /> Podgląd dla pracodawcy
@@ -77,9 +73,6 @@ export default async function CandidateProfilePage({
             Sprawdź gotowość i wróć do aplikowania
           </Link>
         )}
-        <section id="dane">
-          <CandidateProfileForm profile={{ ...candidate, ...profile }} />
-        </section>
         <section id="cv">
           <CandidateCvForm
             document={
@@ -94,46 +87,51 @@ export default async function CandidateProfilePage({
             }
           />
         </section>
-        <section
-          id="doswiadczenie"
-          className="rounded-xl bg-card p-[var(--gui-space-l)] shadow-[var(--gui-shadow-m)]"
-        >
-          <div className="flex flex-wrap items-center justify-between gap-[var(--gui-space-s)]">
-            <div>
-              <h2>Doświadczenie</h2>
-              <p className="mt-[var(--gui-space-xxs)] text-sm text-muted-foreground">
-                Ustaw kolejność, w której pokazujesz swoje dowody pracy.
-              </p>
-            </div>
-          </div>
-          {experiences.length === 0 ? (
-            <p className="mt-[var(--gui-space-m)] text-muted-foreground">
-              Dodaj pierwsze doświadczenie, aby profil był gotowy do aplikowania.
-            </p>
-          ) : (
-            <div className="mt-[var(--gui-space-m)] grid gap-[var(--gui-space-s)]">
-              {experiences.map((item, index) => (
-                <details key={item.id} className="rounded-lg bg-secondary p-[var(--gui-space-m)]">
-                  <summary className="cursor-pointer font-ui font-medium">
-                    {item.title} · {item.company_name}
-                  </summary>
-                  <div className="mt-[var(--gui-space-m)]">
-                    <CandidateItemActions
-                      id={item.id}
-                      kind="experience"
-                      first={index === 0}
-                      last={index === experiences.length - 1}
-                    />
-                    <ExperienceForm item={item} />
-                  </div>
-                </details>
-              ))}
-            </div>
-          )}
-          <div className="mt-[var(--gui-space-m)]">
-            <ExperienceForm />
-          </div>
+        <section id="dane">
+          <CandidateProfileForm profile={{ ...candidate, ...profile }} />
         </section>
+        {candidateExperiencesEnabled && (
+          <section
+            id="doswiadczenie"
+            className="rounded-xl bg-card p-[var(--gui-space-l)] shadow-[var(--gui-shadow-m)]"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-[var(--gui-space-s)]">
+              <div>
+                <h2>Doświadczenie</h2>
+                <p className="mt-[var(--gui-space-xxs)] text-sm text-muted-foreground">
+                  Ustaw kolejność, w której pokazujesz swoje dowody pracy.
+                </p>
+              </div>
+            </div>
+            {experiences.length === 0 ? (
+              <p className="mt-[var(--gui-space-m)] text-muted-foreground">
+                Dodaj pierwsze doświadczenie, aby profil był gotowy do aplikowania.
+              </p>
+            ) : (
+              <div className="mt-[var(--gui-space-m)] grid gap-[var(--gui-space-s)]">
+                {experiences.map((item, index) => (
+                  <details key={item.id} className="rounded-lg bg-secondary p-[var(--gui-space-m)]">
+                    <summary className="cursor-pointer font-ui font-medium">
+                      {item.title} · {item.company_name}
+                    </summary>
+                    <div className="mt-[var(--gui-space-m)]">
+                      <CandidateItemActions
+                        id={item.id}
+                        kind="experience"
+                        first={index === 0}
+                        last={index === experiences.length - 1}
+                      />
+                      <ExperienceForm item={item} />
+                    </div>
+                  </details>
+                ))}
+              </div>
+            )}
+            <div className="mt-[var(--gui-space-m)]">
+              <ExperienceForm />
+            </div>
+          </section>
+        )}
         {candidateWorkSamplesEnabled && (
           <section
             id="portfolio"

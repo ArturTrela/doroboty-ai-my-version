@@ -78,40 +78,6 @@ for (const fixture of fixtures) {
   }
 }
 
-for (const [email, variant] of [
-  ["candidate.rehearsal@doroboty.invalid", "one_click"],
-  ["candidate-longform.rehearsal@doroboty.invalid", "long_form"],
-] as const) {
-  const assignment = await admin.from("experiment_assignments").upsert(
-    {
-      subject_key: users.get(email)!,
-      surface: "application_flow",
-      variant,
-      release_key: "discovery",
-    },
-    { onConflict: "subject_key,surface,release_key" },
-  );
-  if (assignment.error) throw assignment.error;
-}
-
-for (const releaseKey of ["post_ai", "pilot", "demo_day"] as const) {
-  for (const [email, surface] of [
-    ["candidate.rehearsal@doroboty.invalid", "candidate_answer"],
-    ["employer.rehearsal@doroboty.invalid", "employer_job_copy"],
-  ] as const) {
-    const assignment = await admin.from("experiment_assignments").upsert(
-      {
-        subject_key: users.get(email)!,
-        surface,
-        variant: "ai_draft",
-        release_key: releaseKey,
-      },
-      { onConflict: "subject_key,surface,release_key" },
-    );
-    if (assignment.error) throw assignment.error;
-  }
-}
-
 console.log(
   `Remote rehearsal accounts ready in ${projectRef}: ${createdCount} created, ${fixtures.length - createdCount} reused. No credential was printed.`,
 );

@@ -16,6 +16,47 @@ Run production audit, secret scanning, source-map inspection, RLS integration te
 
 ## AI runtime policy
 
-AI calls are server-only, limited to 20 attempts per subject per hour, and time out after 15 seconds. Provider output must be non-empty text no longer than 30,000 characters. Token usage is converted to an estimated cost using deployment-specific per-million-token rates and rejected when it exceeds `AI_MAX_COST_USD_PER_REQUEST`.
+AI calls are server-only, limited to 20 attempts per subject per hour, and time out after 30 seconds. Provider output must be non-empty text no longer than 30,000 characters; candidate application drafts must also fit the application editor’s 40–5000-character range. CV text and unapproved notes in candidate generations are visible only to the requester and authorized operators, never job-owning employers. Token usage is converted to an estimated cost using deployment-specific per-million-token rates and rejected when it exceeds `AI_MAX_COST_USD_PER_REQUEST`.
 
 The service makes one provider attempt per user action. It does not retry automatically because a timed-out generation may already have incurred cost; the user receives a safe message and can deliberately retry. Structured runtime logs contain only purpose, provider/model identifiers, outcome, latency, token counts, estimated cost, and a normalized error code—never prompts, source evidence, generated text, account identifiers, or raw provider diagnostics.
+
+## Hybrid matching
+
+Approved rubrics are immutable, organization-scoped, and bound to the exact public job
+text. Approval RPCs re-check employer/operator role, organization and expected job content.
+Submission snapshots the current approved rubric and candidate-approved matching sources
+atomically. Source text is stored in `application_match_inputs`, readable only by its
+candidate; involved employers see saved criterion summaries/citations, never raw input
+rows or private writing drafts. Matching never reads private employer briefs.
+
+Assessment input is untrusted reference data. Prompts prohibit embedded instructions,
+protected characteristics, invented experience, unsupported negative inferences and overall
+model scores. Runtime schema validation enforces exact criterion IDs, verdict enums and
+verbatim source quotations; code computes points and coverage. Quotations establish
+provenance, not the truth of candidate claims or correctness of model interpretation.
+
+Candidate-owned leases limit assessment to three attempts and reject concurrent/stale
+worker writes; completed/insufficient results cannot be replaced. Failed/pending tasks
+can be resumed without submitting again. Ordinary operations use the caller's session,
+never service-role credentials. A separate server-only `MATCH_SCORE_WORKER_SECRET` is required to claim or complete
+an assessment. The database generates this credential in an inaccessible `private`
+schema; local setup installs it in ignored server configuration. Candidate sessions
+cannot read it or submit completed hybrid scores through the legacy submission RPC.
+No assessment may automatically rank, reject or advance a candidate.
+
+Runtime traces and analytics contain no CVs, free text, quotes or account identifiers.
+Deterministic mode returns unknown assessments and never fabricates a hiring score; it
+never silently substitutes keyword matching for a failed real-provider assessment.
+
+## Shared candidate sources
+
+Application drafting stores an immutable CV snapshot reference alongside its private
+extracted CV text and original candidate-authored notes. The provider receives the CV
+text and notes, not the internal CV storage path. Matching reuses those exact saved
+facts after verifying the generation owner/job/status, current CV identity and notes.
+Generated/edited application prose never replaces the factual input when regenerating
+or submitting. Manual applications use their manually authored text and current CV.
+The raw source bundle is stored in candidate-private matching inputs, not the employer's
+public submission snapshot. Separate additional-experience inputs/sections are removed;
+historical snapshots and results remain unchanged. Source notes in legacy drafts are
+merged without truncation, and incompatible generations require regeneration.

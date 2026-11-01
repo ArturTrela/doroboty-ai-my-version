@@ -14,14 +14,14 @@ describe("varied synthetic descriptions", () => {
       location: "Warszawa",
     }),
   );
-  it("has five length/structure variants, unique copy and visible fictional notices", () => {
-    expect(new Set(copies.map((copy) => copy.variant)).size).toBe(5);
+  it("has six length/structure variants and natural recruiting copy", () => {
+    expect(new Set(copies.map((copy) => copy.variant)).size).toBe(6);
     expect(new Set(copies.map((copy) => copy.description)).size).toBe(100);
     const lengths = copies.map((copy) => copy.description.length);
     expect(Math.max(...lengths)).toBeGreaterThan(Math.min(...lengths) * 3);
     expect(Math.max(...lengths)).toBeLessThan(30000);
     for (const copy of copies) {
-      expect(copy.description).toContain("nie rzeczywista rekrutacja");
+      expect(copy.description).not.toMatch(/fikcyjn|syntetyczn|nie rzeczywista rekrutacja/i);
       expect(parseJobDescription(copy.description).some((block) => block.type === "heading")).toBe(
         true,
       );
