@@ -78,11 +78,23 @@ The command validates the local CLI database URL and Docker container/port, then
 `supabase/marketplace-fixtures.sql` in one transaction. Stable reserved IDs and conflict
 handling make reruns nonduplicating and preserve edits to existing records. A conflicting
 slug fails the transaction rather than overwriting another record. Companies use reserved
-`.invalid` websites; roles clearly identify themselves as fictional. All jobs include map
+`.invalid` websites. The dataset remains synthetic teaching content; public copy uses
+natural recruiting language. Each company offers all four experience levels and
+each of the 20 role types spans those levels across employers. New descriptions
+are inserted directly with varied length, section structure and role-specific work,
+requirements and company context. All jobs include map
 coordinates, an organization, a private source brief and an approved public text version.
 No users or organization memberships are added. Existing employers therefore cannot manage
 these companies; use an operator for authorized inspection, or explicitly provision an
 employer for one company separately. Candidates can browse and apply normally.
+
+To edit the authored company/role context or description structures, change
+`src/features/jobs/marketplace-role-copy.ts` or `marketplace-copy.ts`, then run
+`node scripts/build-marketplace-copy.ts`. The generator evaluates only the metadata
+SELECTs in an isolated in-memory database, updates marked SQL copy blocks and never
+connects to the running database. `--check` verifies reproducibility without writing.
+Existing installed/edited records are preserved by the seeder; this generator does
+not silently refresh them.
 
 This supplement is deliberately opt-in and is not included in `db:reset` or the canonical
 six-job course seed. After an intentional local reset, run it again if needed. It does not

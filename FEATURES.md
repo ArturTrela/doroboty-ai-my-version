@@ -99,8 +99,9 @@ unchanged. There is no logo-upload/editor flow. Evidence:
 Description evidence: [shared rendering](src/features/jobs/job-description.tsx),
 [safe parser/tests](src/features/jobs/description.test.ts), and
 [variation authoring](src/features/jobs/marketplace-copy.ts). The 100 reserved
-synthetic listings can receive five length/structure variants through the read-only
-SQL planner in `scripts/plan-marketplace-copy.ts`. The reviewed plan requires exact
+synthetic listings are seeded with six length/structure variants and role-specific
+projects, skills, company contexts and seniority scopes. The read-only SQL planner
+in `scripts/plan-marketplace-copy.ts` remains available for exact legacy copies. The reviewed plan requires exact
 stock text and expected hashes, appends approved copy versions and leaves metadata,
 original roles, applications and memberships intact. No new AI feature/release is
 unlocked. See [scope and results](docs/tasks/job-descriptions.md).
@@ -222,7 +223,12 @@ Without Supabase configuration, public fixtures and `/demo` remain available.
 **SYS-07 Tooling — optional local marketplace volume.** `npm run db:seed-marketplace`
 adds 100 synthetic published roles across 25 fictional companies to the running local
 Supabase stack, without reset or changed memberships. Roles have map coordinates,
-organizations, private briefs, salary/dates and public text versions. Reruns preserve
+organizations, private briefs, salary/dates and matching public text versions. Each
+company offers junior/mid/senior/lead roles; the 20 role types span all four levels
+across employers. Public descriptions use six structures and 25 company contexts,
+with lengths around 120–410 words. `node scripts/build-marketplace-copy.ts --check`
+verifies the tracked copy generated from the SQL metadata and authored role copy.
+Reruns preserve
 existing records and edits. This is separate from canonical course releases and the
 static demo; existing employer accounts do not gain access to these organizations.
 Evidence: [supplement SQL](supabase/marketplace-fixtures.sql),

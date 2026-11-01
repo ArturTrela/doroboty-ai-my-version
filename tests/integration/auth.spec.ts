@@ -1193,7 +1193,7 @@ test("optional marketplace volume preserves data and supports candidate applicat
   const visitor = createClient(api, key, { auth: { persistSession: false } });
   const jobs = await visitor
     .from("jobs")
-    .select("id, company_id, slug, map_latitude, map_longitude")
+    .select("id, company_id, slug, description, map_latitude, map_longitude")
     .like("slug", "demo-%");
   expect(jobs.error).toBeNull();
   expect(jobs.data).toHaveLength(100);
@@ -1293,14 +1293,19 @@ test("optional marketplace volume preserves data and supports candidate applicat
   await expect(page).toHaveURL(/\/app$/);
   await page.goto("/aplikuj/demo-kobalt-labs-ai-product-manager-1");
   await page.getByText("Pełny opis roli", { exact: true }).click();
-  await expect(
-    page.locator("[data-job-description]").getByRole("heading", { name: "O firmie", exact: true }),
-  ).toBeVisible();
-  await expect(
-    page
-      .locator("[data-job-description]")
-      .getByRole("heading", { name: "Zakres odpowiedzialności", exact: true }),
-  ).toBeVisible();
+  const appliedJob = jobs.data!.find(
+    (job) => job.slug === "demo-kobalt-labs-ai-product-manager-1",
+  )!;
+  const expectedHeadings = [...appliedJob.description.matchAll(/^### (.+)$/gm)].map(
+    (match) => match[1],
+  );
+  expect(expectedHeadings.length).toBeGreaterThan(0);
+  const applicationContext = page.locator("[data-job-description]");
+  await expect(applicationContext.getByRole("heading")).toHaveText(expectedHeadings);
+  await expect(applicationContext.getByRole("listitem").first()).toBeVisible();
+  await expect(applicationContext.locator("p").last()).toHaveText(
+    appliedJob.description.split("\n\n").at(-1)!,
+  );
   await page
     .getByLabel("Twoja aplikacja")
     .fill(
