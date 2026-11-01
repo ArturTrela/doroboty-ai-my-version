@@ -3,7 +3,7 @@ import localFont from "next/font/local";
 import { Providers } from "@/components/providers";
 import "./globals.css";
 const timeless = localFont({
-  src: "./fonts/timeless-sans-variable.woff2",
+  src: "./fonts/timeless-grotesk-web-variable.woff2",
   variable: "--font-timeless",
   weight: "100 900",
   display: "swap",

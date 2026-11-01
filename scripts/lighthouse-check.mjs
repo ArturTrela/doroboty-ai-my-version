@@ -1,4 +1,5 @@
 import { spawn, spawnSync } from "node:child_process";
+import { mkdirSync, writeFileSync } from "node:fs";
 import lighthouse from "lighthouse";
 import { launch } from "chrome-launcher";
 import { chromium } from "playwright";
@@ -27,6 +28,9 @@ async function waitForServer() {
   throw new Error("Production server did not become ready.");
 }
 
+const reports = new URL("../artifacts/lighthouse/", import.meta.url);
+mkdirSync(reports, { recursive: true });
+
 const minimums = { performance: 0.9, accessibility: 0.95, "best-practices": 0.95, seo: 0.95 };
 let chrome;
 try {
@@ -45,6 +49,8 @@ try {
         onlyCategories: Object.keys(minimums),
       });
       if (!result) throw new Error(`Lighthouse produced no result for ${path}`);
+      const name = path === "/" ? "home" : path.slice(1).replaceAll("/", "-");
+      writeFileSync(new URL(`${name}-${attempt + 1}.json`, reports), JSON.stringify(result.lhr));
       samples.push(
         Object.fromEntries(
           Object.keys(minimums).map((key) => [key, result.lhr.categories[key].score ?? 0]),
