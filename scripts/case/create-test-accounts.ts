@@ -1,9 +1,7 @@
-import { execFileSync } from "node:child_process";
 import { createClient } from "@supabase/supabase-js";
+import { LOCAL_TEST_PASSWORD, localSupabaseStatus } from "../lib/local-database.ts";
 
-const status = JSON.parse(
-  execFileSync("npx", ["supabase", "status", "-o", "json"], { encoding: "utf8" }),
-);
+const status = localSupabaseStatus();
 const url = status.API_URL as string | undefined;
 const serviceKey = (status.SERVICE_ROLE_KEY ?? status.SECRET_KEY) as string | undefined;
 if (!url || !["127.0.0.1", "localhost"].includes(new URL(url).hostname) || !serviceKey) {
@@ -52,7 +50,7 @@ function fixtureCv(email: string) {
   return Buffer.from(body);
 }
 
-const password = "DoRoboty-local-only-2026!";
+const password = LOCAL_TEST_PASSWORD;
 const fixtures = [
   { email: "candidate@doroboty.local", role: "candidate" },
   { email: "candidate-longform@doroboty.local", role: "candidate" },
@@ -77,13 +75,28 @@ for (const fixture of fixtures) {
     if (created.error) throw created.error;
     user = created.data.user;
   }
+  if (user) {
+    const updated = await admin.auth.admin.updateUserById(user.id, {
+      password,
+      email_confirm: true,
+    });
+    if (updated.error) throw updated.error;
+  }
+  const existing = await admin
+    .from("profiles")
+    .select("display_name, first_name, last_name")
+    .eq("id", user.id)
+    .single();
+  if (existing.error) throw existing.error;
   const profile = await admin
     .from("profiles")
     .update({
       role: fixture.role,
-      display_name: fixture.role === "candidate" ? "Kandydat testowy" : fixture.role,
-      first_name: fixture.role === "candidate" ? "Kandydat" : null,
-      last_name: fixture.role === "candidate" ? "Testowy" : null,
+      display_name:
+        existing.data.display_name ||
+        (fixture.role === "candidate" ? "Kandydat testowy" : fixture.role),
+      first_name: existing.data.first_name || (fixture.role === "candidate" ? "Kandydat" : null),
+      last_name: existing.data.last_name || (fixture.role === "candidate" ? "Testowy" : null),
     })
     .eq("id", user.id);
   if (profile.error) throw profile.error;
@@ -103,6 +116,13 @@ for (const fixture of fixtures) {
 
 for (const email of ["candidate@doroboty.local", "candidate-longform@doroboty.local"] as const) {
   const userId = users.get(email)!;
+  const existingDocument = await admin
+    .from("candidate_documents")
+    .select("user_id")
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (existingDocument.error) throw existingDocument.error;
+  if (existingDocument.data) continue;
   const path = `${userId}/cv.pdf`;
   const pdf = fixtureCv(email);
   const uploaded = await admin.storage.from("candidate-cv").upload(path, pdf, {
@@ -121,4 +141,4 @@ for (const email of ["candidate@doroboty.local", "candidate-longform@doroboty.lo
   if (document.error) throw document.error;
 }
 
-console.log(`Local accounts ready. Password for all test fixtures: ${password}`);
+console.log("Local test accounts ready.");

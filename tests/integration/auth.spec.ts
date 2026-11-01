@@ -2,11 +2,12 @@ import { test, expect } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
 import AxeBuilder from "@axe-core/playwright";
 import { execFileSync } from "node:child_process";
+import { LOCAL_TEST_PASSWORD } from "../../scripts/lib/local-database.ts";
 const api = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
-const mail = process.env.LOCAL_MAIL_URL ?? "http://127.0.0.1:54324";
+const mail = process.env.LOCAL_MAIL_URL ?? "http://127.0.0.1:58324";
 const password = "Local-test-password-483!";
-const localCasePassword = "DoRoboty-local-only-2026!";
+const localCasePassword = LOCAL_TEST_PASSWORD;
 const labelsForRelease = (release: string) =>
   ({
     baseline: "Baseline",

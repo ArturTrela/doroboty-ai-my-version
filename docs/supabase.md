@@ -6,36 +6,52 @@ The public marketplace can run without Supabase or Docker by using deterministic
 
 1. Create a Supabase project and copy `.env.example` to `.env.local`.
 2. Enter the URL and publishable key from the Connect panel. A legacy anon key also works. **Never use a service_role or secret key.**
-3. In Auth, set Site URL to the application URL. Add `/auth/callback` to Redirect URLs with its parameters: `/auth/callback?next=/app` and `/auth/callback?next=/auth/update-password`. For local development, use `http://localhost:3000` and the equivalent callback URLs.
+3. In Auth, set Site URL to the application URL. Add `/auth/callback` to Redirect URLs with its parameters: `/auth/callback?next=/app` and `/auth/callback?next=/auth/update-password`. For local development, use `http://127.0.0.1:3001` and the equivalent callback URLs.
 4. For this synthetic teaching app, disable **Confirm email** under Auth → Providers → Email (`mailer_autoconfirm: true` in the Management API). Candidate email/password signup must immediately return a session without sending confirmation mail. The local equivalent is `[auth.email] enable_confirmations = false`. Changing this flag does not verify ownership of an email address; do not treat the address as verified evidence or use shared course accounts for real candidate data. Employer registration remains provisioned only.
 5. Password recovery and email changes remain separate, email-based flows. Configure SMTP and the `recovery.html` template before relying on recovery delivery. The retained confirmation callback/template is compatibility support for forks that deliberately re-enable confirmation, not the default registration path. Our templates require RedirectTo with a next parameter; do not reuse them in other clients without it.
 6. Restart `npm run dev` and open `/app`.
 
 After signing in, candidates see profiles and applications, employers see jobs and their candidate inbox, and operators see release controls and case analysis. Incomplete configuration shows setup instructions without pretending authenticated data is available.
 
+## Canonical local development
+
+The tracked `supabase/config.toml` is the sole local database configuration:
+`doroboty-ai-local`, API 58321, PostgreSQL 58322, Studio 58323, and Mailpit 58324.
+The application and local auth callbacks use `http://127.0.0.1:3001`.
+The retired project on 55321 and the duplicate `.vercel/local-supabase` workdir
+must not be recreated.
+
+Run `npm run db:setup`, then `npm run dev`. Setup starts the existing stack, applies
+pending migrations and prepares local accounts without resetting data. It merges only
+the local connection/site values into `.env.local`, preserving AI provider settings.
+Existing fixture users receive the shared password `dupadupa8`; candidate/employer
+addresses are in README.md. Existing profile content and uploaded CVs are preserved.
+The development startup check rejects other Supabase endpoints; a missing configuration
+still permits the standalone public fixture/demo mode without Docker.
+
+`npm run db:stop` stops this stack with its normal backup behavior. `npm run db:reset`
+is an explicit destructive operation against this canonical local database. Use it
+only when deliberately discarding its contents, then run `npm run db:setup` again.
+Normal startup and test commands never reset it.
+
 ## Local integration tests
 
-Docker must be running. The Supabase CLI is a development dependency:
+Docker must be running. Install Chromium once and run:
 
 ```sh
-npm run db:start
 npx playwright install chromium
 npm run test:integration
-npm run db:stop
 ```
 
-The first start downloads images. Configured ports: 55321 for the API, 55322 for the database, 55323 for Studio, 55324 for the Mailpit test mailbox, and 3107 for the test application. Do not run demo and integration tests in parallel: both rebuild `.next`.
-
-The integration script reads the public key from the local CLI, rejects remote URLs, and builds the application against the local stack. It does not save keys to the repository. Tests cover auth and independent sessions; domain integration scenarios extend this suite. Emails go only to the local mailbox.
-
-**The integration script resets its local database.** If the normal development stack
-contains data you want to keep, run integration tests from an isolated checkout with a
-different Supabase `project_id` and unused API/database/shadow/Studio/mail ports. Do not
-run the suite against the user's active database. Stop only the isolated stack afterward.
-
-`npm run db:reset` deletes **local** data and reapplies migrations. Do not use it for a normal start; tests create unique accounts. After integration tests, `npm run test:e2e` rebuilds the application without Supabase configuration. Local email rate limits are increased only for tests.
-
-The callback supports PKCE code and token_hash. Only allowlisted local application paths are accepted as redirect targets. Expired or invalid links lead to an error message on the sign-in screen.
+The integration runner creates a unique temporary Supabase project on a free port range
+and copies the application into an isolated build directory. It applies the current
+migrations/seed and prepares fixture accounts there, uses deterministic AI, and exercises
+login, applications, RLS, role boundaries and assistant flows through the test app on
+port 3107. Emails go to that disposable local mailbox. It never uses the development
+project's data, environment file or Next.js build output. Reports are copied back to
+ignored local report directories. The temporary stack, volumes and workspace are removed
+in cleanup. CI uses this same lifecycle without starting a second persistent development
+stack.
 
 ## Optional local marketplace volume
 

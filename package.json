@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --hostname 127.0.0.1 --port 3001",
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint --max-warnings=0",
@@ -33,7 +33,8 @@
     "case:rehearsal-accounts": "node scripts/case/create-rehearsal-accounts.ts",
     "case:packet": "node scripts/case/participant-packet.ts",
     "case:verify-packet": "node scripts/case/verify-participant-packet.ts",
-    "case:final-export": "node scripts/case/final-export.ts"
+    "case:final-export": "node scripts/case/final-export.ts",
+    "predev": "node scripts/check-local-database.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
