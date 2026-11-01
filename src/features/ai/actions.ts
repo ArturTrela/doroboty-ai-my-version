@@ -61,9 +61,9 @@ export async function generateCandidateDraft(input: {
     cvFileName: cv.status === "missing" ? null : cv.fileName,
     cvText: cv.status === "available" ? cv.text : null,
     cvReadStatus: cv.status,
-    cvSnapshot: cv.snapshot,
     candidateNotes: parsed.data.candidateNotes,
   };
+  const sourcePayload = { ...source, cvSnapshot: cv.snapshot };
 
   try {
     await captureAnalytics(user.id, {
@@ -86,7 +86,7 @@ export async function generateCandidateDraft(input: {
         provider: result.provider,
         model: result.model,
         prompt_version: result.promptVersion,
-        source_payload: source,
+        source_payload: sourcePayload,
         output_text: result.text,
         latency_ms: result.latencyMs,
         input_tokens: result.inputTokens ?? null,
@@ -123,7 +123,7 @@ export async function generateCandidateDraft(input: {
       provider: process.env.AI_PROVIDER ?? "deterministic",
       model: process.env.AI_MODEL ?? "course-fixture-v1",
       prompt_version: aiPromptVersion("candidate_answer"),
-      source_payload: source,
+      source_payload: sourcePayload,
       output_text: null,
       latency_ms: 0,
       status: "failed",

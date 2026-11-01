@@ -45,5 +45,18 @@ cannot read it or submit completed hybrid scores through the legacy submission R
 No assessment may automatically rank, reject or advance a candidate.
 
 Runtime traces and analytics contain no CVs, free text, quotes or account identifiers.
-Synthetic deterministic mode returns unknown assessments and is visibly identified; it
+Deterministic mode returns unknown assessments and never fabricates a hiring score; it
 never silently substitutes keyword matching for a failed real-provider assessment.
+
+## Shared candidate sources
+
+Application drafting stores an immutable CV snapshot reference alongside its private
+extracted CV text and original candidate-authored notes. The provider receives the CV
+text and notes, not the internal CV storage path. Matching reuses those exact saved
+facts after verifying the generation owner/job/status, current CV identity and notes.
+Generated/edited application prose never replaces the factual input when regenerating
+or submitting. Manual applications use their manually authored text and current CV.
+The raw source bundle is stored in candidate-private matching inputs, not the employer's
+public submission snapshot. Separate additional-experience inputs/sections are removed;
+historical snapshots and results remain unchanged. Source notes in legacy drafts are
+merged without truncation, and incompatible generations require regeneration.
