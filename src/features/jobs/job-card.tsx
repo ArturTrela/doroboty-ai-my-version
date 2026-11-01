@@ -1,11 +1,5 @@
 import Link from "next/link";
-import {
-  ArrowRight,
-  BadgeCheck,
-  BriefcaseBusiness,
-  ChartNoAxesColumnIncreasing,
-  MapPin,
-} from "lucide-react";
+import { ArrowRight, BriefcaseBusiness, ChartNoAxesColumnIncreasing, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { toggleSavedJob } from "@/features/jobs/candidate-job-actions";
@@ -45,11 +39,6 @@ export function JobCard({ job, saved }: { job: JobWithCompany; saved?: boolean }
               {job.title}
             </Link>
           </h3>
-          {job.verificationStatus === "employer_verified" && (
-            <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
-              <BadgeCheck className="size-3.5 text-[var(--gui-success)]" /> Zweryfikowana
-            </span>
-          )}
         </div>
         <Link
           className="mt-0.5 block w-fit text-sm text-muted-foreground transition-colors hover:text-foreground"

@@ -3,7 +3,7 @@ import { JobDescription } from "@/features/jobs/job-description";
 import { CompanyLogo } from "@/features/jobs/company-logo";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, BadgeCheck, Bookmark, BriefcaseBusiness, MapPin } from "lucide-react";
+import { ArrowLeft, Bookmark, BriefcaseBusiness, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { ClientAnalyticsEvent } from "@/features/analytics/client-event";
@@ -78,11 +78,6 @@ export default async function JobPage({ params }: Props) {
           </Link>
           <div className="mt-8 flex flex-wrap gap-2">
             <Badge variant="secondary">{categoryLabels[job.category]}</Badge>
-            {job.verificationStatus === "employer_verified" && (
-              <Badge variant="outline">
-                <BadgeCheck /> Zweryfikowana przez firmę
-              </Badge>
-            )}
           </div>
           <h1 className="mt-5 text-4xl leading-tight font-semibold tracking-[var(--gui-tracking-s)] sm:text-5xl">
             {job.title}

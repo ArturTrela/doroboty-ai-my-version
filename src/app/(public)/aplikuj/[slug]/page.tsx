@@ -3,11 +3,10 @@ import type { Metadata } from "next";
 import { JobDescription } from "@/features/jobs/job-description";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { BadgeCheck, BriefcaseBusiness, MapPin } from "lucide-react";
+import { BriefcaseBusiness, MapPin } from "lucide-react";
 import { ApplicationForm } from "@/features/applications/application-form";
 import { requireProfile } from "@/features/auth/session";
 import { getPublishedJob } from "@/features/jobs/queries";
-import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import {
   contractLabels,
@@ -133,16 +132,6 @@ export default async function ApplyPage({ params }: { params: Promise<{ slug: st
             <dt className="font-medium">Wynagrodzenie</dt>
             <dd className="mt-[var(--gui-space-xxs)] text-muted-foreground">{formatSalary(job)}</dd>
           </div>
-          {job.verificationStatus === "employer_verified" && (
-            <div>
-              <dt className="sr-only">Weryfikacja</dt>
-              <dd>
-                <Badge variant="outline">
-                  <BadgeCheck /> Zweryfikowana przez firmę
-                </Badge>
-              </dd>
-            </div>
-          )}
         </dl>
         <details className="mt-[var(--gui-space-l)] rounded-xl bg-muted/50 p-[var(--gui-space-m)]">
           <summary className="cursor-pointer">

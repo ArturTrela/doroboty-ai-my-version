@@ -96,6 +96,11 @@ unchanged. There is no logo-upload/editor flow. Evidence:
 
 ## Identity and sessions
 
+Verification badges are temporarily hidden on shared job cards (homepage,
+listings and company pages), role details and the candidate application context.
+Stored verification fields and statuses are preserved; they do not currently
+produce a verification badge. See [scope and checks](docs/tasks/hide-verification-badge.md).
+
 Description evidence: [shared rendering](src/features/jobs/job-description.tsx),
 [safe parser/tests](src/features/jobs/description.test.ts), and
 [variation authoring](src/features/jobs/marketplace-copy.ts). The 100 reserved
