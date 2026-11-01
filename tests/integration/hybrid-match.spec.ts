@@ -394,7 +394,9 @@ test("replacing the CV after drafting requires regeneration before submission", 
   ).toBeNull();
   await page.getByRole("checkbox", { name: /Sprawdziłem/ }).check();
   await page.getByRole("button", { name: "Wyślij aplikację", exact: true }).click();
-  await expect(page.getByRole("alert")).toContainText("CV lub dopiski zmieniły się");
+  await expect(page.locator("main").getByRole("alert")).toContainText(
+    "CV lub dopiski zmieniły się",
+  );
   expect(
     (await person.client.from("applications").select("id").eq("candidate_id", person.id)).data,
   ).toEqual([]);

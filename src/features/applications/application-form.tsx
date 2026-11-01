@@ -172,8 +172,9 @@ export function ApplicationForm({
           Twoja aplikacja
         </Label>
         <p id="answer-help" className="mt-[var(--gui-space-xs)] text-sm text-muted-foreground">
-          Dopisz fakty, których nie ma w CV, albo napisz aplikację samodzielnie. CV i Twoje dopiski
-          są wspólną podstawą dla asystenta i Match Score.
+          {generationId
+            ? "Sprawdź i popraw gotową aplikację przed wysłaniem."
+            : "Dopisz fakty, których nie ma w CV, albo napisz aplikację samodzielnie. CV i dopiski wykorzystamy do przygotowania aplikacji oraz Match Score."}
         </p>
         <Textarea
           className="mt-[var(--gui-space-m)]"
@@ -238,7 +239,7 @@ export function ApplicationForm({
         </div>
         <p className="mt-[var(--gui-space-s)] text-xs text-muted-foreground">
           {generationId
-            ? "Szkic możesz poprawić. Aby zmienić fakty źródłowe, wybierz „Edytuj dopiski”."
+            ? "„Edytuj dopiski” odrzuci bieżący szkic i przywróci Twój tekst."
             : "Asystent wykorzysta CV i Twoje dopiski. Sprawdź fakty przed wysłaniem."}
         </p>
         {aiBusy ? (
