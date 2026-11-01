@@ -1,6 +1,17 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import { Providers } from "@/components/providers";
 import "./globals.css";
+const timeless = localFont({
+  src: "./fonts/timeless-sans-variable.woff2",
+  variable: "--font-timeless",
+  weight: "100 900",
+  display: "swap",
+  preload: true,
+  fallback: ["sans-serif"],
+  adjustFontFallback: false,
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   title: { default: "DoRoboty.ai", template: "%s · DoRoboty.ai" },
@@ -16,7 +27,12 @@ export const metadata: Metadata = {
 };
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pl" suppressHydrationWarning data-scroll-behavior="smooth">
+    <html
+      lang="pl"
+      className={timeless.variable}
+      suppressHydrationWarning
+      data-scroll-behavior="smooth"
+    >
       <body>
         <Providers>{children}</Providers>
       </body>
