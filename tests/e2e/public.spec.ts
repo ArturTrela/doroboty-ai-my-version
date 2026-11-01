@@ -79,6 +79,26 @@ test("job map keeps an accessible result list", async ({ page }) => {
   expect(workerErrors).toEqual([]);
 });
 
+test("list-only visits keep the map renderer out of their initial downloads", async ({ page }) => {
+  const scripts: Promise<number>[] = [];
+  page.on("response", (response) => {
+    if (response.url().includes("/_next/static/") && response.url().endsWith(".js"))
+      scripts.push(
+        response
+          .body()
+          .then((body) => body.byteLength)
+          .catch(() => 0),
+      );
+  });
+  await page.goto("/oferty");
+  await page.getByRole("combobox", { name: "Kategoria" }).click();
+  await expect(page.getByRole("option", { name: "Build", exact: true })).toBeVisible();
+  const sizes = await Promise.all(scripts);
+  expect(sizes.length).toBeGreaterThan(0);
+  expect(Math.max(...sizes)).toBeLessThan(500_000);
+  await expect(page.locator('link[rel="preload"][as="font"]')).toHaveCount(1);
+});
+
 test("job filters keep a balanced grid at medium desktop widths", async ({ page }) => {
   await page.setViewportSize({ width: 1166, height: 800 });
   await page.goto("/oferty?view=map");
