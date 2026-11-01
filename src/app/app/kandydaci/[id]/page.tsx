@@ -53,7 +53,7 @@ export default async function CandidatePreviewPage({
   const { data: application, error } = await client
     .from("applications")
     .select(
-      "id, candidate_id, status, variant, answer, source_snapshot, submitted_at, scores:fit_scores(id, score, version, calculated_at), job:jobs(id, title, slug), events:application_stage_events(id, stage, occurred_at, note)",
+      "id, candidate_id, status, variant, answer, source_snapshot, submitted_at, scores:fit_scores(id, score, version, calculated_at, status, components, attempts, processing_started_at), job:jobs(id, title, slug), events:application_stage_events(id, stage, occurred_at, note)",
     )
     .eq("id", id)
     .maybeSingle();
@@ -98,8 +98,8 @@ export default async function CandidatePreviewPage({
         </Badge>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(360px,0.85fr)]">
-        <div className="grid gap-6">
+      <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(360px,0.85fr)]">
+        <div className="grid h-fit min-w-0 gap-6">
           <section className="rounded-xl bg-card p-6 shadow-[var(--gui-shadow-m)]">
             <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
               {snapshot.profile?.city ? (
@@ -107,9 +107,9 @@ export default async function CandidatePreviewPage({
                   <MapPin className="size-4" /> {snapshot.profile.city}
                 </span>
               ) : null}
-              {typeof snapshot.profile?.experience_years === "number" ? (
+              {(snapshot.profile?.experience_years ?? 0) > 0 ? (
                 <span className="flex items-center gap-1.5">
-                  <UserRound className="size-4" /> {snapshot.profile.experience_years} lat
+                  <UserRound className="size-4" /> {snapshot.profile?.experience_years} lat
                   doświadczenia
                 </span>
               ) : null}
@@ -123,24 +123,30 @@ export default async function CandidatePreviewPage({
             </div>
           </section>
 
-          <section>
-            <h2>Doświadczenie</h2>
-            <div className="mt-4 grid gap-3">
-              {(snapshot.experiences ?? []).map((experience, index) => (
-                <article key={experience.id ?? index} className="rounded-xl bg-card p-5">
-                  <h3 className="font-ui font-semibold">
-                    {experience.title} · {experience.company_name}
-                  </h3>
-                  {experience.description ? <p className="mt-2">{experience.description}</p> : null}
-                  {experience.measurable_outcome ? (
-                    <p className="mt-3 rounded-lg bg-secondary p-3">
-                      <strong>Efekt:</strong> {experience.measurable_outcome}
-                    </p>
-                  ) : null}
-                </article>
-              ))}
-            </div>
-          </section>
+          <MatchScore scores={application.scores} applicationId={application.id} />
+
+          {Boolean(snapshot.experiences?.length) && (
+            <section>
+              <h2>Doświadczenie</h2>
+              <div className="mt-4 grid gap-3">
+                {(snapshot.experiences ?? []).map((experience, index) => (
+                  <article key={experience.id ?? index} className="rounded-xl bg-card p-5">
+                    <h3 className="font-ui font-semibold">
+                      {experience.title} · {experience.company_name}
+                    </h3>
+                    {experience.description ? (
+                      <p className="mt-2">{experience.description}</p>
+                    ) : null}
+                    {experience.measurable_outcome ? (
+                      <p className="mt-3 rounded-lg bg-secondary p-3">
+                        <strong>Efekt:</strong> {experience.measurable_outcome}
+                      </p>
+                    ) : null}
+                  </article>
+                ))}
+              </div>
+            </section>
+          )}
 
           {(snapshot.workSamples ?? []).length ? (
             <section>
@@ -165,8 +171,7 @@ export default async function CandidatePreviewPage({
           ) : null}
         </div>
 
-        <aside aria-label="Match Score, CV i historia procesu" className="grid h-fit gap-6">
-          <MatchScore scores={application.scores} />
+        <aside aria-label="CV i historia procesu" className="grid h-fit gap-6">
           <section className="rounded-xl bg-card p-5 shadow-[var(--gui-shadow-m)]">
             <div className="flex items-start justify-between gap-3">
               <div>

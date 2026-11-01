@@ -47,7 +47,7 @@ export default async function ApplicationDetailPage({
   const { data: application, error } = await client
     .from("applications")
     .select(
-      "id, status, variant, answer, source_snapshot, submitted_at, updated_at, answer_generation_id, scores:fit_scores(id, score, version, calculated_at), job:jobs(title, slug, company:companies(name)), events:application_stage_events(id, stage, occurred_at)",
+      "id, status, variant, answer, source_snapshot, submitted_at, updated_at, answer_generation_id, scores:fit_scores(id, score, version, calculated_at, status, components, attempts, processing_started_at), job:jobs(title, slug, company:companies(name)), events:application_stage_events(id, stage, occurred_at)",
     )
     .eq("id", id)
     .eq("candidate_id", user.id)
@@ -90,7 +90,7 @@ export default async function ApplicationDetailPage({
         </span>
       </div>
       <div className="mb-[var(--gui-space-l)]">
-        <MatchScore scores={application.scores} />
+        <MatchScore scores={application.scores} applicationId={application.id} canRetry />
       </div>
       <section className="rounded-xl bg-card p-[var(--gui-space-l)] shadow-[var(--gui-shadow-m)]">
         <h2>Co dzieje się teraz</h2>

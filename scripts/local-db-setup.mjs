@@ -28,7 +28,33 @@ execFileSync("npm", ["run", "case:accounts"], { cwd: projectRoot, stdio: "inheri
 const status = localSupabaseStatus();
 const envPath = resolve(projectRoot, ".env.local");
 const content = existsSync(envPath) ? readFileSync(envPath, "utf8") : "";
-writeFileSync(envPath, updateLocalConnection(content, status, localTarget()), { mode: 0o600 });
+const target = localTarget();
+const matchWorkerSecret = execFileSync(
+  "docker",
+  [
+    "exec",
+    `supabase_db_${target.projectId}`,
+    "psql",
+    "-U",
+    "postgres",
+    "-d",
+    "postgres",
+    "-Atc",
+    "select secret from private.match_worker_config where singleton",
+  ],
+  {
+    cwd: projectRoot,
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+  },
+).trim();
+if (!matchWorkerSecret) throw new Error("Matching worker credential is unavailable.");
+let localEnvironment = updateLocalConnection(content, status, target);
+const workerSetting = `MATCH_SCORE_WORKER_SECRET=${matchWorkerSecret}`;
+localEnvironment = /^MATCH_SCORE_WORKER_SECRET=.*$/m.test(localEnvironment)
+  ? localEnvironment.replace(/^MATCH_SCORE_WORKER_SECRET=.*$/gm, () => workerSetting)
+  : `${localEnvironment.trimEnd()}\n${workerSetting}\n`;
+writeFileSync(envPath, localEnvironment, { mode: 0o600 });
 
 console.log(`Local DoRoboty.ai ready: ${localTarget().appOrigin}`);
 console.log(`Supabase API: ${status.API_URL}; Studio: ${status.STUDIO_URL}`);

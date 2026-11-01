@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { Check, FileText, Sparkles, Trash2 } from "lucide-react";
 import {
@@ -18,80 +19,60 @@ import { Textarea } from "@/components/ui/textarea";
 
 const initialState: ApplicationActionState = { ok: false, message: "" };
 
-type EvidenceItem = {
-  id: string;
-  title: string;
-  subtitle: string;
-  description?: string;
-  url?: string | null;
-  outcome?: string | null;
-};
-
 export function ApplicationForm({
   jobId,
-  profileReady,
   variant,
   initialAnswer,
-  profileSummary,
-  experiences,
-  workSamples,
-  initialExperienceIds,
-  initialWorkSampleIds,
+  initialCandidateNotes = "",
+  initialSourceChanged = false,
   initialGenerationId,
   cvFileName,
+  cvDownloadUrl,
+  profileHref,
   draftUpdatedAt,
 }: {
   jobId: string;
-  profileReady: boolean;
   variant: "long_form" | "one_click";
   initialAnswer: string;
-  profileSummary: {
-    displayName: string;
-    headline: string;
-    bio: string;
-    city: string;
-    years: number;
-    language: string;
-  };
-  experiences: EvidenceItem[];
-  workSamples: EvidenceItem[];
-  initialExperienceIds: string[];
-  initialWorkSampleIds: string[];
+  initialCandidateNotes?: string;
+  initialSourceChanged?: boolean;
   initialGenerationId?: string;
   cvFileName?: string;
+  cvDownloadUrl?: string;
+  profileHref: string;
   draftUpdatedAt?: string;
 }) {
   const [state, action, pending] = useActionState(submitApplication, initialState);
+  const [candidateNotes, setCandidateNotes] = useState(initialCandidateNotes);
+  const [sourceChanged, setSourceChanged] = useState(initialSourceChanged);
   const [answer, setAnswer] = useState(initialAnswer);
-  const [experienceIds, setExperienceIds] = useState(initialExperienceIds);
-  const [workSampleIds, setWorkSampleIds] = useState(initialWorkSampleIds);
   const [generationId, setGenerationId] = useState(initialGenerationId ?? "");
+  const [confirmed, setConfirmed] = useState(false);
   const [aiMessage, setAiMessage] = useState("");
   const [aiBusy, setAiBusy] = useState(false);
   const [saveState, setSaveState] = useState(draftUpdatedAt ? "Szkic przywrócony" : "");
   const started = useRef(false);
-  const manualAnswer = useRef(initialGenerationId ? "" : initialAnswer);
   const saving = useRef<Promise<unknown>>(Promise.resolve());
   const discarding = useRef(false);
+  const currentStep = answer.trim().length < 40 ? 1 : 2;
 
-  const evidenceCount = experienceIds.length + workSampleIds.length;
-  const currentStep = evidenceCount === 0 ? 1 : answer.trim().length < 40 ? 2 : 3;
   useEffect(() => {
     void captureBrowserAnalytics({
       event: "candidate_profile_readiness",
-      properties: { ready: profileReady },
+      properties: { ready: Boolean(cvFileName) },
     });
-  }, [profileReady]);
+  }, [cvFileName]);
 
   useEffect(() => {
-    const timeout = window.setTimeout(async () => {
+    const timeout = window.setTimeout(() => {
       if (discarding.current) return;
       setSaveState("Zapisuję szkic…");
       const payload = {
         jobId,
         answer,
-        selectedExperienceIds: experienceIds,
-        selectedWorkSampleIds: workSampleIds,
+        candidateNotes: generationId ? candidateNotes : answer,
+        selectedExperienceIds: [],
+        selectedWorkSampleIds: [],
         aiGenerationId: generationId,
         currentStep,
       };
@@ -101,9 +82,7 @@ export function ApplicationForm({
           const result = await saveApplicationDraft(payload);
           if (!discarding.current)
             setSaveState(
-              result.ok
-                ? "Szkic zapisany"
-                : "Nie udało się zapisać szkicu. Sprawdź połączenie i zalogowanie, a następnie spróbuj ponownie.",
+              result.ok ? "Szkic zapisany" : "Nie udało się zapisać szkicu. Sprawdź połączenie.",
             );
         } catch {
           setSaveState("Nie udało się zapisać szkicu. Zachowaj tekst i sprawdź połączenie.");
@@ -111,7 +90,7 @@ export function ApplicationForm({
       });
     }, 800);
     return () => window.clearTimeout(timeout);
-  }, [answer, currentStep, experienceIds, generationId, jobId, workSampleIds]);
+  }, [answer, candidateNotes, currentStep, generationId, jobId]);
 
   function trackStart() {
     if (started.current) return;
@@ -119,25 +98,28 @@ export function ApplicationForm({
     void captureBrowserAnalytics({ event: "application_started", properties: { jobId, variant } });
   }
 
-  function toggle(list: string[], setList: (next: string[]) => void, id: string) {
-    discarding.current = false;
-    setList(list.includes(id) ? list.filter((item) => item !== id) : [...list, id]);
-  }
-
   async function draftWithAi() {
     setAiBusy(true);
-    if (!generationId) manualAnswer.current = answer;
-    const result = await generateCandidateDraft({
-      jobId,
-      experienceIds,
-      workSampleIds,
-    });
-    setAiMessage(result.message);
-    if (result.ok && result.text && result.generationId) {
-      setAnswer(result.text);
-      setGenerationId(result.generationId);
+    setAiMessage("");
+    setConfirmed(false);
+    const sourceNotes = generationId ? candidateNotes : answer;
+    setCandidateNotes(sourceNotes);
+    try {
+      const result = await generateCandidateDraft({ jobId, candidateNotes: sourceNotes });
+      setAiMessage(result.message);
+      if (result.ok && result.text && result.generationId) {
+        discarding.current = false;
+        setAnswer(result.text);
+        setGenerationId(result.generationId);
+        setSourceChanged(false);
+      }
+    } catch {
+      setAiMessage(
+        "Nie udało się połączyć z asystentem. Twój tekst został zachowany; spróbuj ponownie.",
+      );
+    } finally {
+      setAiBusy(false);
     }
-    setAiBusy(false);
   }
 
   async function discardDraft() {
@@ -148,9 +130,11 @@ export function ApplicationForm({
     data.set("jobId", jobId);
     await discardApplicationDraft(data);
     setAnswer("");
-    setExperienceIds([]);
-    setWorkSampleIds([]);
+    setCandidateNotes("");
+    setSourceChanged(false);
     setGenerationId("");
+    setConfirmed(false);
+    setAiMessage("");
     setSaveState("Szkic usunięty");
   }
 
@@ -159,190 +143,127 @@ export function ApplicationForm({
       <input type="hidden" name="jobId" value={jobId} />
       <input type="hidden" name="variant" value={variant} />
       <input type="hidden" name="aiGenerationId" value={generationId} />
-      {experienceIds.map((id) => (
-        <input key={id} type="hidden" name="selectedExperienceIds" value={id} />
-      ))}
-      {workSampleIds.map((id) => (
-        <input key={id} type="hidden" name="selectedWorkSampleIds" value={id} />
-      ))}
+      <input type="hidden" name="candidateNotes" value={generationId ? candidateNotes : answer} />
 
-      <div className="flex flex-wrap items-center justify-between gap-[var(--gui-space-s)] text-sm text-muted-foreground">
-        <span role="status">{saveState || "Szkic zapisuje się automatycznie"}</span>
-        <Button type="button" variant="ghost" size="sm" onClick={discardDraft}>
-          <Trash2 /> Usuń szkic
-        </Button>
-      </div>
-
-      <section className="rounded-xl bg-card p-[var(--gui-space-l)] shadow-[var(--gui-shadow-m)]">
-        <StepHeading number="1" title="Wybierz dowody">
-          Tylko zaznaczone elementy trafią do tej aplikacji i do asystenta AI.
-        </StepHeading>
-        <div className="mt-[var(--gui-space-m)] grid gap-[var(--gui-space-s)]">
-          {[
-            ...experiences.map((item) => ({ ...item, kind: "experience" as const })),
-            ...workSamples.map((item) => ({ ...item, kind: "sample" as const })),
-          ].map((item) => {
-            const checked =
-              item.kind === "experience"
-                ? experienceIds.includes(item.id)
-                : workSampleIds.includes(item.id);
-            return (
-              <label
-                key={`${item.kind}-${item.id}`}
-                className="flex cursor-pointer items-start gap-[var(--gui-space-s)] rounded-lg bg-background p-[var(--gui-space-m)]"
-              >
-                <Checkbox
-                  checked={checked}
-                  onCheckedChange={() =>
-                    item.kind === "experience"
-                      ? toggle(experienceIds, setExperienceIds, item.id)
-                      : toggle(workSampleIds, setWorkSampleIds, item.id)
-                  }
-                />
-                <span>
-                  <strong className="block font-medium">{item.title}</strong>
-                  <span className="mt-[var(--gui-space-xxs)] block text-sm text-muted-foreground">
-                    {item.subtitle}
-                  </span>
-                  {item.description && (
-                    <span className="mt-[var(--gui-space-xxs)] block text-sm">
-                      {item.description}
-                    </span>
-                  )}
-                  {item.url && (
-                    <span className="mt-[var(--gui-space-xxs)] block break-all text-sm">
-                      {item.url}
-                    </span>
-                  )}
-                  {item.outcome && (
-                    <span className="mt-[var(--gui-space-xxs)] block text-sm">
-                      Efekt: {item.outcome}
-                    </span>
-                  )}
-                </span>
-              </label>
-            );
-          })}
-          {experiences.length + workSamples.length === 0 && (
-            <p className="rounded-lg bg-muted p-[var(--gui-space-m)] text-sm text-muted-foreground">
-              Najpierw uzupełnij doświadczenie w profilu.
+      <section className="flex flex-wrap items-center justify-between gap-[var(--gui-space-m)] rounded-xl bg-card p-[var(--gui-space-m)] shadow-[var(--gui-shadow-m)]">
+        <div className="flex min-w-0 items-start gap-[var(--gui-space-s)]">
+          <FileText className="mt-[var(--gui-space-xxs)] size-5 shrink-0 text-muted-foreground" />
+          <div className="min-w-0">
+            <h2 className="font-ui text-base font-medium">Twoje CV</h2>
+            <p className="mt-[var(--gui-space-xxs)] break-all text-sm text-muted-foreground">
+              {cvFileName ?? "Nie masz jeszcze CV w profilu."}
             </p>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-[var(--gui-space-m)] text-sm">
+          {cvDownloadUrl && (
+            <a className="text-link" href={cvDownloadUrl} target="_blank" rel="noreferrer">
+              Otwórz CV
+            </a>
           )}
+          <Link className="text-link" href={profileHref}>
+            {cvFileName ? "Zmień CV" : "Dodaj CV"}
+          </Link>
         </div>
       </section>
 
       <section className="rounded-xl bg-card p-[var(--gui-space-l)] shadow-[var(--gui-shadow-m)]">
-        <StepHeading number="2" title="Napisz odpowiedź">
-          Odwołaj się do własnej decyzji, odpowiedzialności i wyniku.
-        </StepHeading>
-        <div className="field mt-[var(--gui-space-m)]">
-          <Label htmlFor="answer">Dlaczego pasujesz do tej roli?</Label>
-          <Textarea
-            id="answer"
-            name="answer"
-            rows={11}
-            minLength={40}
-            maxLength={5000}
-            required
-            value={answer}
-            onChange={(event) => {
-              discarding.current = false;
-              setAnswer(event.target.value);
-              if (!generationId) manualAnswer.current = event.target.value;
-            }}
-            placeholder="Opisz konkretne doświadczenie, decyzję i rezultat…"
-          />
-          <span className="text-xs text-muted-foreground">{answer.length}/5000 znaków</span>
+        <Label htmlFor="answer" className="text-lg">
+          Twoja aplikacja
+        </Label>
+        <p id="answer-help" className="mt-[var(--gui-space-xs)] text-sm text-muted-foreground">
+          Dopisz fakty, których nie ma w CV, albo napisz aplikację samodzielnie. CV i Twoje dopiski
+          są wspólną podstawą dla asystenta i Match Score.
+        </p>
+        <Textarea
+          className="mt-[var(--gui-space-m)]"
+          id="answer"
+          name="answer"
+          rows={11}
+          minLength={40}
+          maxLength={5000}
+          required
+          aria-describedby="answer-help"
+          readOnly={aiBusy || pending}
+          value={answer}
+          onChange={(event) => {
+            discarding.current = false;
+            setAnswer(event.target.value);
+            setConfirmed(false);
+            if (!generationId) setCandidateNotes(event.target.value);
+          }}
+          placeholder="Np. W CV nie wspomniałem o projekcie, w którym…"
+        />
+        <div className="mt-[var(--gui-space-s)] flex flex-wrap items-center justify-between gap-[var(--gui-space-s)] text-xs text-muted-foreground">
+          <span role="status">{saveState || "Szkic zapisuje się automatycznie"}</span>
+          <span>{answer.length}/5000 znaków</span>
         </div>
-        <div className="mt-[var(--gui-space-m)] rounded-lg bg-secondary p-[var(--gui-space-m)]">
-          <div className="flex flex-wrap items-center gap-[var(--gui-space-s)]">
+        <div className="mt-[var(--gui-space-m)] flex flex-wrap items-center gap-[var(--gui-space-s)]">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={draftWithAi}
+            aria-busy={aiBusy}
+            disabled={
+              aiBusy ||
+              pending ||
+              (!cvFileName && (generationId ? candidateNotes : answer).trim().length < 20)
+            }
+          >
+            <Sparkles />{" "}
+            {aiBusy
+              ? "Przygotowuję…"
+              : generationId
+                ? "Wygeneruj ponownie"
+                : "Pomóż mi napisać aplikację"}
+          </Button>
+          {generationId && (
             <Button
               type="button"
-              variant="outline"
-              onClick={draftWithAi}
-              aria-busy={aiBusy}
-              disabled={aiBusy || !profileReady || evidenceCount === 0}
+              variant="ghost"
+              disabled={aiBusy || pending}
+              onClick={() => {
+                setAnswer(candidateNotes);
+                setSourceChanged(false);
+                setGenerationId("");
+                setConfirmed(false);
+                setAiMessage(
+                  "Przywrócono Twoje dopiski. Możesz je zmienić i ponownie przygotować aplikację.",
+                );
+              }}
             >
-              <Sparkles />
-              {aiBusy
-                ? "Przygotowuję…"
-                : generationId
-                  ? "Wygeneruj ponownie"
-                  : "Przygotuj szkic z AI"}
+              Edytuj dopiski
             </Button>
-            {generationId && (
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => {
-                  setAnswer(manualAnswer.current);
-                  setGenerationId("");
-                  setAiMessage("Szkic AI odrzucony. Wrócono do Twojej wersji.");
-                }}
-              >
-                Odrzuć szkic AI
-              </Button>
-            )}
-          </div>
-          <p className="mt-[var(--gui-space-s)] text-sm text-muted-foreground">
-            AI korzysta z opisu oferty, profilu i zaznaczonych wyżej materiałów. Sprawdź fakty przed
-            wysłaniem. Asystent nie ocenia kandydatury, nie podejmuje decyzji o zatrudnieniu i
-            niczego nie wysyła bez Twojej zgody.
-          </p>
-          {aiBusy ? (
-            <AiThinkingIndicator>AI układa Twoją aplikację…</AiThinkingIndicator>
-          ) : aiMessage ? (
-            <p role="status" className="mt-[var(--gui-space-xs)] text-sm">
-              {aiMessage}
-            </p>
-          ) : null}
+          )}
         </div>
+        <p className="mt-[var(--gui-space-s)] text-xs text-muted-foreground">
+          {generationId
+            ? "Szkic możesz poprawić. Aby zmienić fakty źródłowe, wybierz „Edytuj dopiski”."
+            : "Asystent wykorzysta CV i Twoje dopiski. Sprawdź fakty przed wysłaniem."}
+        </p>
+        {aiBusy ? (
+          <AiThinkingIndicator>AI układa Twoją aplikację…</AiThinkingIndicator>
+        ) : aiMessage ? (
+          <p role="status" className="mt-[var(--gui-space-s)] text-sm">
+            {aiMessage}
+          </p>
+        ) : null}
       </section>
 
       <section className="rounded-xl bg-card p-[var(--gui-space-l)] shadow-[var(--gui-shadow-m)]">
-        <StepHeading number="3" title="Sprawdź i wyślij">
-          Pracodawca otrzyma odpowiedź, zaznaczone wyżej materiały i profil w wersji z chwili
-          wysłania.
-        </StepHeading>
-        <dl className="mt-[var(--gui-space-m)] grid gap-[var(--gui-space-s)] rounded-lg bg-secondary p-[var(--gui-space-m)] text-sm">
-          <div className="flex justify-between gap-[var(--gui-space-m)]">
-            <dt>Wybrane dowody</dt>
-            <dd>{evidenceCount}</dd>
-          </div>
-          <div className="flex justify-between gap-[var(--gui-space-m)]">
-            <dt>CV</dt>
-            <dd>{cvFileName ?? "Nie dołączono"}</dd>
-          </div>
-          <div className="flex justify-between gap-[var(--gui-space-m)]">
-            <dt>Odpowiedź</dt>
-            <dd>{answer.trim().length >= 40 ? "Gotowa" : "Wymaga uzupełnienia"}</dd>
-          </div>
-          <div className="flex justify-between gap-[var(--gui-space-m)]">
-            <dt>Źródło tekstu</dt>
-            <dd>{generationId ? "Szkic AI po Twojej edycji" : "Tekst własny"}</dd>
-          </div>
-        </dl>
-        <details className="mt-[var(--gui-space-m)] rounded-lg bg-secondary p-[var(--gui-space-m)]">
-          <summary className="cursor-pointer font-medium">Profil przekazywany pracodawcy</summary>
-          <p className="mt-[var(--gui-space-s)]">
-            {profileSummary.displayName} · {profileSummary.headline}
-          </p>
-          <p className="mt-[var(--gui-space-xs)] text-sm">
-            {profileSummary.city} · {profileSummary.years} lat doświadczenia
-          </p>
-          <p className="mt-[var(--gui-space-xs)] whitespace-pre-wrap text-sm">
-            {profileSummary.bio}
-          </p>
-          {profileSummary.language && (
-            <p className="mt-[var(--gui-space-xs)] text-sm">{profileSummary.language}</p>
-          )}
-        </details>
+        <p className="text-sm text-muted-foreground">
+          Pracodawca otrzyma tę aplikację{cvFileName ? " i wskazane CV" : ""}. Dopiero po wysłaniu
+          będzie mógł je zobaczyć. Otrzyma też Match Score i krótkie podsumowanie przygotowane na
+          podstawie CV i Twoich dopisków.
+        </p>
         <label className="mt-[var(--gui-space-m)] flex items-start gap-[var(--gui-space-xs)] text-sm">
           <Checkbox
             name="confirmed"
             value="yes"
             required
+            checked={confirmed}
             onCheckedChange={(checked) => {
+              setConfirmed(Boolean(checked));
               if (checked)
                 void captureBrowserAnalytics({
                   event: "application_reviewed",
@@ -351,64 +272,52 @@ export function ApplicationForm({
             }}
           />
           <span>
-            Sprawdziłem / sprawdziłam odpowiedź i potwierdzam wysłanie aplikacji, wybranych dowodów
-            oraz wskazanej wersji CV.
+            Sprawdziłem / sprawdziłam treść i chcę wysłać aplikację{cvFileName ? " wraz z CV" : ""}.
           </span>
         </label>
+        {sourceChanged && (
+          <p role="status" className="mt-[var(--gui-space-m)] text-sm">
+            CV lub dopiski zmieniły się od przygotowania szkicu. Wygeneruj aplikację ponownie, aby
+            użyć tych samych źródeł także w Match Score.
+          </p>
+        )}
         {state.message && (
           <p role="alert" className="error-message mt-[var(--gui-space-m)]">
             {state.message}
           </p>
         )}
-        <Button
-          className="mt-[var(--gui-space-m)]"
-          type="submit"
-          size="lg"
-          disabled={pending || !profileReady || evidenceCount === 0 || answer.trim().length < 40}
-        >
-          {pending ? (
-            "Wysyłam…"
-          ) : (
-            <>
-              <Check /> Wyślij aplikację
-            </>
-          )}
-        </Button>
+        <div className="mt-[var(--gui-space-m)] flex flex-wrap items-center gap-[var(--gui-space-s)]">
+          <Button
+            type="submit"
+            size="lg"
+            disabled={
+              pending ||
+              aiBusy ||
+              !confirmed ||
+              sourceChanged ||
+              answer.trim().length < 40 ||
+              answer.length > 5000
+            }
+          >
+            {pending ? (
+              "Wysyłam…"
+            ) : (
+              <>
+                <Check /> Wyślij aplikację
+              </>
+            )}
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={discardDraft}
+            disabled={pending || aiBusy}
+          >
+            <Trash2 /> Usuń szkic
+          </Button>
+        </div>
       </section>
-
-      {!profileReady && (
-        <p className="rounded-lg bg-muted p-[var(--gui-space-m)] text-sm">
-          Profil nie jest jeszcze kompletny. Możesz zapisać szkic, ale przed wysłaniem uzupełnij
-          opis i doświadczenie.
-        </p>
-      )}
-      {cvFileName && (
-        <p className="flex items-center gap-[var(--gui-space-xs)] text-sm text-muted-foreground">
-          <FileText /> {cvFileName} pozostaje plikiem prywatnym do chwili wysłania aplikacji.
-        </p>
-      )}
     </form>
-  );
-}
-
-function StepHeading({
-  number,
-  title,
-  children,
-}: {
-  number: string;
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex items-start gap-[var(--gui-space-s)]">
-      <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
-        {number}
-      </span>
-      <div>
-        <h2>{title}</h2>
-        <p className="mt-[var(--gui-space-xxs)] text-sm text-muted-foreground">{children}</p>
-      </div>
-    </div>
   );
 }

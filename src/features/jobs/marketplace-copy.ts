@@ -62,11 +62,7 @@ export function stockMarketplaceDescription(job: CopyJob) {
   ];
   const focus = stockFocus[(number - 1) % 20];
   return [
-    "O firmie\n" +
-      job.company_name +
-      " rozwija produkty dla sektora: " +
-      sector +
-      ". To ogłoszenie jest fikcyjnym materiałem do testowania DoRoboty.ai, nie rzeczywistą rekrutacją.",
+    "O firmie\n" + job.company_name + " rozwija produkty dla sektora: " + sector + ".",
     "Zakres odpowiedzialności\nTwój obszar to " +
       focus +
       ". Będziesz współpracować z zespołem produktowym i operacyjnym, definiować kryteria sukcesu oraz sprawdzać rozwiązania z użytkownikami.",
@@ -147,7 +143,6 @@ export function marketplaceCopy(job: CopyJob) {
   const responsibility = mandate + " " + seniorityScope;
   const sections: string[] = [];
   const section = (title: string, body: string) => sections.push("### " + title + "\n\n" + body);
-  sections.push("To fikcyjne ogłoszenie do testowania DoRoboty.ai, nie rzeczywista rekrutacja.");
   section(
     variant === 3 ? "Dlaczego szukamy tej osoby" : "O firmie",
     job.company_name +

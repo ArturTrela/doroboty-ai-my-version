@@ -1,3 +1,5 @@
+import { MatchCriteriaEditor } from "@/features/matching/criteria-editor";
+import { criteriaSchema } from "@/features/matching/schema";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight, BriefcaseBusiness, MapPin, UsersRound } from "lucide-react";
@@ -35,6 +37,27 @@ export default async function EmployerJobDetailPage({
   if (error || !job) notFound();
   const brief = Array.isArray(job.brief) ? job.brief[0] : job.brief;
 
+  const { data: rubric } = await client
+    .from("job_match_rubrics")
+    .select("version, criteria, job_snapshot")
+    .eq("job_id", id)
+    .order("version", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  const parsedCriteria = criteriaSchema.safeParse(rubric?.criteria);
+  const snapshot = rubric?.job_snapshot as
+    { title?: string; summary?: string; description?: string } | undefined;
+  const approvedRubric =
+    rubric && parsedCriteria.success
+      ? {
+          version: rubric.version,
+          criteria: parsedCriteria.data,
+          current:
+            snapshot?.title === job.title &&
+            snapshot?.summary === job.summary &&
+            snapshot?.description === job.description,
+        }
+      : null;
   return (
     <div>
       <Link href="/app/oferty" className={buttonVariants({ variant: "ghost", size: "sm" })}>
@@ -102,6 +125,7 @@ export default async function EmployerJobDetailPage({
               </div>
             </dl>
           </section>
+          <MatchCriteriaEditor jobId={job.id} approved={approvedRubric} />
           <section className="rounded-xl bg-secondary p-5">
             <h2 className="text-xl">Brief źródłowy</h2>
             {brief ? (

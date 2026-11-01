@@ -147,13 +147,17 @@ AI-generated interviews do not satisfy this program requirement.
 ### AI assistance
 
 - AI-assisted job-post draft from an employer's source brief.
-- AI-assisted candidate answer from source experience.
+- AI-assisted candidate application and Match Score share the same CV snapshot and candidate-authored notes. The single editor preserves notes separately from generated/edited application copy. No separate experience/evidence field is required.
 - Both assistants are available immediately by authenticated role, without experiment groups
-  or stage gates. Required source evidence, ownership checks and human approval still apply.
+  or stage gates. Sufficient source context, ownership checks and human approval still apply.
 - Human review, editing, and approval before publication or submission.
 - Stored provenance and versions for source, generated, and final text.
-- A deliberately limited text-similarity fit score used as a case proxy, not as a hiring
-  recommendation.
+- New applications use an evidence-based hybrid Match Score: an LLM assesses employer-approved
+  requirements against submitted CV/experience, while code computes weighted scores and coverage.
+  The interface shows a colored score and a short AI summary. Unknown information, source citations
+  and coverage remain internal to scoring; no hiring action is automated.
+- Historical teaching datasets retain their limited text-similarity proxy. These methods and
+  their results must remain separate and must not be compared as one metric.
 
 ### Learning and case operations
 
@@ -180,7 +184,7 @@ must not be presented as proof that the marketplace creates better matches.
 - Processing real CVs or production candidate data during the course.
 - Building a complete commercial ATS, messaging inbox, scheduling system, or payroll flow.
 - Using the fit score to make or automate a hiring decision.
-- Shipping the final “work evidence” solution before participants discover the problem.
+- Rewriting staged historical evidence to match later live-product improvements.
 - Teaching “ban AI” as the conclusion.
 - Requiring every participant to build every possible solution direction.
 - Multi-language product UI for the first case release.

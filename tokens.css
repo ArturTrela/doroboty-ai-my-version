@@ -104,6 +104,9 @@
   --gui-color-3-transparent: #ffed9b33;
   --gui-color-4: #ffb5aa;
   --gui-color-4-transparent: #ffb5aa33;
+  /* Match Score orange extends the existing red/yellow/green status palette. */
+  --gui-match-orange: #f28b23;
+  --gui-match-orange-transparent: #f28b2333;
   --gui-success: #00906c;
   --gui-warning: #ffea00;
   --gui-warning-transparent: #ffea0033;

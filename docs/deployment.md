@@ -8,6 +8,34 @@ Publish the repository and set `main` as the default branch. After the first CI 
 
 CI runs without production secrets and uses the minimum `contents: read` permission. The second job runs its own Supabase instance on the runner. Playwright reports and traces are available as artifacts for 7 days. Dependencies are updated manually; automated Dependabot pull requests are disabled.
 
+## Hybrid Match Score configuration
+
+Apply all database migrations before deploying the new application. After migration,
+copy the credential from `private.match_worker_config.secret` into the server-only
+`MATCH_SCORE_WORKER_SECRET` environment setting using an authorized database console.
+Do not expose the private schema through the Data API, add a NEXT_PUBLIC prefix, use
+service-role credentials for normal application requests, or put the credential in logs.
+Use a separate credential/database for each environment. Local `npm run db:setup`
+installs the canonical local credential in ignored `.env.local` without printing it;
+restart the development server if its environment has already been loaded.
+
+The matching provider needs JSON-object output support. The current OpenAI-compatible
+adapter requests it for criterion extraction and assessment. Deterministic mode produces
+unknown assessments and a visible test label, not a substitute hiring score.
+
+An owning employer must open `/app/oferty/[id]`, generate/review the matching criteria,
+and approve the rubric before new applications can be assessed. Editing the public
+job invalidates that rubric for future applications; approve a new version. Existing
+applications retain the submitted sources, criteria and result. Missing criteria,
+unreadable sources or AI outages do not block application submission.
+
+Assessment runs with Next.js `after`, outside the submission response, under the
+platform request-duration limit. Allow at least the 30-second provider timeout plus
+database overhead. Candidate views refresh while processing and allow bounded retry;
+a two-minute lease permits recovery after interrupted work. This is not a durable
+external queue. A deployment needing guaranteed background execution should integrate
+a queue before making uptime commitments.
+
 ## Vercel
 
 1. Import the repository into Vercel. Select Next.js, Node 24, `npm run build` as the build command, and `npm ci` as the install command.

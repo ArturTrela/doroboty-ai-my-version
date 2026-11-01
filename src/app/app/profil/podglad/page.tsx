@@ -3,7 +3,10 @@ import { ArrowLeft, ExternalLink, FileText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { requireProfile } from "@/features/auth/session";
-import { candidateWorkSamplesEnabled } from "@/features/candidates/features";
+import {
+  candidateExperiencesEnabled,
+  candidateWorkSamplesEnabled,
+} from "@/features/candidates/features";
 
 export const dynamic = "force-dynamic";
 
@@ -29,51 +32,55 @@ export default async function CandidateProfilePreviewPage() {
             <ArrowLeft /> Wróć do edycji
           </Link>
           <h1>Podgląd profilu</h1>
-          <p>
-            Tak wygląda bieżący profil. Przy aplikowaniu wybierzesz doświadczenia
-            {candidateWorkSamplesEnabled ? " i próbki pracy" : ""}, które przekażemy pracodawcy.
-            Wysłane zgłoszenia zachowują wersję z chwili wysłania.
-          </p>
+          <p>CV i treść aplikacji przekażemy pracodawcy dopiero po jej wysłaniu.</p>
         </div>
       </div>
       <article className="grid gap-[var(--gui-space-l)] rounded-[var(--gui-radius-l)] bg-card p-[var(--gui-space-l)] shadow-[var(--gui-shadow-m)]">
         <header>
           <h2 className="text-2xl">{profile.display_name ?? "Kandydat / kandydatka"}</h2>
-          <p className="mt-[var(--gui-space-xs)] text-lg text-muted-foreground">
-            {candidate?.headline || "Brak nagłówka zawodowego"}
-          </p>
+          {candidate?.headline && (
+            <p className="mt-[var(--gui-space-xs)] text-lg text-muted-foreground">
+              {candidate.headline}
+            </p>
+          )}
           <div className="mt-[var(--gui-space-m)] flex flex-wrap gap-[var(--gui-space-xs)]">
             {candidate?.city && <Badge variant="secondary">{candidate.city}</Badge>}
-            <Badge variant="secondary">{candidate?.experience_years ?? 0} lat doświadczenia</Badge>
-          </div>
-        </header>
-        <section>
-          <h2>O mnie</h2>
-          <p className="mt-[var(--gui-space-s)] text-muted-foreground">
-            {candidate?.bio || "Brak opisu."}
-          </p>
-        </section>
-        <section>
-          <h2>Doświadczenie</h2>
-          <div className="mt-[var(--gui-space-s)] grid gap-[var(--gui-space-s)]">
-            {(experiences ?? []).map((item) => (
-              <div key={item.id} className="rounded-lg bg-secondary p-[var(--gui-space-m)]">
-                <h3 className="font-medium">
-                  {item.title} · {item.company_name}
-                </h3>
-                <p className="mt-[var(--gui-space-xs)] text-muted-foreground">{item.description}</p>
-                {item.measurable_outcome && (
-                  <p className="mt-[var(--gui-space-xs)]">
-                    <strong>Efekt:</strong> {item.measurable_outcome}
-                  </p>
-                )}
-              </div>
-            ))}
-            {(experiences ?? []).length === 0 && (
-              <p className="text-muted-foreground">Brak doświadczeń.</p>
+            {Boolean(candidate?.experience_years) && (
+              <Badge variant="secondary">{candidate?.experience_years} lat doświadczenia</Badge>
             )}
           </div>
-        </section>
+        </header>
+        {candidate?.bio && (
+          <section>
+            <h2>O mnie</h2>
+            <p className="mt-[var(--gui-space-s)] text-muted-foreground">{candidate.bio}</p>
+          </section>
+        )}
+        {candidateExperiencesEnabled && (
+          <section>
+            <h2>Doświadczenie</h2>
+            <div className="mt-[var(--gui-space-s)] grid gap-[var(--gui-space-s)]">
+              {(experiences ?? []).map((item) => (
+                <div key={item.id} className="rounded-lg bg-secondary p-[var(--gui-space-m)]">
+                  <h3 className="font-medium">
+                    {item.title} · {item.company_name}
+                  </h3>
+                  <p className="mt-[var(--gui-space-xs)] text-muted-foreground">
+                    {item.description}
+                  </p>
+                  {item.measurable_outcome && (
+                    <p className="mt-[var(--gui-space-xs)]">
+                      <strong>Efekt:</strong> {item.measurable_outcome}
+                    </p>
+                  )}
+                </div>
+              ))}
+              {(experiences ?? []).length === 0 && (
+                <p className="text-muted-foreground">Brak doświadczeń.</p>
+              )}
+            </div>
+          </section>
+        )}
         {candidateWorkSamplesEnabled && (
           <section>
             <h2>Próbki pracy</h2>

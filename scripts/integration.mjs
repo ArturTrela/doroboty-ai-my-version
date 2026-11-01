@@ -85,6 +85,23 @@ function run(command, args, privateOutput = false) {
 try {
   run("npx", ["supabase", "start"], true);
   const status = JSON.parse(run("npx", ["supabase", "status", "-o", "json"], true));
+  env.MATCH_SCORE_WORKER_SECRET = run(
+    "docker",
+    [
+      "exec",
+      `supabase_db_doroboty-ai-integration-${process.pid}`,
+      "psql",
+      "-U",
+      "postgres",
+      "-d",
+      "postgres",
+      "-Atc",
+      "select secret from private.match_worker_config where singleton",
+    ],
+    true,
+  ).trim();
+  if (!env.MATCH_SCORE_WORKER_SECRET)
+    throw new Error("Missing isolated matching worker credential.");
   const api = new URL(status.API_URL);
   if (!["127.0.0.1", "localhost"].includes(api.hostname) || Number(api.port) !== base + 1)
     throw new Error("The integration database is not the isolated local target.");

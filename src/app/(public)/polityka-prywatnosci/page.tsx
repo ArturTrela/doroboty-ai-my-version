@@ -13,18 +13,17 @@ export default function PrivacyPage() {
       </h1>
       <div className="mt-8 space-y-8 text-base leading-7 text-muted-foreground">
         <section>
-          <h2 className="text-xl font-semibold text-foreground">Środowisko case study</h2>
+          <h2 className="text-xl font-semibold text-foreground">Dane profilu i aplikacji</h2>
           <p className="mt-3">
-            Ta aplikacja służy do nauki w programie AI Product Heroes 3. Wspólne środowiska
-            szkoleniowe korzystają wyłącznie z danych syntetycznych.
+            Profil i CV pozostają prywatne do momentu wysłania aplikacji. Pracodawca otrzymuje
+            materiały dołączone do zgłoszenia.
           </p>
         </section>
         <section>
-          <h2 className="text-xl font-semibold text-foreground">Konta uczestników</h2>
+          <h2 className="text-xl font-semibold text-foreground">Konto użytkownika</h2>
           <p className="mt-3">
-            Dane logowania i treści w prywatnym wdrożeniu uczestnika są przetwarzane przez operatora
-            tego wdrożenia. Nie wpisuj prawdziwych danych kandydatów do współdzielonych instancji
-            kursowych.
+            Dane logowania i treści zapisane w aplikacji są przetwarzane przez operatora tego
+            wdrożenia. Nie dodawaj do CV poufnych danych poprzednich pracodawców lub ich klientów.
           </p>
         </section>
         <section>

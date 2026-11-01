@@ -1,19 +1,26 @@
+import { MATCH_VERSION } from "@/features/matching/schema";
 export type SavedMatchScore = {
   id: string;
-  score: number;
+  score: number | null;
   version: string;
   calculated_at: string;
+  status?: string;
+  components?: unknown;
+  attempts?: number;
+  processing_started_at?: string | null;
 };
-
 export function latestMatchScore(scores: SavedMatchScore[] | null | undefined) {
   return (
     (scores ?? [])
       .filter(
         (item) =>
-          Number.isFinite(item.score) &&
-          item.score >= 0 &&
-          item.score <= 1 &&
-          Number.isFinite(Date.parse(item.calculated_at)),
+          Number.isFinite(Date.parse(item.calculated_at)) &&
+          (item.score !== null
+            ? Number.isFinite(item.score) && item.score >= 0 && item.score <= 1
+            : item.version === MATCH_VERSION &&
+              ["pending", "processing", "insufficient", "unavailable", "failed"].includes(
+                item.status ?? "",
+              )),
       )
       .toSorted(
         (a, b) =>
@@ -21,10 +28,8 @@ export function latestMatchScore(scores: SavedMatchScore[] | null | undefined) {
       )[0] ?? null
   );
 }
-
 export function formatMatchScore(value: number) {
-  return new Intl.NumberFormat("pl-PL", {
-    style: "percent",
-    maximumFractionDigits: 1,
-  }).format(value);
+  return new Intl.NumberFormat("pl-PL", { style: "percent", maximumFractionDigits: 1 }).format(
+    value,
+  );
 }

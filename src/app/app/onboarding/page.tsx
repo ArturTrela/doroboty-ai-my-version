@@ -13,14 +13,11 @@ export default async function CandidateOnboardingPage({
   searchParams: Promise<{ next?: string }>;
 }) {
   const { client, user, profile } = await requireProfile(["candidate"]);
-  const [{ data: candidate }, { count: experienceCount }, { data: document }] = await Promise.all([
-    client.from("candidate_profiles").select("headline, bio, city").eq("user_id", user.id).single(),
-    client
-      .from("candidate_experiences")
-      .select("id", { count: "exact", head: true })
-      .eq("user_id", user.id),
-    client.from("candidate_documents").select("user_id").eq("user_id", user.id).maybeSingle(),
-  ]);
+  const { data: document } = await client
+    .from("candidate_documents")
+    .select("user_id")
+    .eq("user_id", user.id)
+    .maybeSingle();
   const query = await searchParams;
   const requested = query.next ?? "/app";
   const next = safeReturnPath(requested);
@@ -29,16 +26,6 @@ export default async function CandidateOnboardingPage({
       label: "Konto utworzone",
       done: Boolean(profile.first_name && profile.last_name),
       href: "/app/profil#dane",
-    },
-    {
-      label: "Podstawowy profil",
-      done: Boolean(candidate?.headline && candidate?.bio && candidate?.city),
-      href: "/app/profil#dane",
-    },
-    {
-      label: "Pierwsze doświadczenie",
-      done: (experienceCount ?? 0) > 0,
-      href: "/app/profil#doswiadczenie",
     },
     { label: "CV", done: Boolean(document), href: "/app/profil#cv" },
   ];
@@ -54,7 +41,7 @@ export default async function CandidateOnboardingPage({
       <div className="page-heading">
         <div>
           <h1>Przygotuj profil</h1>
-          <p>Możesz przerwać i wrócić później — zapisane dane nie znikną.</p>
+          <p>Dodaj CV do profilu, aby korzystać z niego przy aplikowaniu.</p>
         </div>
       </div>
       <ol className="grid gap-[var(--gui-space-s)]">

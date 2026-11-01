@@ -34,6 +34,18 @@ is an explicit destructive operation against this canonical local database. Use 
 only when deliberately discarding its contents, then run `npm run db:setup` again.
 Normal startup and test commands never reset it.
 
+## Refresh the six original public descriptions
+
+Fresh seeds already include the expanded role-specific copy. For an existing local
+database, preview with `node scripts/refresh-local-job-copy.ts`, then apply with
+`node scripts/refresh-local-job-copy.ts --apply`. The command validates the canonical
+local CLI target and Docker port, updates only exact known legacy or earlier authored
+copies (using recorded SHA-256 fingerprints), appends
+approved public versions and saves a public-copy snapshot under ignored `artifacts/`.
+Edited or already-enriched roles are preserved. A job/company change after preflight
+rolls back the transaction. It does not reset data, touch cloud projects or rewrite
+private briefs and historical application snapshots.
+
 ## Local integration tests
 
 Docker must be running. Install Chromium once and run:

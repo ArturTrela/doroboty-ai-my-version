@@ -11,6 +11,7 @@ import {
   type AiTextRequest,
   validateAiOutput,
 } from "@/features/ai/provider-core";
+import { aiPromptVersion, aiSystemPrompt } from "@/features/ai/prompts";
 
 export type { AiPurpose, AiTextRequest } from "@/features/ai/provider-core";
 
@@ -41,11 +42,13 @@ async function openAiCompatible(request: AiTextRequest): Promise<AiTextResult> {
       body: JSON.stringify({
         model,
         temperature: 0.2,
+        ...(request.purpose.startsWith("match_")
+          ? { response_format: { type: "json_object" } }
+          : {}),
         messages: [
           {
             role: "system",
-            content:
-              "Write concise Polish recruitment copy. Use only supplied evidence. Never invent achievements, requirements, credentials, or metrics.",
+            content: aiSystemPrompt(request.purpose),
           },
           {
             role: "user",
@@ -72,7 +75,7 @@ async function openAiCompatible(request: AiTextRequest): Promise<AiTextResult> {
     return {
       provider: "openai-compatible",
       model,
-      promptVersion: "evidence-first-v1",
+      promptVersion: aiPromptVersion(request.purpose),
       text,
       latencyMs: Math.round(performance.now() - started),
       inputTokens,
@@ -98,7 +101,7 @@ export async function generateAiText(request: AiTextRequest): Promise<AiTextResu
         : {
             provider,
             model,
-            promptVersion: "evidence-first-v1",
+            promptVersion: aiPromptVersion(request.purpose),
             text: validateAiOutput(deterministicText(request)),
             latencyMs: Math.round(performance.now() - started),
           };
