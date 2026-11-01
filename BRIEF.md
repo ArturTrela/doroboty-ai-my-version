@@ -148,6 +148,8 @@ AI-generated interviews do not satisfy this program requirement.
 
 - AI-assisted job-post draft from an employer's source brief.
 - AI-assisted candidate answer from source experience.
+- Both assistants are available immediately by authenticated role, without experiment groups
+  or stage gates. Required source evidence, ownership checks and human approval still apply.
 - Human review, editing, and approval before publication or submission.
 - Stored provenance and versions for source, generated, and final text.
 - A deliberately limited text-similarity fit score used as a case proxy, not as a hiring
@@ -156,7 +158,7 @@ AI-generated interviews do not satisfy this program requirement.
 ### Learning and case operations
 
 - Reproducible synthetic data snapshots for every reveal.
-- Experiment assignments and exposure records.
+- Historical synthetic cohort evidence; no live experiment assignments or exposure writes.
 - PostHog events without PII plus operational outcomes in Supabase.
 - Instructor reset and fixture validation.
 - CSV exports and a documented data dictionary.

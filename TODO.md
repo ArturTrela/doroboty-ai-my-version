@@ -213,6 +213,10 @@ invariants, and anti-spoiler rules are in
 
 ## M5 — Human-approved AI assistance and text-fit proxy
 
+Live experiment assignment and stage gating were retired by Wojtek's 2026-11-01 decision.
+Both assistants now use role/ownership access. Historical checklist entries and synthetic
+cohorts describe the earlier teaching design; see `docs/tasks/remove-ai-experiments.md`.
+
 - [x] **M5-01** Define a server-only AI provider interface and deterministic test provider.
 - [x] **M5-02** Add secrets, quotas, timeouts, retry policy, structured logging, and safe
       failure behavior without exposing prompts or user content to browser logs.

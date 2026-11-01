@@ -628,48 +628,6 @@ test("anonymous users cannot read employer briefs", async () => {
   expect(briefs.data ?? []).toHaveLength(0);
 });
 
-test("experiment assignment is stable and exposure is idempotent", async () => {
-  const account = await confirmedAccount("experiment");
-  const first = await account.client.rpc("assign_experiment", {
-    target_surface: "application_flow",
-  });
-  const second = await account.client.rpc("assign_experiment", {
-    target_surface: "application_flow",
-  });
-  expect(first.error).toBeNull();
-  expect(second.error).toBeNull();
-  expect(second.data.id).toBe(first.data.id);
-  expect(second.data.variant).toBe(first.data.variant);
-  const exposureA = await account.client.rpc("record_experiment_exposure", {
-    target_assignment_id: first.data.id,
-    target_application_id: null,
-  });
-  const exposureB = await account.client.rpc("record_experiment_exposure", {
-    target_assignment_id: first.data.id,
-    target_application_id: null,
-  });
-  expect(exposureA.error).toBeNull();
-  expect(exposureB.data).toBe(exposureA.data);
-});
-
-test("future AI assignments cannot be exposed before their release", async () => {
-  const candidate = await fixtureClient("candidate@doroboty.local");
-  const future = await candidate
-    .from("experiment_assignments")
-    .select("id")
-    .eq("surface", "candidate_answer")
-    .eq("release_key", "post_ai")
-    .single();
-  expect(future.error).toBeNull();
-  const exposure = await candidate.rpc("record_experiment_exposure", {
-    target_assignment_id: future.data!.id,
-    target_application_id: null,
-  });
-  expect(exposure.error).not.toBeNull();
-  expect((await candidate.rpc("can_use_ai", { target_surface: "candidate_answer" })).data).toBe(
-    false,
-  );
-});
 test("invalid confirmation links do not redirect outside the application", async ({ page }) => {
   await page.goto("/auth/callback?token_hash=invalid&type=signup&next=https://example.com");
   await expect(page).toHaveURL(`${test.info().project.use.baseURL}/auth/sign-in?error=link`);
@@ -871,7 +829,9 @@ test("candidate application and employer first-conversation decision work end to
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 });
 
-test("long-form application remains a complete browser journey", async ({ page }) => {
+test("a ready profile uses the prefilled flow without an experiment assignment", async ({
+  page,
+}) => {
   const candidate = await fixtureClient("candidate-longform@doroboty.local");
   const user = (await candidate.auth.getUser()).data.user!;
   await candidate
@@ -895,7 +855,8 @@ test("long-form application remains a complete browser journey", async ({ page }
   await expect(page).toHaveURL(/\/app$/);
   await page.goto("/aplikuj/staff-ai-engineer");
   await expect(page.getByRole("heading", { name: "Napisz odpowiedź" })).toBeVisible();
-  await expect(page.getByLabel("Dlaczego pasujesz do tej roli?")).toHaveValue("");
+  await expect(page.getByLabel("Dlaczego pasujesz do tej roli?")).not.toHaveValue("");
+  await expect(page.locator('input[name="variant"]')).toHaveValue("one_click");
   await page
     .getByLabel("Dlaczego pasujesz do tej roli?")
     .fill("Budowałem ewaluacje systemów AI i wdrożyłem nadzór człowieka w procesie regulowanym.");
@@ -981,35 +942,47 @@ test("only an operator can inspect and release every case stage", async ({ page 
   }
 });
 
-test("candidate and employer AI drafts require approval and preserve public source truth", async ({
+test("AI assistants work at baseline for every eligible account and preserve approval", async ({
   page,
 }) => {
   const operator = await fixtureClient("operator@doroboty.local");
-  const release = await operator.rpc("release_case", { target_release: "demo_day" });
+  const release = await operator.rpc("release_case", { target_release: "baseline" });
   expect(release.error).toBeNull();
-  const candidate = await fixtureClient("candidate@doroboty.local");
-  const candidateApplicationsBefore = await candidate
-    .from("applications")
-    .select("id", { count: "exact", head: true })
-    .eq("job_id", "20000000-0000-4000-8000-000000000004");
-
-  await page.goto("/auth/sign-in");
-  await page.getByLabel("Email", { exact: true }).fill("candidate@doroboty.local");
-  await page.getByLabel("Hasło", { exact: true }).fill(localCasePassword);
-  await page.getByRole("button", { name: "Zaloguj się", exact: true }).click();
-  await expect(page).toHaveURL(/\/app$/);
-  await page.goto("/aplikuj/ai-operations-specialist");
-  await page.getByRole("button", { name: "Przygotuj szkic z AI" }).click();
-  await expect(page.getByRole("status").filter({ hasText: "Szkic gotowy." })).toBeVisible();
-  await expect(page.getByLabel("Dlaczego pasujesz do tej roli?")).not.toHaveValue("");
-  const candidateApplicationsAfter = await candidate
-    .from("applications")
-    .select("id", { count: "exact", head: true })
-    .eq("job_id", "20000000-0000-4000-8000-000000000004");
-  expect(candidateApplicationsAfter.count).toBe(candidateApplicationsBefore.count);
-
-  await page.goto("/app");
-  await page.getByRole("button", { name: "Wyloguj się", exact: true }).click();
+  for (const email of ["candidate@doroboty.local", "candidate-longform@doroboty.local"]) {
+    const candidate = await fixtureClient(email);
+    const user = (await candidate.auth.getUser()).data.user!;
+    const profile = await candidate
+      .from("candidate_profiles")
+      .update({
+        headline: "AI Product Manager",
+        bio: "Prowadzę discovery i wdrożenia produktów AI.",
+      })
+      .eq("user_id", user.id);
+    expect(profile.error).toBeNull();
+    const experience = await candidate.from("candidate_experiences").insert({
+      user_id: user.id,
+      title: "Product Manager",
+      company_name: "Fixture Labs",
+      description: "Zbadałem proces, przetestowałem rozwiązanie i wdrożyłem usprawnienie.",
+    });
+    expect(experience.error).toBeNull();
+    const before = await candidate
+      .from("applications")
+      .select("id", { count: "exact", head: true });
+    await page.goto("/auth/sign-in");
+    await page.getByLabel("Email", { exact: true }).fill(email);
+    await page.getByLabel("Hasło", { exact: true }).fill(localCasePassword);
+    await page.getByRole("button", { name: "Zaloguj się", exact: true }).click();
+    await expect(page).toHaveURL(/\/app$/);
+    await page.goto("/aplikuj/ai-operations-specialist");
+    await page.getByRole("button", { name: "Przygotuj szkic z AI" }).click();
+    await expect(page.getByRole("status").filter({ hasText: "Szkic gotowy." })).toBeVisible();
+    await expect(page.getByLabel("Dlaczego pasujesz do tej roli?")).not.toHaveValue("");
+    const after = await candidate.from("applications").select("id", { count: "exact", head: true });
+    expect(after.count).toBe(before.count);
+    await page.goto("/app");
+    await page.getByRole("button", { name: "Wyloguj się", exact: true }).click();
+  }
   const employer = await fixtureClient("employer@doroboty.local");
   const originalJob = await employer
     .from("jobs")

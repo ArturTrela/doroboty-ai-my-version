@@ -42,8 +42,6 @@ export default async function ApplyPage({ params }: { params: Promise<{ slug: st
     { data: document },
     { data: draft },
     { data: existing },
-    flowAssignment,
-    aiAssignment,
   ] = await Promise.all([
     client
       .from("candidate_profiles")
@@ -73,8 +71,6 @@ export default async function ApplyPage({ params }: { params: Promise<{ slug: st
       .eq("candidate_id", user.id)
       .eq("job_id", job.id)
       .maybeSingle(),
-    client.rpc("assign_experiment", { target_surface: "application_flow" }),
-    client.rpc("assign_experiment", { target_surface: "candidate_answer" }),
   ]);
   const profileReady = Boolean(
     candidate?.headline && candidate?.bio && (experiences ?? []).length > 0,
@@ -97,11 +93,7 @@ export default async function ApplyPage({ params }: { params: Promise<{ slug: st
       </section>
     );
   }
-  if (flowAssignment.error || aiAssignment.error)
-    throw new Error("Nie udało się przydzielić wariantu eksperymentu.");
-  const flow = flowAssignment.data as { id: string; variant: "long_form" | "one_click" };
-  const ai = aiAssignment.data as { id: string; variant: "manual" | "ai_draft" };
-  const variant = flow.variant === "one_click" && profileReady ? "one_click" : "long_form";
+  const variant = profileReady ? "one_click" : "long_form";
   const suggestedAnswer =
     variant === "one_click"
       ? `${candidate?.headline}. ${candidate?.bio} Chcę podczas rozmowy pokazać konkretne decyzje i wyniki.`
@@ -177,8 +169,6 @@ export default async function ApplyPage({ params }: { params: Promise<{ slug: st
           jobId={job.id}
           profileReady={profileReady}
           variant={variant}
-          allowAi={ai.variant === "ai_draft"}
-          assignmentIds={[...(flow.variant === variant ? [flow.id] : []), ai.id]}
           initialAnswer={initialAnswer}
           profileSummary={{
             displayName: profile.display_name ?? "",

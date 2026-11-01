@@ -101,40 +101,6 @@ for (const fixture of fixtures) {
   }
 }
 
-for (const [email, variant] of [
-  ["candidate@doroboty.local", "one_click"],
-  ["candidate-longform@doroboty.local", "long_form"],
-] as const) {
-  const assignment = await admin.from("experiment_assignments").upsert(
-    {
-      subject_key: users.get(email)!,
-      surface: "application_flow",
-      variant,
-      release_key: "discovery",
-    },
-    { onConflict: "subject_key,surface,release_key" },
-  );
-  if (assignment.error) throw assignment.error;
-}
-
-for (const releaseKey of ["post_ai", "pilot", "demo_day"] as const) {
-  for (const [email, surface] of [
-    ["candidate@doroboty.local", "candidate_answer"],
-    ["employer@doroboty.local", "employer_job_copy"],
-  ] as const) {
-    const assignment = await admin.from("experiment_assignments").upsert(
-      {
-        subject_key: users.get(email)!,
-        surface,
-        variant: "ai_draft",
-        release_key: releaseKey,
-      },
-      { onConflict: "subject_key,surface,release_key" },
-    );
-    if (assignment.error) throw assignment.error;
-  }
-}
-
 for (const email of ["candidate@doroboty.local", "candidate-longform@doroboty.local"] as const) {
   const userId = users.get(email)!;
   const path = `${userId}/cv.pdf`;

@@ -10,7 +10,6 @@ import {
 } from "@/features/applications/actions";
 import { generateCandidateDraft } from "@/features/ai/actions";
 import { captureBrowserAnalytics } from "@/features/analytics/client-event";
-import { ExperimentExposure } from "@/features/experiments/exposure";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -31,8 +30,6 @@ export function ApplicationForm({
   jobId,
   profileReady,
   variant,
-  allowAi,
-  assignmentIds,
   initialAnswer,
   profileSummary,
   experiences,
@@ -46,8 +43,6 @@ export function ApplicationForm({
   jobId: string;
   profileReady: boolean;
   variant: "long_form" | "one_click";
-  allowAi: boolean;
-  assignmentIds: string[];
   initialAnswer: string;
   profileSummary: {
     displayName: string;
@@ -160,9 +155,6 @@ export function ApplicationForm({
 
   return (
     <form action={action} onFocusCapture={trackStart} className="grid gap-[var(--gui-space-m)]">
-      {assignmentIds.map((assignmentId) => (
-        <ExperimentExposure key={assignmentId} assignmentId={assignmentId} />
-      ))}
       <input type="hidden" name="jobId" value={jobId} />
       <input type="hidden" name="variant" value={variant} />
       <input type="hidden" name="aiGenerationId" value={generationId} />
@@ -261,48 +253,46 @@ export function ApplicationForm({
           />
           <span className="text-xs text-muted-foreground">{answer.length}/5000 znaków</span>
         </div>
-        {allowAi && (
-          <div className="mt-[var(--gui-space-m)] rounded-lg bg-secondary p-[var(--gui-space-m)]">
-            <div className="flex flex-wrap items-center gap-[var(--gui-space-s)]">
+        <div className="mt-[var(--gui-space-m)] rounded-lg bg-secondary p-[var(--gui-space-m)]">
+          <div className="flex flex-wrap items-center gap-[var(--gui-space-s)]">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={draftWithAi}
+              disabled={aiBusy || !profileReady || evidenceCount === 0}
+            >
+              <Sparkles />
+              {aiBusy
+                ? "Przygotowuję…"
+                : generationId
+                  ? "Wygeneruj ponownie"
+                  : "Przygotuj szkic z AI"}
+            </Button>
+            {generationId && (
               <Button
                 type="button"
-                variant="outline"
-                onClick={draftWithAi}
-                disabled={aiBusy || !profileReady || evidenceCount === 0}
+                variant="ghost"
+                onClick={() => {
+                  setAnswer(manualAnswer.current);
+                  setGenerationId("");
+                  setAiMessage("Szkic AI odrzucony. Wrócono do Twojej wersji.");
+                }}
               >
-                <Sparkles />
-                {aiBusy
-                  ? "Przygotowuję…"
-                  : generationId
-                    ? "Wygeneruj ponownie"
-                    : "Przygotuj szkic z AI"}
+                Odrzuć szkic AI
               </Button>
-              {generationId && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={() => {
-                    setAnswer(manualAnswer.current);
-                    setGenerationId("");
-                    setAiMessage("Szkic AI odrzucony. Wrócono do Twojej wersji.");
-                  }}
-                >
-                  Odrzuć szkic AI
-                </Button>
-              )}
-            </div>
-            <p className="mt-[var(--gui-space-s)] text-sm text-muted-foreground">
-              AI korzysta z opisu oferty, profilu i zaznaczonych wyżej materiałów. Sprawdź fakty
-              przed wysłaniem. Asystent nie ocenia kandydatury, nie podejmuje decyzji o zatrudnieniu
-              i niczego nie wysyła bez Twojej zgody.
-            </p>
-            {aiMessage && (
-              <p role="status" className="mt-[var(--gui-space-xs)] text-sm">
-                {aiMessage}
-              </p>
             )}
           </div>
-        )}
+          <p className="mt-[var(--gui-space-s)] text-sm text-muted-foreground">
+            AI korzysta z opisu oferty, profilu i zaznaczonych wyżej materiałów. Sprawdź fakty przed
+            wysłaniem. Asystent nie ocenia kandydatury, nie podejmuje decyzji o zatrudnieniu i
+            niczego nie wysyła bez Twojej zgody.
+          </p>
+          {aiMessage && (
+            <p role="status" className="mt-[var(--gui-space-xs)] text-sm">
+              {aiMessage}
+            </p>
+          )}
+        </div>
       </section>
 
       <section className="rounded-xl bg-card p-[var(--gui-space-l)] shadow-[var(--gui-shadow-m)]">

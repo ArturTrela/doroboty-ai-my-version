@@ -9,6 +9,14 @@ This protocol keeps the application, data, weekly reveals, and teaching narrativ
 It defines what the system must make observable, what participants may see at each stage,
 and which conclusions must remain open until supported by evidence.
 
+## Live product access
+
+Wojtek's 2026-11-01 product decision supersedes the original live experiment design:
+all candidates can use application drafting and all employers/authorized operators can
+use job drafting immediately. Case stages only control teaching evidence, not assistant
+availability. Source evidence, authenticated roles, ownership and human approval remain
+required. Historical synthetic cohort comparisons remain part of the teaching material.
+
 ## Narrative contract
 
 The case uses one marketplace stream:
@@ -45,7 +53,6 @@ Participant sees:
 
 Participant must not yet see:
 
-- AI writing assistance;
 - the later text-provenance comparison;
 - the final work-evidence direction.
 
@@ -73,13 +80,13 @@ This stage must support several plausible explanations. It must not state the fi
 
 ### Stage D — AI writing assistance
 
-The product introduces two separately assignable interventions:
+The teaching material examines two interventions, both already available in the live product:
 
 - employer job-post drafting from a private source brief;
 - candidate “why I fit” drafting from source experience.
 
 Every use stores source text, generated text, final approved text, edits, model metadata,
-and experiment exposure. Human approval is mandatory.
+and approval metadata. Human approval is mandatory.
 
 ### Stage E — Measurement and twist
 
@@ -113,8 +120,9 @@ finished version of them.
 - All shared course data is synthetic and deterministic.
 - IDs remain stable across stage snapshots unless a migration explicitly changes them.
 - Timestamps permit cohort and before/after analysis.
-- Experiment assignment and actual exposure are stored separately.
-- Employer AI and candidate AI are independently assignable.
+- Historical synthetic experiment assignment and exposure remain distinct analysis fields;
+  the live product no longer assigns groups or records experiment exposures.
+- Both live assistants are available independently by authenticated role.
 - Source, generated, edited, and published/submitted text are separate immutable versions.
 - The source employer brief contains information not guaranteed to appear in the public job
   post.

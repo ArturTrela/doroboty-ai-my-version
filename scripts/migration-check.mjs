@@ -77,10 +77,6 @@ const candidateRole = (
 if (!roleEscalationRejected || candidateRole !== "candidate") {
   throw new Error("Candidate was able to change their controlled profile role.");
 }
-const assignment = (
-  await db.query("select (public.assign_experiment('application_flow')).id as id")
-).rows[0];
-await db.query("select public.record_experiment_exposure($1, null)", [assignment.id]);
 const submitted = await db.query(`select public.submit_application_with_evidence(
   '20000000-0000-4000-8000-000000000001', 'long_form',
   'Prowadziłem discovery procesu i dowiozłem mierzalne wdrożenie z zespołem operacyjnym.',
@@ -116,6 +112,51 @@ const employerAApplications = (await db.query("select id from public.application
 if (employerAApplications.length !== 1 || employerAApplications[0].id !== applicationId) {
   throw new Error("Organization RLS did not isolate employer applications.");
 }
+// Assistants must work at baseline, without assignments, for each authorized account.
+await actAs(operator);
+await db.query("select public.release_case('baseline')");
+for (const candidateId of [candidateA, candidateB]) {
+  await actAs(candidateId);
+  await db.query(
+    `insert into public.ai_generations
+    (purpose, requested_by, job_id, provider, model, prompt_version, source_payload, output_text, latency_ms, status)
+    values ('candidate_answer', $1, '20000000-0000-4000-8000-000000000001',
+      'deterministic', 'course-fixture-v1', 'evidence-first-v1', '{}', 'Candidate draft', 0, 'succeeded')`,
+    [candidateId],
+  );
+}
+await actAs(employerA);
+await db.query(
+  `insert into public.ai_generations
+  (purpose, requested_by, job_id, provider, model, prompt_version, source_payload, output_text, latency_ms, status)
+  values ('job_draft', $1, '20000000-0000-4000-8000-000000000001',
+    'deterministic', 'course-fixture-v1', 'evidence-first-v1', '{}', 'Employer draft', 0, 'succeeded')`,
+  [employerA],
+);
+let foreignDraftBlocked = false;
+try {
+  await db.query(
+    `insert into public.ai_generations
+    (purpose, requested_by, job_id, provider, model, prompt_version, source_payload, output_text, latency_ms, status)
+    values ('job_draft', $1, '20000000-0000-4000-8000-000000000002',
+      'deterministic', 'course-fixture-v1', 'evidence-first-v1', '{}', 'Forbidden draft', 0, 'succeeded')`,
+    [employerA],
+  );
+} catch {
+  foreignDraftBlocked = true;
+}
+if (!foreignDraftBlocked)
+  throw new Error("Employer gained AI access to another organization's job.");
+await db.exec("reset role");
+const liveExperimentFunctions = (
+  await db.query(`select proname from pg_proc
+  where pronamespace = 'public'::regnamespace
+    and proname in ('assign_experiment', 'record_experiment_exposure', 'can_use_ai')`)
+).rows;
+if (liveExperimentFunctions.length) throw new Error("Live experiment RPCs were not retired.");
+const exposures = (await db.query("select count(*)::int as count from public.experiment_exposures"))
+  .rows[0].count;
+if (exposures !== 0) throw new Error("Application submission still records experiment exposure.");
 await actAs(operator);
 for (const release of ["baseline", "post_one_click", "discovery", "post_ai", "pilot", "demo_day"]) {
   await db.query("select public.release_case($1)", [release]);

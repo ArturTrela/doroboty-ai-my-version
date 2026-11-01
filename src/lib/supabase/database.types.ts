@@ -1220,27 +1220,6 @@ export type Database = {
         };
         Returns: number;
       };
-      assign_experiment: {
-        Args: { target_surface: Database["public"]["Enums"]["experiment_surface"] };
-        Returns: {
-          assigned_at: string;
-          id: string;
-          release_key: Database["public"]["Enums"]["case_release_key"];
-          subject_key: string;
-          surface: Database["public"]["Enums"]["experiment_surface"];
-          variant: string;
-        };
-        SetofOptions: {
-          from: "*";
-          to: "experiment_assignments";
-          isOneToOne: true;
-          isSetofReturn: false;
-        };
-      };
-      can_use_ai: {
-        Args: { target_surface: Database["public"]["Enums"]["experiment_surface"] };
-        Returns: boolean;
-      };
       create_employer_job: {
         Args: {
           job_category: Database["public"]["Enums"]["job_category"];
@@ -1318,10 +1297,6 @@ export type Database = {
           target_application_id: string;
         };
         Returns: undefined;
-      };
-      record_experiment_exposure: {
-        Args: { target_application_id?: string; target_assignment_id: string };
-        Returns: string;
       };
       release_case: {
         Args: { target_release: Database["public"]["Enums"]["case_release_key"] };
