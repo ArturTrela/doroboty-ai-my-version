@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { approveJobDraft, generateJobDraft, type JobDraftState } from "@/features/ai/actions";
 import { Button } from "@/components/ui/button";
+import { AiThinkingIndicator } from "@/features/ai/ai-thinking-indicator";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FormSelect } from "@/components/ui/form-select";
@@ -50,17 +51,19 @@ export function JobDraftWorkspace({ jobs }: { jobs: { id: string; title: string 
             options={jobs.map((job) => ({ value: job.id, label: job.title }))}
           />
         </div>
-        <Button type="submit" disabled={pending || !jobs.length}>
+        <Button type="submit" aria-busy={pending} disabled={pending || !jobs.length}>
           {pending ? "Generuję…" : "Wygeneruj szkic"}
         </Button>
-        {state.message && (
+        {pending ? (
+          <AiThinkingIndicator>AI przygotowuje szkic ogłoszenia…</AiThinkingIndicator>
+        ) : state.message ? (
           <p
             role={state.ok ? "status" : "alert"}
             className={state.ok ? "success-panel" : "error-message"}
           >
             {state.message}
           </p>
-        )}
+        ) : null}
       </form>
       {isApprovedDraft(state) ? (
         <ApprovalForm key={state.generationId} state={state} />

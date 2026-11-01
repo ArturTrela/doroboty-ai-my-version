@@ -9,6 +9,7 @@ import {
   type ApplicationActionState,
 } from "@/features/applications/actions";
 import { generateCandidateDraft } from "@/features/ai/actions";
+import { AiThinkingIndicator } from "@/features/ai/ai-thinking-indicator";
 import { captureBrowserAnalytics } from "@/features/analytics/client-event";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -259,6 +260,7 @@ export function ApplicationForm({
               type="button"
               variant="outline"
               onClick={draftWithAi}
+              aria-busy={aiBusy}
               disabled={aiBusy || !profileReady || evidenceCount === 0}
             >
               <Sparkles />
@@ -287,11 +289,13 @@ export function ApplicationForm({
             wysłaniem. Asystent nie ocenia kandydatury, nie podejmuje decyzji o zatrudnieniu i
             niczego nie wysyła bez Twojej zgody.
           </p>
-          {aiMessage && (
+          {aiBusy ? (
+            <AiThinkingIndicator>AI układa Twoją aplikację…</AiThinkingIndicator>
+          ) : aiMessage ? (
             <p role="status" className="mt-[var(--gui-space-xs)] text-sm">
               {aiMessage}
             </p>
-          )}
+          ) : null}
         </div>
       </section>
 
