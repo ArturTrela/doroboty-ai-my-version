@@ -1,7 +1,9 @@
 # Separate the AIPH3 Case Application from the Public Portal
 
 Date: 2026-10-06  
-Status: Accepted
+Status: Product separation retained; infrastructure rationale superseded on 2026-11-02.
+
+The current frontend-only contract in BRIEF.md takes precedence. Historical references below explain the old decision and must not be used as setup instructions.
 
 ## Context
 

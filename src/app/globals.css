@@ -120,3 +120,13 @@
       "ital" 0;
   }
 }
+
+@font-face {
+  font-family: "Timeless Grotesk";
+  src: url("./fonts/timeless-grotesk-web-variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+:root {
+  --font-timeless: "Timeless Grotesk", sans-serif;
+}

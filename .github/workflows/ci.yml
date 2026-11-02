@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   quality:
-    name: Quality and demo
+    name: Frontend quality
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -20,41 +20,14 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
-      - run: npm run check
-      - run: npm run db:check
-      - run: npm run case:packet -- baseline && npm run case:verify-packet -- baseline
-      - run: npm run case:packet -- discovery && npm run case:verify-packet -- discovery
-      - run: npm run test:lighthouse
-      - run: npm run security:check
-      - run: npm audit --omit=dev --audit-level=high
+      - run: npm exec playwright install --with-deps chromium
+      - run: ./scripts/verify
+      - run: npm run package:participant -- /tmp/doroboty-participant
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: demo-report
+          name: browser-report
           path: |
             playwright-report/
-            test-results/
-            artifacts/lighthouse/
-          retention-days: 7
-  integration:
-    name: Supabase integration
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-      - run: npm ci
-      - run: npx playwright install --with-deps chromium
-      - run: npm run test:integration
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: integration-report
-          path: |
-            playwright-report-integration/
             test-results/
           retention-days: 7

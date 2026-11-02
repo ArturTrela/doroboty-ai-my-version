@@ -1,62 +1,28 @@
-# DoRoboty.ai — AIPH3 case application
+# DoRoboty.ai — AIPH3 prototype
 
-DoRoboty.ai is the prepared spanning-case application for AI Product Heroes 3. It is a
-separate teaching environment built from
-[Superstarter](https://github.com/superhero-tech/superstarter), not the public
-DoRoboty.ai production portal.
+A frontend-only job marketplace for participants to extend and test. Built with React, TypeScript and Vite, using the existing DoRoboty.ai Graphical theme and Base UI components.
 
-Participants use the same product story across the program: diagnose why more job
-applications do not create more useful recruiting conversations, prototype AI writing
-assistance, measure the result, and discover when polished text stops carrying the
-signals needed for a hiring decision.
+## Run
 
-## Start here
-
-1. Read [`BRIEF.md`](BRIEF.md).
-2. Read [`docs/case/CASE_PROTOCOL.md`](docs/case/CASE_PROTOCOL.md).
-3. Follow the sprint order in [`TODO.md`](TODO.md).
-4. Use the preserved source material under [`docs/source/`](docs/source/).
-
-The current flows, features, permissions, and known gaps are registered in
-[`FEATURES.md`](FEATURES.md). Keep it updated with every behavior change, as required by
-[`AGENTS.md`](AGENTS.md).
-
-## Local development
-
-Requirements: Node.js 24 and npm.
+Requirements: **Node.js 24 and npm**.
 
 ```sh
 npm ci
 npm run dev
 ```
 
-The public marketplace works with deterministic fixtures when Supabase is absent. Authenticated candidate, employer, AI, and instructor workflows require Supabase and never silently fall back after it is configured. See the [participant guide](docs/PARTICIPANT_GUIDE.md) and [Supabase runbook](docs/supabase.md).
+Open http://127.0.0.1:3001. No environment file, account, database or additional service is required. Package installation requires access to the npm registry.
 
-To start the canonical local database, apply pending migrations, prepare test accounts
-and configure `.env.local` without deleting existing data, run:
+Select Anna or Marek as a candidate, Karolina or Tomasz as an employer, or the instructor. Publish a job, apply, switch person and record the employer decision. Changes survive reload in this browser; settings provide export, import and reset. AI and scores simulate prepared scenarios. Use example CVs only.
 
-```sh
-npm run db:setup
-npm run dev
-```
-
-Use `candidate@doroboty.local` or `employer@doroboty.local` with password
-`dupadupa8` (local test accounts only). The application runs at
-`http://127.0.0.1:3001`, Supabase API at `http://127.0.0.1:58321`, and Studio at
-`http://127.0.0.1:58323`. The only development configuration is the tracked
-`supabase/config.toml`, for project `doroboty-ai-local`. `db:setup` is safe to rerun:
-it preserves data and AI settings, and keeps the fixture passwords consistent.
-`npm run dev` rejects a connection to another database.
-
-`npm run test:integration` creates and removes its own disposable database and build.
-It does not reset the development database or rewrite `.env.local`.
-
-## Verification
+## Build and verify
 
 ```sh
+npm run build
+npm run preview
 ./scripts/verify
 ```
 
-The project uses the agentic harness documented in [`AGENTS.md`](AGENTS.md).
+The static output is dist/. Browser checks require an already provisioned Playwright Chromium; starting the app never installs it. See [participant guide](docs/PARTICIPANT_GUIDE.md), [architecture](docs/architecture.md), [current features](FEATURES.md) and [case protocol](docs/case/CASE_PROTOCOL.md).
 
-The instructor release model, synthetic data dictionary, discovery packet, real-person test, pilot, and Demo Day runbooks are under [`docs/case/`](docs/case/).
+To distribute a baseline participant package, run npm run package:participant -- /absolute/output/directory. This excludes Git history and instructor source material. Never distribute this repository’s history as a stage-safe packet.

@@ -17,7 +17,7 @@ export function ConfirmDialog({
   onConfirm,
   pending,
   error,
-  label = "Confirm",
+  label = "Potwierdź",
 }: {
   open: boolean;
   onOpenChange: (value: boolean) => void;
@@ -46,9 +46,9 @@ export function ConfirmDialog({
           </p>
         )}
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={pending}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={pending}>Anuluj</AlertDialogCancel>
           <AlertDialogAction variant="destructive" disabled={pending} onClick={onConfirm}>
-            {pending ? "Saving…" : label}
+            {pending ? "Zapisywanie…" : label}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

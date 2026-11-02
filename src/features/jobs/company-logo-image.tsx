@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 
 export function CompanyLogoImage({
@@ -16,15 +15,13 @@ export function CompanyLogoImage({
   if (failedSrc === src) return initials;
 
   return (
-    <Image
-      src={src}
+    <img
+      src={`${import.meta.env.BASE_URL}${src.replace(/^\//, "")}`}
       alt=""
       width={dimension}
       height={dimension}
       sizes={`${dimension}px`}
       className="size-full object-contain p-[var(--gui-space-xxs)]"
-      // Existing remote logos load directly; do not open an unrestricted optimizer proxy.
-      unoptimized={!src.startsWith("/")}
       onError={() => setFailedSrc(src)}
     />
   );

@@ -1,81 +1,40 @@
 # Working on DoRoboty.ai Case
 
-This repository is the AIPH3 teaching application, not the public DoRoboty.ai production site.
-Read `BRIEF.md`, `docs/case/CASE_PROTOCOL.md`, and `TODO.md` before planning product work.
+This is a frontend-only AIPH3 teaching prototype, separate from the public production portal.
+Read BRIEF.md, docs/case/CASE_PROTOCOL.md, TODO.md and relevant FEATURES.md entries before product work.
 
-## Product Behavior Register
+## Start and boundaries
 
-`FEATURES.md` is the maintained register of current flows and functionality, not a roadmap.
-Read the relevant entries before changing product behavior. In the same change and commit,
-update it whenever a flow, feature, route, permission, integration, feature gate, or
-user-visible behavior is added, changed, removed, or hidden. Keep stable entry IDs,
-role/route/data boundaries, conditions, limitations, and source/test references accurate.
-Distinguish implemented, conditional, hidden, partial, and tooling behavior; never infer
-test execution or deployment status from source coverage. Include the register update in
-acceptance criteria and the final review. For a change with no behavioral impact, explicitly
-record that the register was reviewed and no update was needed in the task/review note.
+- The only participant setup is Node.js 24, npm ci, npm run dev (http://127.0.0.1:3001).
+- Do not install system services, Docker, database software, CLIs or a backend without an explicit user request. Missing tooling is a reason to explain the requirement, never to provision it automatically.
+- Do not add authentication services, API routes, environment files, cloud accounts, credentials or external runtime requests. Role selection is a simulation, not security.
+- All domain data lives in committed JSON, React state and versioned localStorage. No SQL, IndexedDB, API mocks or ORM. Share plain Zod schemas between forms and local operations.
+- AI text, Match Scores and summaries are scenario simulations. Preserve human editing and approval; do not imply that they assess arbitrary CVs. Use synthetic data only.
+- Keep historical case evidence separate from prototype state. Include only baseline in participant packages; source history and instructor materials must not be distributed.
 
-## Agentic Workflow
+## Workflow
 
-For anything larger than a one-line change:
+1. Record intent and acceptance criteria in docs/tasks/ for changes larger than one line.
+2. Use a task branch/worktree. Do not let multiple agents write in one worktree.
+3. Implement and run ./scripts/verify before claiming completion; explain actual failures.
+4. Perform a separate review pass before merging. Record durable lessons when useful.
 
-1. Capture intent in `BRIEF.md`, `TODO.md`, `docs/prds/`, or `docs/tasks/`.
-2. Work in a task branch or worktree.
-3. Implement against explicit acceptance criteria.
-4. Run `./scripts/verify` before claiming completion.
-5. Use a separate review pass before merging.
-6. Record durable project lessons in `docs/learnings/` when needed.
+## Product behavior register
 
-Do not let multiple agents write in the same worktree.
-
-Useful commands:
-
-- `./scripts/bootstrap` prepares local tooling and validates the harness.
-- `./scripts/verify` runs the project health check.
-- `./scripts/agent/new-task <name>` creates a task worktree and task note.
-- `./scripts/agent/new-ralph-run <name>` creates a Ralph run folder.
-- `./scripts/agent/run-ralph <name> [claude|amp] [iterations]` runs the real Ralph loop.
+FEATURES.md describes current behavior, not a roadmap. Update it in the same change/commit for added, changed, removed or simulated flows. Preserve stable IDs, route/role/data boundaries and source/test references. Do not equate source coverage with an executed test or deployment. For changes without behavioral impact, record that the register was reviewed and did not need updating.
 
 ## Standards
 
-- For UI work, follow `GUI.md` and use `graphical-ui`, `graphical-convert`, or `graphical-audit`
-  as appropriate.
-- Write code identifiers, authored documentation, comments, and commit messages in English.
-  End-user UI is Polish. Preserve Polish wording in canonical AIPH3 source material.
-- Use npm and Node 24; maintain package-lock.json. Do not add a second package manager.
-- Use the existing shadcn/ui (Base UI) components, tokens, and form pattern. Current components use `render`, not Radix's `asChild`.
-- Place new features in src/features; pages compose features, and src/components/ui holds shared primitives.
-- Mark server libraries `server-only`. Every mutation must verify the session and validate input with Zod. Do not rely on layouts alone for authorization.
-- Share input schemas between forms and the server.
-- The demo must run without secrets, services, or Docker. A Supabase failure must never switch the real application to demo mode.
-- The demo uses static data. Do not add domain tables, migrations, or localStorage data persistence to it.
-- Save database changes as new migrations. Test RLS with two accounts; never use service_role for normal user operations.
-- Do not log tokens, passwords, cookies, or user data. NEXT_PUBLIC values are available in the browser.
+- Code, comments and authored engineering documentation are English; end-user UI and canonical AIPH source wording are Polish.
+- Use npm, Node.js 24 and package-lock.json. No second package manager.
+- Features belong in src/features; src/components/ui contains shared Base UI primitives.
+- For UI changes follow GUI.md and graphical-ui, graphical-convert or graphical-audit as appropriate. Preserve the active tokens, local font, Base UI components and render composition API.
+- Use React Router hash routes. The production output is static assets, without a runtime server.
+- Never log private free text or introduce secrets into the frontend.
 
 ## Validation
 
-- `npm run format` formats the code; `npm run check` verifies formatting, lint, types, tests, the build, and demo E2E tests.
-- After auth or database changes: start Docker, run `npm run db:start`, `npm run test:integration`, and `npm run db:stop`.
-- Integration tests use only local Supabase. Never reset a cloud database to run a test.
-- Check the UI on mobile and desktop, including error states and keyboard support. Prefer behavior tests over tests that mirror the implementation.
-- Report what was actually verified. A passing local build does not prove that CI or deployment works.
-
-## Definition Of Done
-
-Do not claim completion unless acceptance criteria are satisfied or explicitly deferred,
-relevant checks have run, `./scripts/verify` passes or its failures are clearly explained,
-and review findings are resolved or explicitly deferred.
-
-## Extending the starter
-
-Define the expected behavior first, then add the schema, data, interface, and appropriate tests. Architecture instructions are in docs/architecture.md. Keep README short; document service details in docs.
-
-<!-- BEGIN:nextjs-agent-rules -->
-
-# This is NOT the Next.js you know
-
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
-
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
-
-<!-- END:nextjs-agent-rules -->
+- npm run check verifies formatting, lint, types, unit tests, static build and browser journeys. ./scripts/verify runs the same gate.
+- npm run dev never installs browser binaries or system tools. Browser tests require a provisioned Playwright Chromium; if missing, report it. Do not install OS dependencies automatically.
+- Check mobile/desktop, keyboard access, error states, data recovery and external-network independence.
+- Report what actually ran. Local checks do not prove CI, publishing or human approval.
