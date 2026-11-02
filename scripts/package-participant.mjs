@@ -19,8 +19,6 @@ verifyPacket(root);
 const entries = [
   "src",
   "public",
-  "gui",
-  ".agents",
   "tests",
   "package.json",
   "package-lock.json",
@@ -48,6 +46,7 @@ const entries = [
   "scripts/package-participant.mjs",
   "scripts/verify-participant.mjs",
   "docs/architecture.md",
+  "docs/design-system",
   "docs/PARTICIPANT_GUIDE.md",
   "docs/SECURITY.md",
   "docs/case",

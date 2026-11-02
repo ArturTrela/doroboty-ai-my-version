@@ -1,4 +1,4 @@
-/* Untitled application layout; theme tokens and fonts are in tokens.css. */
+/* Application layout; theme tokens and fonts are in tokens.css. */
 html,
 body {
   overflow-x: clip;
@@ -979,7 +979,7 @@ code {
   }
 }
 
-/* Frontend prototype compositions using the existing Untitled theme. */
+/* Shared frontend prototype compositions. */
 @layer components {
   .prototype-section {
     max-width: 1360px;

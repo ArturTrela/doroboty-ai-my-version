@@ -1,0 +1,301 @@
+/* Application composition: existing source facts and controls inside shared reading surfaces. */
+.application-page {
+  padding-block: 28px 64px;
+}
+.application-header {
+  margin: 30px 0 34px;
+}
+.application-header h1 {
+  font-size: 64px;
+  line-height: 1.04;
+  letter-spacing: -2px;
+}
+.application-header p {
+  color: var(--gui-text-muted);
+  font-size: 15px;
+  line-height: 1.7;
+  margin-top: 14px;
+}
+.application-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.5fr);
+  align-items: start;
+  gap: 28px;
+}
+.application-layout > * {
+  min-width: 0;
+}
+.application-offer {
+  position: sticky;
+  top: 24px;
+}
+.application-offer:has(details[open]) {
+  position: static;
+}
+.application-eyebrow {
+  color: var(--gui-text-muted);
+  font-size: 12px;
+  line-height: 1.5;
+  margin-bottom: 22px;
+}
+.application-company {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.application-company [data-company-logo] {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--gui-edge);
+  border-radius: 10px;
+}
+.application-offer h2 {
+  font-size: 28px;
+  line-height: 1.12;
+  letter-spacing: -0.7px;
+  margin-bottom: 14px;
+}
+.application-location {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.application-location svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.application-pay {
+  margin-top: 22px;
+}
+.application-pay .pp-salary-tag {
+  font-size: 20px;
+  line-height: 1.4;
+}
+.application-pay .pp-salary-description {
+  font-size: 12px;
+  margin-top: 8px;
+}
+.application-offer-facts {
+  display: grid;
+  gap: 14px;
+  padding-block: 22px;
+  margin-top: 22px;
+  border-block: 1px solid var(--pp-line);
+  font-size: 13px;
+}
+.application-offer-facts > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+.application-offer-facts dt {
+  color: var(--gui-text-muted);
+}
+.application-offer-facts dd {
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+.application-offer-summary {
+  font-size: 14px;
+  line-height: 1.75;
+  margin-top: 20px;
+  overflow-wrap: anywhere;
+}
+.application-description {
+  margin-top: 20px;
+}
+.application-description summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 12px 0;
+  list-style: none;
+  cursor: pointer;
+}
+.application-description summary::-webkit-details-marker {
+  display: none;
+}
+.application-description summary:hover {
+  background: var(--gui-color-1-transparent);
+}
+.application-description summary:focus-visible {
+  outline: 2px solid var(--gui-focus);
+  outline-offset: 4px;
+}
+.application-description summary svg {
+  flex-shrink: 0;
+}
+.application-description[open] summary svg {
+  transform: rotate(180deg);
+}
+.application-description [data-job-description] {
+  padding-top: 14px;
+  font-size: 14px;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+.application-description [data-job-description] h3 {
+  font-size: 24px;
+  font-weight: 400;
+}
+.application-form {
+  display: grid;
+}
+.application-form-intro {
+  padding-bottom: 24px;
+}
+.application-form-intro h2 {
+  margin-bottom: 10px;
+}
+.application-form-intro p,
+.application-help {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--gui-text-muted);
+}
+.application-form p {
+  overflow-wrap: anywhere;
+}
+.application-form-section {
+  border-top: 1px solid var(--pp-line);
+  padding-block: 24px;
+}
+.application-form-section h3 {
+  font-size: 26px;
+  margin-bottom: 8px;
+}
+.application-form-section > .cv-attachment {
+  margin-top: 18px;
+}
+.application-answer .field > span {
+  font-size: 15px;
+}
+.application-answer textarea {
+  min-height: 180px;
+  margin-top: 6px;
+  font-size: 15px;
+  line-height: 1.7;
+}
+.application-answer #application-answer-help {
+  margin-top: 10px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.application-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 13px;
+  line-height: 1.7;
+  cursor: pointer;
+}
+.application-consent [role="checkbox"] {
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+.application-submit {
+  display: grid;
+  gap: 20px;
+  padding-bottom: 0;
+}
+.application-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.application-actions [data-slot="button"] {
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: normal;
+  max-width: 100%;
+  white-space: normal;
+}
+.application-save-status {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.cv-text {
+  margin-top: 14px;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 1100px) {
+  .application-header h1 {
+    font-size: 54px;
+  }
+  .application-layout {
+    gap: 24px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+  }
+  .application-pay .pp-salary-tag {
+    font-size: 18px;
+  }
+}
+@media (max-width: 850px) {
+  .application-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .application-offer {
+    position: static;
+  }
+  .application-header h1 {
+    font-size: 47px;
+  }
+}
+@media (max-width: 600px) {
+  .application-page {
+    padding-block: 18px 40px;
+  }
+  .application-header {
+    margin-block: 24px 28px;
+  }
+  .application-header h1 {
+    font-size: 43px;
+    line-height: 1.06;
+    letter-spacing: -1.5px;
+  }
+  .application-header p {
+    font-size: 13px;
+  }
+  .application-offer h2 {
+    font-size: 26px;
+  }
+  .application-pay .pp-salary-tag {
+    font-size: 20px;
+  }
+  .application-form-intro {
+    padding-bottom: 20px;
+  }
+  .application-form-section {
+    padding-block: 20px;
+  }
+  .application-submit {
+    padding-bottom: 0;
+  }
+  .application-actions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 700px) {
+  .application-page {
+    padding-top: 18px;
+  }
+}
+
+.application-actions .application-send {
+  min-width: 161px;
+}
+.application-actions .application-send:disabled {
+  background: var(--gui-color-1);
+  color: var(--gui-text);
+}

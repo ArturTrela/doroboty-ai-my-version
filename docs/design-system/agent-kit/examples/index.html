@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f4f4f0">
+  <meta name="description" content="Znajdź swoją robotę z AI. Porównaj role, wynagrodzenia i warunki pracy w DoRoboty.ai. Demonstracja listingu z przykładowymi ofertami.">
+  <title>DoRoboty.ai — Dobra robota. Z AI w środku.</title>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="../assets/fonts/GeistSerif-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../styles/foundation.css">
+  <link rel="stylesheet" href="../styles/components.css">
+  <link rel="stylesheet" href="../styles/listing.css">
+  <script type="module" src="assets/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#results">Przejdź do ofert</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="wordmark" href="./" aria-label="DoRoboty.ai — strona główna">DoRoboty<span class="brand-dot">.</span>ai<span class="brand-square" aria-hidden="true"></span></a>
+      <nav class="desktop-nav" aria-label="Nawigacja główna">
+        <a class="nav-active" href="#results">Oferty pracy</a>
+        <button class="plain-button" id="about-open" type="button">O DoRoboty.ai</button>
+      </nav>
+      <button class="saved-nav" id="saved-toggle" type="button" aria-pressed="false"><span data-icon="bookmark" aria-hidden="true"></span><span>Zapisane</span><span class="saved-count" id="saved-count">0</span></button>
+    </div>
+  </header>
+
+  <main>
+    <section class="intro-section" aria-labelledby="intro-title">
+      <div class="container">
+        <div class="intro-grid">
+          <div class="intro-copy">
+            <h1 id="intro-title">Dobra robota.<br><span>Z AI w środku.</span></h1>
+            <p>Dla ludzi, którzy tworzą, wdrażają i rozwijają AI.<br class="desktop-break"> Znajdź rolę, w której zrobisz coś dobrego.</p>
+          </div>
+          <img class="people-art" src="../assets/people.png" alt="Dwie rysunkowe postacie wspólnie pracują z laptopem i kartą pomysłów" width="600" height="400" fetchpriority="high">
+        </div>
+        <form class="search-form" id="search-form" role="search" aria-label="Wyszukaj oferty pracy">
+          <div class="search-field"><span data-icon="search" aria-hidden="true"></span><label class="sr-only" for="search">Stanowisko, firma lub umiejętność</label><input id="search" name="q" type="search" placeholder="Stanowisko, firma lub umiejętność" autocomplete="off"><button class="input-clear" id="search-clear" type="button" aria-label="Wyczyść wyszukiwanie" hidden><span data-icon="close" aria-hidden="true"></span></button></div>
+          <div class="location-field"><span data-icon="pin" aria-hidden="true"></span><label class="sr-only" for="location">Lokalizacja</label><select id="location" name="location"><option value="">Cała Polska</option><option>Warszawa</option><option>Kraków</option><option>Wrocław</option><option>Poznań</option><option>Gdańsk</option><option>Łódź</option></select></div>
+          <button class="button button-primary search-submit" type="submit">Szukaj ofert <span data-icon="arrow-right" aria-hidden="true"></span></button>
+        </form>
+        <div class="category-tabs" id="categories" role="group" aria-label="Obszar pracy">
+          <button class="category-tab selected" type="button" data-category="all" aria-pressed="true"><span>Wszystkie oferty</span><span class="category-count" data-count="all">24</span></button>
+          <button class="category-tab" type="button" data-category="Build" aria-pressed="false"><span><b>Build</b><small>Twórz AI</small></span><span class="category-count" data-count="Build"></span></button>
+          <button class="category-tab" type="button" data-category="Apply" aria-pressed="false"><span><b>Apply</b><small>Wdrażaj AI</small></span><span class="category-count" data-count="Apply"></span></button>
+          <button class="category-tab" type="button" data-category="Lead" aria-pressed="false"><span><b>Lead</b><small>Wyznaczaj kierunek</small></span><span class="category-count" data-count="Lead"></span></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="container board-layout" aria-label="Przeglądaj oferty">
+      <aside class="filter-sidebar" id="filter-sidebar" aria-label="Filtry ofert">
+        <div class="filter-panel" id="filter-panel">
+          <div class="filter-heading"><h2>Po Twojemu</h2><button class="text-button" id="reset-filters" type="button">Wyczyść</button></div>
+          <fieldset class="filter-group"><legend>Tryb pracy</legend><label><input type="checkbox" name="mode" value="Zdalnie"><span>Zdalnie</span><span class="facet-count" data-facet="Zdalnie"></span></label><label><input type="checkbox" name="mode" value="Hybrydowo"><span>Hybrydowo</span><span class="facet-count" data-facet="Hybrydowo"></span></label><label><input type="checkbox" name="mode" value="Stacjonarnie"><span>Stacjonarnie</span><span class="facet-count" data-facet="Stacjonarnie"></span></label></fieldset>
+          <fieldset class="filter-group"><legend>Doświadczenie</legend><label><input type="checkbox" name="level" value="Junior"><span>Junior</span></label><label><input type="checkbox" name="level" value="Mid"><span>Mid</span></label><label><input type="checkbox" name="level" value="Senior"><span>Senior</span></label><label><input type="checkbox" name="level" value="Lead"><span>Lead / Manager</span></label></fieldset>
+          <fieldset class="filter-group"><legend>Forma współpracy</legend><label><input type="checkbox" name="contract" value="B2B"><span>B2B</span></label><label><input type="checkbox" name="contract" value="UoP"><span>Umowa o pracę</span></label><label><input type="checkbox" name="contract" value="Zlecenie"><span>Umowa zlecenie</span></label></fieldset>
+          <fieldset class="filter-group salary-filter"><legend>Wynagrodzenie</legend><label class="salary-input-label" for="min-salary">Dolna granica widełek od</label><div class="salary-input"><input id="min-salary" type="number" min="0" max="100000" step="1" placeholder="np. 12 000" inputmode="numeric" aria-describedby="salary-hint"><span>zł / mies.</span></div><p id="salary-hint">Kwoty zgodnie z formą umowy.</p><label class="salary-check"><input id="salary-only" type="checkbox"><span>Tylko oferty z widełkami</span></label></fieldset>
+        </div>
+        <p class="sidebar-note"><span data-icon="smile" aria-hidden="true"></span>Twoja kolej na dobrą robotę.</p>
+      </aside>
+
+      <div class="results-column" id="results" tabindex="-1">
+        <div class="results-heading"><div class="results-title"><h2 id="results-title">Oferty pracy</h2><span id="result-number">24</span></div><div class="results-controls"><button id="mobile-filters" class="button filter-button" type="button" aria-haspopup="dialog"><span data-icon="sliders" aria-hidden="true"></span>Filtry <span id="mobile-filter-count" hidden></span></button><div class="sort-field"><label class="sr-only" for="sort">Sortuj oferty</label><select id="sort"><option value="newest">Najnowsze</option><option value="salary">Najwyższe widełki</option><option value="company">Firma A–Z</option></select></div></div></div>
+        <div class="active-filters" id="active-filters" aria-label="Aktywne filtry" hidden></div>
+        <p class="sr-only" id="results-announcement" role="status" aria-live="polite"></p>
+        <div id="job-list" class="job-list"></div>
+        <div class="empty-state" id="empty-state" hidden><span class="empty-mark" data-icon="search" aria-hidden="true"></span><h3 id="empty-title">Tym razem nic tu nie ma.</h3><p id="empty-copy">Zmień hasło lub odpuść jeden z filtrów. Dobra robota może być tuż obok.</p><button class="button button-primary" id="empty-reset" type="button">Pokaż wszystkie oferty <span data-icon="arrow-right" aria-hidden="true"></span></button></div>
+        <nav class="pagination" id="pagination" aria-label="Strony wyników"></nav>
+        <div class="board-bottom"><span data-icon="spark" aria-hidden="true"></span><p>AI zmienia pracę.<br><strong>Ty wybierasz, w którą stronę.</strong></p><a href="#intro-title" class="back-top" aria-label="Wróć na górę"><span data-icon="arrow-up" aria-hidden="true"></span></a></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="container footer-inner"><a class="wordmark footer-wordmark" href="./">DoRoboty<span class="brand-dot">.</span>ai</a><p>Wersja demonstracyjna. Wszystkie oferty i firmy są przykładowe.</p><button id="footer-about" type="button" class="text-button">O tej stronie <span aria-hidden="true">↗</span></button></div></footer>
+  <dialog class="filter-dialog" id="filter-dialog" aria-labelledby="filter-dialog-title"><div class="dialog-heading"><h2 id="filter-dialog-title">Dopasuj oferty</h2><button type="button" class="icon-button" data-close="filter-dialog" aria-label="Zamknij filtry"><span data-icon="close" aria-hidden="true"></span></button></div><div id="mobile-filter-slot"></div><div class="filter-dialog-footer"><button class="button button-primary" id="apply-mobile-filters" type="button">Pokaż oferty</button></div></dialog>
+  <dialog class="about-dialog" id="about-dialog" aria-labelledby="about-title"><div class="dialog-heading"><h2 id="about-title">Dobra robota zaczyna się od konkretów.</h2><button class="icon-button" data-close="about-dialog" type="button" aria-label="Zamknij informacje"><span data-icon="close" aria-hidden="true"></span></button></div><div class="about-content"><p>DoRoboty.ai łączy ludzi z pracą, w której AI jest częścią codziennych zadań — od budowania modeli, przez wdrożenia, po prowadzenie zespołów.</p><div class="about-types"><p><b>Build</b> Projektuj i buduj rozwiązania AI.</p><p><b>Apply</b> Wdrażaj AI i usprawniaj pracę.</p><p><b>Lead</b> Prowadź zespoły i wyznaczaj kierunek.</p></div><p class="demo-note">To interaktywna demonstracja z fikcyjnymi ofertami. Możesz przeglądać, filtrować i zapisywać wybrane oferty. Aplikowanie i publikacja ofert nie są częścią tej wersji.</p><button class="button button-primary" data-close="about-dialog" type="button">Zobacz oferty <span data-icon="arrow-right" aria-hidden="true"></span></button></div></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

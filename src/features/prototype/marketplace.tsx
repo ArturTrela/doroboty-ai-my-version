@@ -1,19 +1,13 @@
-import { Link, useParams, useSearchParams } from "react-router";
-import { useState, type FormEvent } from "react";
-import {
-  CalendarDays,
-  ChevronsUpDown,
-  ArrowLeft,
-  ArrowUpRight,
-  Users,
-  MapPin,
-  BriefcaseBusiness,
-  Bookmark,
-  List,
-  Map,
-} from "lucide-react";
+import { Link, useLocation, useParams, useSearchParams } from "react-router";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { ArrowUpRight, Users, MapPin, BriefcaseBusiness, Bookmark } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Search, ArrowRight, Monitor, X } from "lucide-react";
+import { BackLink } from "@/components/back-link";
+import { ResponsivePanel } from "@/components/responsive-panel";
+import { SalaryFact } from "@/features/jobs/salary-fact";
+import { functionLabels } from "@/features/jobs/presentation";
+import peopleArt from "../../../docs/design-system/agent-kit/assets/people.png";
 import { CompanyLogo } from "@/features/jobs/company-logo";
 import { JobCard } from "@/features/jobs/job-card";
 import { JobFiltersForm } from "@/features/jobs/job-filters";
@@ -26,7 +20,6 @@ import {
   remoteLabels,
   seniorityLabels,
   contractLabels,
-  formatSalary,
 } from "@/features/jobs/presentation";
 import type { JobWithCompany } from "@/features/jobs/types";
 import { usePrototype } from "./store";
@@ -108,116 +101,246 @@ export function JobsPage() {
   const person = currentPerson(state);
   const [params, setParams] = useSearchParams();
   const filters = parseJobFilters(Object.fromEntries(params));
-  const jobs = filterJobs(publishedJobs(state), filters);
+  const chipButtons = useRef(new Map<string, HTMLButtonElement>());
+  const resultsHeading = useRef<HTMLHeadingElement>(null);
+  const pendingChipFocus = useRef<string | null>(null);
+  useEffect(() => {
+    const target = pendingChipFocus.current;
+    if (!target) return;
+    (chipButtons.current.get(target) ?? resultsHeading.current)?.focus();
+    pendingChipFocus.current = null;
+  }, [params]);
+  const all = publishedJobs(state);
+  const jobs = filterJobs(all, filters);
   const pagination = paginateJobs(jobs, filters.page);
   const view = params.get("view") === "map" ? "map" : "list";
   const savedIds =
     person?.role === "candidate"
       ? new Set(state.saved.filter((x) => x.candidateId === person.id).map((x) => x.jobId))
       : undefined;
-  function search(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const next = new URLSearchParams();
-    for (const [key, value] of data) if (typeof value === "string" && value) next.set(key, value);
-    if (filters.location) next.set("location", filters.location);
+  function change(key: string, value: string) {
+    const next = new URLSearchParams(params);
+    next.delete("page");
+    if (value) next.set(key, value);
+    else next.delete(key);
     setParams(next);
   }
+  function removeFilter(key: string) {
+    const keys = Object.entries(filters)
+      .filter(([name, value]) => name !== "page" && value)
+      .map(([name]) => name);
+    const index = keys.indexOf(key);
+    pendingChipFocus.current = keys[index + 1] ?? keys[index - 1] ?? "results";
+    change(key, "");
+  }
+  function reset() {
+    setParams(view === "map" ? { view: "map" } : {});
+  }
+  function search(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    const next = new URLSearchParams(params);
+    next.delete("page");
+    for (const key of ["query", "location"]) {
+      const value = String(data.get(key) ?? "").trim();
+      if (value) next.set(key, value);
+      else next.delete(key);
+    }
+    setParams(next);
+  }
+  const locations = [...new Set(all.flatMap((x) => x.locations))];
   return (
-    <section className="mx-auto max-w-[1360px] px-5 py-9 lg:px-8">
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-xs font-medium tracking-[var(--gui-tracking-xl)] text-muted-foreground">
-            Aktualne role
-          </p>
-          <h1 className="mt-3 text-4xl font-semibold tracking-[var(--gui-tracking-s)] sm:text-5xl">
-            Oferty pracy z AI
-          </h1>
-          <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Role, w których AI zmienia sposób pracy i wynik — nie tylko opis stanowiska.
-          </p>
-        </div>
-        <div className="flex items-center gap-5 text-sm">
-          <div>
-            <strong className="block text-2xl font-semibold text-foreground">{jobs.length}</strong>
-            <span className="text-muted-foreground">ofert</span>
-          </div>
-          <div className="h-11 w-px bg-border" />
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <CalendarDays className="size-4" />
-            <span>
-              Aktualizacja
-              <strong className="block font-medium text-foreground">
-                {new Intl.DateTimeFormat("pl-PL", { dateStyle: "long" }).format(new Date())}
-              </strong>
-            </span>
-          </div>
-        </div>
-      </div>
-      <div className="mt-8">
-        <JobFiltersForm key={params.toString()} filters={filters} view={view} onSubmit={search} />
-      </div>
-      <div className="mt-7 flex items-center justify-between gap-4 text-sm">
-        <p className="font-semibold" role="status">
-          {jobs.length === 1 ? "1 oferta" : `${jobs.length} ofert`}
-        </p>
-        <div className="flex items-center gap-2">
-          <span className="mr-2 hidden items-center gap-2 text-muted-foreground sm:inline-flex">
-            <ChevronsUpDown className="size-4" /> Sortuj: najnowsze
-          </span>
-          <Link
-            aria-current={view === "list" ? "page" : undefined}
-            className={cn(
-              buttonVariants({ variant: view === "list" ? "secondary" : "ghost", size: "sm" }),
-            )}
-            to={jobListingHref(filters)}
-          >
-            <List className="size-4" /> Lista
-          </Link>
-          <Link
-            aria-current={view === "map" ? "page" : undefined}
-            className={cn(
-              buttonVariants({ variant: view === "map" ? "secondary" : "ghost", size: "sm" }),
-            )}
-            to={jobListingHref(filters, 1, "map")}
-          >
-            <Map className="size-4" /> Mapa
-          </Link>
-        </div>
-      </div>
-      {jobs.length > 0 ? (
-        view === "map" ? (
-          <LocalMap jobs={jobs} />
-        ) : (
-          <>
-            <div className="mt-3 shadow-[var(--gui-divider-top-shadow)]">
-              {pagination.items.map((job) => (
-                <JobCard key={job.id} job={job} saved={savedIds?.has(job.id)} />
-              ))}
+    <>
+      <section className="pp-intro-section">
+        <div className="pp-container">
+          <div className="pp-intro-grid">
+            <div className="pp-intro-copy">
+              <h1>
+                Dobra robota.
+                <br />
+                <span>Z AI w środku.</span>
+              </h1>
+              <p>
+                Dla ludzi, którzy tworzą, wdrażają i rozwijają AI.
+                <br />
+                Znajdź rolę, w której zrobisz coś dobrego.
+              </p>
             </div>
-            <JobPagination pagination={pagination} filters={filters} />
-          </>
-        )
-      ) : (
-        <div className="mt-6 rounded-lg bg-muted/30 p-10 text-center">
-          <h2 className="text-xl font-semibold">Brak ofert dla tych filtrów</h2>
-          <p className="mt-3 text-sm text-muted-foreground">
-            Wyczyść część kryteriów i spróbuj ponownie.
-          </p>
-          <Link
-            className="mt-5 inline-block text-sm font-medium text-[var(--gui-link)] hover:underline"
-            to="/oferty"
+            <img
+              className="pp-people-art"
+              src={peopleArt}
+              alt="Dwie osoby pracujące razem z laptopem"
+            />
+          </div>
+          <form
+            key={`${filters.query ?? ""}:${filters.location ?? ""}`}
+            className="pp-search-form"
+            onSubmit={search}
           >
-            Pokaż wszystkie oferty
-          </Link>
+            <label className="pp-search-field">
+              <span>
+                <Search className="pp-icon" />
+              </span>
+              <span className="sr-only">Szukaj ofert</span>
+              <input
+                name="query"
+                aria-label="Szukaj ofert"
+                maxLength={100}
+                defaultValue={filters.query ?? ""}
+                placeholder="Stanowisko, firma lub słowo kluczowe"
+              />
+            </label>
+            <label className="pp-location-field">
+              <span>
+                <MapPin className="pp-icon" />
+              </span>
+              <select
+                name="location"
+                aria-label="Lokalizacja"
+                defaultValue={filters.location ?? ""}
+              >
+                <option value="">Cała Polska</option>
+                {[...new Set([...locations, ...(filters.location ? [filters.location] : [])])].map(
+                  (x) => (
+                    <option key={x}>{x}</option>
+                  ),
+                )}
+              </select>
+            </label>
+            <Button type="submit" className="pp-search-submit">
+              Szukaj <ArrowRight className="pp-icon" />
+            </Button>
+          </form>
+          <div className="pp-category-tabs" aria-label="Kategorie ofert">
+            {(
+              [
+                ["", "Wszystkie oferty", ""],
+                ["build", "Build", "Twórz AI"],
+                ["apply", "Apply", "Wdrażaj AI"],
+                ["lead", "Lead", "Wyznaczaj kierunek"],
+              ] as const
+            ).map(([key, label, description]) => (
+              <button
+                key={key}
+                className={cn("pp-category-tab", (filters.category ?? "") === key && "pp-selected")}
+                aria-pressed={(filters.category ?? "") === key}
+                onClick={() => change("category", key)}
+              >
+                <span>
+                  <b>{label}</b>
+                  <small>{description}</small>
+                </span>
+                <span className="pp-category-count">
+                  {filterJobs(all, { ...filters, category: key || undefined }).length}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
-      )}
-    </section>
+      </section>
+      <section className="pp-container pp-board-layout">
+        <div className="pp-filter-position">
+          <ResponsivePanel
+            title="Filtry"
+            description="Wyniki zmieniają się od razu. W każdej grupie wybierz jeden warunek."
+            resultCount={jobs.length}
+          >
+            <JobFiltersForm filters={filters} onChange={change} onReset={reset} />
+          </ResponsivePanel>
+        </div>
+        <div className="pp-results-column">
+          <div className="pp-results-heading">
+            <div className="pp-results-title">
+              <h2 ref={resultsHeading} tabIndex={-1}>
+                Oferty pracy
+              </h2>
+              <span role="status">{jobs.length}</span>
+            </div>
+            <div className="pp-results-controls">
+              <span className="pp-sort-label">Najnowsze</span>
+              <Link
+                className="pp-view-link"
+                aria-current={view === "list" ? "page" : undefined}
+                to={jobListingHref(filters)}
+              >
+                Lista
+              </Link>
+              <Link
+                className="pp-view-link"
+                aria-current={view === "map" ? "page" : undefined}
+                to={jobListingHref(filters, 1, "map")}
+              >
+                Mapa
+              </Link>
+            </div>
+          </div>
+          {Object.entries(filters).some(([k, v]) => k !== "page" && v) && (
+            <div className="pp-active-filters">
+              {Object.entries(filters)
+                .filter(([k, v]) => k !== "page" && v)
+                .map(([key, value]) => (
+                  <button
+                    className="pp-filter-chip"
+                    key={key}
+                    aria-label={`Usuń filtr: ${value}`}
+                    ref={(element) => {
+                      if (element) chipButtons.current.set(key, element);
+                      else chipButtons.current.delete(key);
+                    }}
+                    onClick={() => removeFilter(key)}
+                  >
+                    {String(value)} <X className="pp-icon" />
+                  </button>
+                ))}
+              <button className="pp-text-button" onClick={reset}>
+                Wyczyść
+              </button>
+            </div>
+          )}
+          {jobs.length ? (
+            view === "map" ? (
+              <LocalMap jobs={jobs} />
+            ) : (
+              <>
+                <div className="pp-job-list">
+                  {pagination.items.map((job) => (
+                    <JobCard key={job.id} job={job} saved={savedIds?.has(job.id)} />
+                  ))}
+                </div>
+                <JobPagination pagination={pagination} filters={filters} />
+              </>
+            )
+          ) : (
+            <div className="pp-empty-state">
+              <span className="pp-empty-mark">
+                <Search className="pp-icon" />
+              </span>
+              <h3>Brak ofert dla tych filtrów</h3>
+              <p>Wyczyść część kryteriów i spróbuj ponownie.</p>
+              <Button onClick={reset}>Pokaż wszystkie oferty</Button>
+            </div>
+          )}
+        </div>
+      </section>
+    </>
   );
 }
 
 export function JobPage() {
   const { slug } = useParams();
+  const location = useLocation();
+  useEffect(() => {
+    const target =
+      location.hash === "#role" ? "role" : location.hash === "#employer" ? "employer" : null;
+    if (!target) return;
+    // Run after the shell's route focus handling, including direct deep links.
+    const frame = requestAnimationFrame(() => {
+      const section = document.getElementById(target);
+      section?.focus({ preventScroll: true });
+      section?.scrollIntoView({ behavior: "instant", block: "start" });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [location.hash, location.key, slug]);
   const { state, run } = usePrototype();
   const person = currentPerson(state);
   const job = publishedJobs(state).find((x) => x.slug === slug);
@@ -226,105 +349,156 @@ export function JobPage() {
   const submitted = state.applications.find(
     (x) => x.candidateId === person?.id && x.jobId === job.id,
   );
+  const related = publishedJobs(state)
+    .filter((x) => x.id !== job.id)
+    .sort((a, b) => Number(b.category === job.category) - Number(a.category === job.category))
+    .slice(0, 3);
   return (
-    <article>
-      <header className="bg-muted/30 shadow-[var(--gui-divider-bottom-shadow)]">
-        <div className="mx-auto max-w-5xl px-5 py-12 lg:px-8 lg:py-16">
-          <Link
-            className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
-            to="/oferty"
-          >
-            <ArrowLeft className="size-4" /> Wszystkie oferty
-          </Link>
-          <div className="mt-8 flex flex-wrap gap-2">
-            <Badge variant="secondary">{categoryLabels[job.category]}</Badge>
-          </div>
-          <h1 className="mt-5 text-4xl leading-tight font-semibold tracking-[var(--gui-tracking-s)] sm:text-5xl">
-            {job.title}
-          </h1>
-          <Link
-            className="mt-4 inline-flex max-w-full items-center gap-[var(--gui-space-s)] text-lg font-medium text-[var(--gui-link)] hover:underline"
-            to={`/firmy/${job.company.slug}`}
-          >
+    <article className="pp-offer-page pp-container pp-offer-main">
+      <nav className="pp-offer-breadcrumb" aria-label="Powrót do ofert">
+        <BackLink to="/oferty">Wróć do ofert</BackLink>
+        <span>{job.company.name}</span>
+      </nav>
+      <div className="pp-offer-grid">
+        <header className="pp-offer-hero">
+          <div className="pp-offer-identity">
             <CompanyLogo company={job.company} />
-            <span className="min-w-0 break-words">{job.company.name}</span>
-          </Link>
-          <p className="mt-5 max-w-3xl text-lg leading-relaxed text-muted-foreground">
-            {job.summary}
-          </p>
-        </div>
-      </header>
-      <div className="mx-auto grid max-w-5xl gap-10 px-5 py-12 lg:grid-cols-[1fr_300px] lg:px-8 lg:py-16">
-        <div>
-          <h2 className="text-2xl font-semibold">O roli</h2>
-          <div className="mt-5 max-w-2xl">
-            <JobDescription description={job.description} />
+            <div>
+              <Link className="pp-offer-company-link" to={`/firmy/${job.company.slug}`}>
+                {job.company.name}
+                <ArrowUpRight className="pp-icon" />
+              </Link>
+              <p className="pp-offer-date">
+                Opublikowano {new Intl.DateTimeFormat("pl-PL").format(new Date(job.publishedAt))}
+              </p>
+            </div>
+            <span className="pp-offer-category">{categoryLabels[job.category]}</span>
           </div>
-          <div className="mt-12 rounded-xl bg-muted/40 p-6">
-            <h2 className="text-xl font-semibold">Chcesz aplikować?</h2>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              {person?.role === "candidate"
-                ? "Przygotuj odpowiedź na podstawie swojego CV i doświadczenia."
-                : person
-                  ? "Aplikacje są dostępne z profilu kandydata."
-                  : "Wybierz profil kandydata, aby przygotować aplikację na tę ofertę."}
-            </p>
-            <div className="mt-5 flex flex-wrap gap-3">
+          <h1>{job.title}</h1>
+          <div className="pp-offer-key-facts">
+            <span>
+              <MapPin className="pp-icon" />
+              {job.locations.join(" / ")}
+            </span>
+            <span>
+              <Monitor className="pp-icon" />
+              {remoteLabels[job.remoteStatus]}
+            </span>
+            <span>
+              <BriefcaseBusiness className="pp-icon" />
+              {seniorityLabels[job.seniority]}
+            </span>
+          </div>
+          <div className="pp-offer-skill-row">
+            <span>{functionLabels[job.function]}</span>
+          </div>
+          <div className="pp-offer-hero-bottom">
+            <span>{job.summary}</span>
+          </div>
+        </header>
+        <aside className="pp-offer-sidebar">
+          <div className="pp-offer-action-card">
+            <div className="pp-offer-pay">
+              <p className="pp-offer-eyebrow">Wynagrodzenie</p>
+              <SalaryFact job={job} />
+            </div>
+            <h2 className="sr-only">Konkrety</h2>
+            <dl className="pp-offer-terms">
+              {[
+                ["Forma współpracy", contractLabels[job.contract]],
+                ["Tryb pracy", remoteLabels[job.remoteStatus]],
+                ["Lokalizacja", job.locations.join(" / ")],
+                ["Doświadczenie", seniorityLabels[job.seniority]],
+              ].map(([key, value]) => (
+                <div key={key}>
+                  <dt>{key}</dt>
+                  <dd>{value}</dd>
+                </div>
+              ))}
+            </dl>
+            <div className="pp-offer-actions">
               {person?.role === "candidate" ? (
                 <>
                   <Link
+                    className={buttonVariants()}
                     to={submitted ? `/app/aplikacje/${submitted.id}` : `/aplikuj/${job.slug}`}
-                    className={buttonVariants({ size: "lg" })}
                   >
                     {submitted ? "Zobacz swoją aplikację" : "Aplikuj"}
+                    <ArrowRight />
                   </Link>
                   <Button
                     variant="outline"
-                    size="lg"
+                    aria-label="Zapisz ofertę"
+                    aria-pressed={saved}
                     onClick={() => run({ type: "toggle_saved", jobId: job.id })}
                   >
-                    <Bookmark className={cn("size-4", saved && "fill-current")} />
-                    {saved ? "Usuń z zapisanych" : "Zapisz ofertę"}
+                    <Bookmark className={cn(saved && "fill-current")} />
+                    Zapisz ofertę
                   </Button>
                 </>
               ) : !person ? (
                 <Link
+                  className={buttonVariants()}
                   to={`/auth/sign-in?audience=candidate&next=${encodeURIComponent(`/aplikuj/${job.slug}`)}`}
-                  className={buttonVariants({ size: "lg" })}
                 >
                   Wybierz osobę i aplikuj
                 </Link>
-              ) : null}
+              ) : (
+                <p>Aplikacje są dostępne z profilu kandydata.</p>
+              )}
+              <p>Prototyp: aplikacja zostaje w tym przeglądarkowym scenariuszu.</p>
             </div>
           </div>
-        </div>
-        <aside className="h-fit rounded-xl bg-card p-5 shadow-[var(--gui-shadow-m)]">
-          <h2 className="text-lg font-semibold">Konkrety</h2>
-          <dl className="mt-5 grid gap-5 text-sm">
-            <div>
-              <dt className="font-medium">Miejsce</dt>
-              <dd className="mt-1 flex gap-2 text-muted-foreground">
-                <MapPin className="size-4 shrink-0" /> {job.locations.join(" / ")} ·{" "}
-                {remoteLabels[job.remoteStatus]}
-              </dd>
-            </div>
-            <div>
-              <dt className="font-medium">Poziom</dt>
-              <dd className="mt-1 text-muted-foreground">{seniorityLabels[job.seniority]}</dd>
-            </div>
-            <div>
-              <dt className="font-medium">Umowa</dt>
-              <dd className="mt-1 flex gap-2 text-muted-foreground">
-                <BriefcaseBusiness className="size-4 shrink-0" /> {contractLabels[job.contract]}
-              </dd>
-            </div>
-            <div>
-              <dt className="font-medium">Wynagrodzenie</dt>
-              <dd className="mt-1 text-muted-foreground">{formatSalary(job)}</dd>
-            </div>
-          </dl>
         </aside>
+        <div className="pp-offer-description">
+          <nav className="pp-offer-section-nav" aria-label="Sekcje oferty">
+            <Link to={{ pathname: `/oferty/${job.slug}`, hash: "#role" }}>O roli</Link>
+            <Link to={{ pathname: `/oferty/${job.slug}`, hash: "#employer" }}>O firmie</Link>
+          </nav>
+          <div className="pp-offer-reading">
+            <section id="role" tabIndex={-1} className="pp-offer-section">
+              <h2>O roli</h2>
+              <JobDescription description={job.description} />
+            </section>
+          </div>
+        </div>
+        <section className="pp-offer-employer" id="employer" tabIndex={-1}>
+          <div className="pp-employer-top">
+            <CompanyLogo company={job.company} />
+            <div>
+              <p className="pp-offer-eyebrow">Poznaj firmę</p>
+              <h2>{job.company.name}</h2>
+            </div>
+          </div>
+          <div className="pp-employer-copy">
+            <div>
+              <p>{job.company.description}</p>
+              <Link
+                className={buttonVariants({ variant: "outline", size: "sm" })}
+                to={`/firmy/${job.company.slug}`}
+              >
+                Oferty tej firmy <ArrowRight />
+              </Link>
+            </div>
+            <img src={peopleArt} alt="" />
+          </div>
+        </section>
       </div>
+      {related.length > 0 && (
+        <section className="pp-offer-related">
+          <div className="pp-offer-related-heading">
+            <h2>Może też Cię zainteresować</h2>
+            <Link to="/oferty">
+              Wszystkie oferty <ArrowRight className="pp-icon" />
+            </Link>
+          </div>
+          <div className="pp-job-list">
+            {related.map((x) => (
+              <JobCard key={x.id} job={x} />
+            ))}
+          </div>
+        </section>
+      )}
     </article>
   );
 }
@@ -378,7 +552,7 @@ export function CompanyPage() {
       <section className="py-12">
         <h2 className="text-2xl font-semibold">Otwarte role</h2>
         {jobs.length > 0 ? (
-          <div className="mt-7 shadow-[var(--gui-divider-top-shadow)]">
+          <div className="mt-7 pp-job-list">
             {jobs.map((job) => (
               <JobCard key={job.id} job={job} />
             ))}

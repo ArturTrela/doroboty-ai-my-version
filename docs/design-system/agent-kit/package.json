@@ -1,0 +1,13 @@
+{
+  "name": "doroboty-ui-agent-kit",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Local agent handoff extracted from the accepted DoRoboty.ai interface.",
+  "engines": {"node": ">=24 <25"},
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "check": "node scripts/check.mjs",
+    "test": "node --test tests/*.test.mjs"
+  }
+}

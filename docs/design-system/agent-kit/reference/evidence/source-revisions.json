@@ -1,0 +1,37 @@
+{
+  "commit": "6f1cd9e6980f40546d80732e228f39d2ad89fc3a",
+  "files": [
+    {
+      "file": "dist/assets/tokens.css",
+      "sha256": "78b74e721ccca3218f295c829647198284ebeec7f3f64b6a1f5de5e83e229ff1"
+    },
+    {
+      "file": "dist/assets/styles.css",
+      "sha256": "9b1463d8cff018cc0b06afe929618aea0225dd3f1a69de46ad1157d433a87f34"
+    },
+    {
+      "file": "dist/assets/offer.css",
+      "sha256": "ea914ba1dac9b12a3d255d50d6726e86972b6953ef5574d568e007b27a67db3c"
+    },
+    {
+      "file": "dist/assets/ui.js",
+      "sha256": "19bdaf7700f96aa2cd66f2fde751f1195fa38f242458f1905b6c5f6b91c0260c"
+    },
+    {
+      "file": "dist/index.html",
+      "sha256": "20ab6f8175f842df484017e0dfb6bf7e61143a7c06f8c03587feb7bd3bfa0d70"
+    },
+    {
+      "file": "dist/assets/app.js",
+      "sha256": "769feb1a640f8c166594796d8b10fbec1ef04bac12ec540c94b8fe6dd51e9109"
+    },
+    {
+      "file": "dist/oferta.html",
+      "sha256": "8d4979801bfe49efa763ad200f59c63a2f634697a0f67683f3337672162a6c62"
+    },
+    {
+      "file": "dist/assets/offer.js",
+      "sha256": "6cbb39bd2397035c4775f142591dbf9199692f4da7d8b86d742355f548c7463b"
+    }
+  ]
+}

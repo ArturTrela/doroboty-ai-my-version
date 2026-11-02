@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f4f4f0">
+  <meta name="description" content="Poznaj rolę, warunki współpracy i zespół. Przykładowa oferta pracy w DoRoboty.ai.">
+  <title>Oferta pracy — DoRoboty.ai</title>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="../assets/fonts/GeistSerif-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../styles/foundation.css">
+  <link rel="stylesheet" href="../styles/components.css">
+  <link rel="stylesheet" href="../styles/offer.css">
+  <script type="module" src="assets/offer.js"></script>
+</head>
+<body class="offer-page">
+  <a class="skip-link" href="#offer-main">Przejdź do oferty</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="wordmark" href="./" aria-label="DoRoboty.ai — strona główna">DoRoboty<span class="brand-dot">.</span>ai<span class="brand-square" aria-hidden="true"></span></a>
+      <nav class="desktop-nav" aria-label="Nawigacja główna">
+        <a class="nav-active" href="./#results" data-return>Oferty pracy</a>
+        <button class="plain-button" id="about-open" type="button">O DoRoboty.ai</button>
+      </nav>
+      <button class="saved-nav" id="detail-saved-nav" type="button" ><span data-icon="bookmark" aria-hidden="true"></span><span>Zapisane</span><span class="saved-count" id="saved-count">0</span></button>
+    </div>
+  </header>
+  <main id="offer-main" class="container offer-main" tabindex="-1">
+    <nav class="offer-breadcrumb" aria-label="Ścieżka nawigacji"><a href="./#results" data-return><span data-icon="arrow-left" aria-hidden="true"></span>Wróć do ofert</a><span class="breadcrumb-end" id="breadcrumb-company"></span></nav>
+    <div id="offer-content"></div>
+    <noscript><div class="offer-not-found"><h1>Włącz JavaScript, żeby zobaczyć ofertę.</h1><a class="button" href="./">Wróć do ofert</a></div></noscript>
+  </main>
+  <footer class="site-footer"><div class="container footer-inner"><a class="wordmark footer-wordmark" href="./">DoRoboty<span class="brand-dot">.</span>ai</a><p>Wersja demonstracyjna. Wszystkie oferty i firmy są przykładowe.</p><button id="footer-about" type="button" class="text-button">O tej stronie <span aria-hidden="true">↗</span></button></div></footer>
+  <dialog class="about-dialog" id="about-dialog" aria-labelledby="about-title"><div class="dialog-heading"><h2 id="about-title">Dobra robota zaczyna się od konkretów.</h2><button class="icon-button" data-close="about-dialog" type="button" aria-label="Zamknij informacje"><span data-icon="close" aria-hidden="true"></span></button></div><div class="about-content"><p>DoRoboty.ai łączy ludzi z pracą, w której AI jest częścią codziennych zadań — od budowania modeli, przez wdrożenia, po prowadzenie zespołów.</p><div class="about-types"><p><b>Build</b> Projektuj i buduj rozwiązania AI.</p><p><b>Apply</b> Wdrażaj AI i usprawniaj pracę.</p><p><b>Lead</b> Prowadź zespoły i wyznaczaj kierunek.</p></div><p class="demo-note">To interaktywna demonstracja z fikcyjnymi ofertami. Możesz przeglądać, filtrować i zapisywać wybrane oferty. Aplikowanie i publikacja ofert nie są częścią tej wersji.</p><button class="button button-primary" data-close="about-dialog" type="button">Zobacz oferty <span data-icon="arrow-right" aria-hidden="true"></span></button></div></dialog>
+
+  <dialog class="about-dialog application-dialog" id="application-dialog" aria-labelledby="application-title">
+    <div class="dialog-heading"><h2 id="application-title">To oferta pokazowa.</h2><button class="icon-button" type="button" data-close="application-dialog" aria-label="Zamknij informacje o aplikowaniu"><span data-icon="close" aria-hidden="true"></span></button></div>
+    <div class="about-content"><p>Ta firma i oferta są fikcyjne. W tej wersji możesz przeczytać opis, zapisać ofertę i udostępnić link. Nie zbieramy CV ani nie wysyłamy aplikacji.</p><p class="application-context" id="application-context"></p><button class="button button-primary" type="button" data-close="application-dialog">Wróć do oferty <span data-icon="arrow-right" aria-hidden="true"></span></button></div>
+  </dialog>
+  <dialog class="about-dialog" id="share-dialog" aria-labelledby="share-title"><div class="dialog-heading"><h2 id="share-title">Link do oferty</h2><button class="icon-button" type="button" data-close="share-dialog" aria-label="Zamknij udostępnianie"><span data-icon="close" aria-hidden="true"></span></button></div><div class="about-content"><label for="share-url">Skopiuj ten adres</label><input id="share-url" class="share-url" readonly><p class="demo-note">To link do przykładowej oferty w DoRoboty.ai.</p></div></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
