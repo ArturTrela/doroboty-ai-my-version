@@ -1,8 +1,8 @@
-# Frontend Teaching Case Protocol
+# Teaching Case Protocol
 
 ## Current contract
 
-The application is a browser-local UX prototype. The previous requirements for a database-backed product, live identity, AI provider and analytics are superseded. All participants can select personas and exercise the prepared flows without credentials or services.
+The application is a teaching prototype. Participants can select personas and exercise the prepared flows.
 
 ## Narrative
 
@@ -16,7 +16,7 @@ The primary historical outcome is employer continuation after the first conversa
 - The baseline packet contains 120 historical synthetic journeys with stable IDs/timestamps, plus stage-safe funnel/outcome columns.
 - Candidates edit application answers directly. Legacy source notes/generated copy remain distinct from approved answers in version-1 saves/imports, hidden in the form and preserved on draft save/submission. New candidate drafts use empty legacy fields. Submitted CV and identity are snapshots.
 - Scenario Match Scores are fixed persona examples, not new assessments or historical text-similarity scores. Do not combine them into one trend.
-- No real CVs or personal data; no service keys or operator secrets. Role selection does not enforce confidentiality.
+- No real CVs or personal data. Role selection does not enforce confidentiality.
 
 ## Stage-safe distribution
 
@@ -26,8 +26,8 @@ Only baseline evidence ships in this version. No release picker, future-stage ge
 
 1. Run the prototype and give the agent the product context.
 2. Analyze currently released evidence and choose a solution direction.
-3. Extend the frontend and test it with a real person using synthetic data.
-4. Share a static build and explain observations and limits.
+3. Extend the prototype and test it with a real person using synthetic data.
+4. Share the prototype and explain observations and limits.
 5. Propose a 30-day organizational pilot with assumptions about privacy, permissions, costs and adoption.
 6. Demonstrate the prototype and the reasoning from initial belief to the next experiment.
 

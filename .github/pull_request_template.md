@@ -7,6 +7,5 @@ Describe the user-visible change and its acceptance criteria.
 - [ ] ./scripts/verify
 - [ ] FEATURES.md updated, or reviewed with no behavior change
 - [ ] Mobile, desktop, keyboard and error states checked for UI changes
-- [ ] No service dependencies or external runtime requests introduced
 
 Report actual results and limitations.

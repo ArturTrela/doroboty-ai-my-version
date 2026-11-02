@@ -9,7 +9,7 @@ npm ci
 npm run dev
 ```
 
-Open http://127.0.0.1:3001. Do not install system services, configure accounts or create an environment file. A coding agent needs no additional setup commands. If Node or registry access is blocked by your organization, ask your instructor/IT rather than bypassing the policy.
+Open http://127.0.0.1:3001. If Node or registry access is blocked by your organization, ask your instructor/IT rather than bypassing the policy.
 
 ## Try a complete flow
 
