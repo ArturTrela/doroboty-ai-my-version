@@ -1,0 +1,13 @@
+# Package extraction decisions
+
+The human documentation in reference/ remains the accepted source record. The original Site has not been edited or republished for this task.
+
+1. **Existing CSS, split by responsibility.** Variables are copied unchanged. Reset/fonts/global text/container/focus rules are in foundation.css; reusable UI in components.css; listing composition in listing.css; full role composition in offer.css. Media rules retain their original internal ordering and declared breakpoints. Font URLs are relative to the packaged assets directory.
+2. **Retired detail-modal styles excluded.** The old job-dialog/role-copy/detail-fact-panel rules have no current HTML counterpart. Exact excluded selectors and rule counts are in provenance.json. Current informational/filter dialogs are retained.
+3. **Same framework and public surface.** This is the existing HTML/CSS/ESM implementation, not a parallel React library. The existing ui.js export names/signatures and public class names are preserved. Existing controllers move to examples/assets and imports/assets are repointed. No Site manifest, credentials, repository metadata or runtime state is copied.
+4. **Card rendering hardened for reuse.** Formerly fixture-only category/mode/level/age strings are escaped. Logo tone is whitelisted. Unsafe href schemes/control characters/protocol-relative URLs fall back to #. Numeric positive safe job IDs are required for DOM identity. These safeguards are package code decisions, not properties inferred from screenshots. Integrations must still validate data shapes and domain permissions.
+5. **Save toggle naming clarified.** Accessible save names remain constant with aria-pressed; the visible offer save label also remains “Zapisz ofertę”. This resolves the specific APG toggle ambiguity recorded in the documentation. The original website remains unchanged. Selection is conveyed by state, icon and status message.
+6. **Examples are honest demonstrations.** Catalog interactions are local; complete listing and offer behavior is preserved. Applying explains that the offer is fictional. Native numeric validation is demonstrated without inventing a new branded error palette. No real CV, account, jobs API or persistent storage is added.
+7. **Open design questions stay open.** Intermediate title sizes, tiny metadata, static section underline, real application/loading/errors, RTL and dark mode are not silently redesigned. The catalog/private launchpad layout is new example scaffolding, not another public component family.
+
+This authorization covers local materials and examples. There is no automatic hosting or deployment workflow in the package.

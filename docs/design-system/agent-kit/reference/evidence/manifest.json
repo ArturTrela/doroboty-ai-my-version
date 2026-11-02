@@ -1,0 +1,344 @@
+[
+  {
+    "id": "S01",
+    "label": "Listing — wszystkie oferty, desktop",
+    "file": "evidence/S01.jpg",
+    "fullPage": true,
+    "documentHeight": 3271,
+    "scrollY": 0,
+    "url": "https://doroboty-poster-board.wojtek872476.chatgpt.site/",
+    "viewport": {
+      "height": 720,
+      "width": 1280
+    },
+    "bitmap": {
+      "width": 1280,
+      "height": 3271,
+      "format": "JPEG"
+    }
+  },
+  {
+    "id": "S15",
+    "label": "Focus klawiatury — pole lokalizacji",
+    "file": "evidence/S15.jpg",
+    "fullPage": false,
+    "documentHeight": 3271,
+    "scrollY": 3,
+    "url": "https://doroboty-poster-board.wojtek872476.chatgpt.site/",
+    "viewport": {
+      "height": 720,
+      "width": 1280
+    },
+    "bitmap": {
+      "width": 1280,
+      "height": 720,
+      "format": "JPEG"
+    }
+  },
+  {
+    "id": "S05",
+    "label": "Wybrana kategoria, checkbox i aktywny filtr",
+    "file": "evidence/S05.jpg",
+    "fullPage": true,
+    "documentHeight": 1930,
+    "scrollY": 0,
+    "url": "https://doroboty-poster-board.wojtek872476.chatgpt.site/?category=Build&mode=Zdalnie&sort=salary",
+    "viewport": {
+      "height": 720,
+      "width": 1280
+    },
+    "bitmap": {
+      "width": 1280,
+      "height": 1930,
+      "format": "JPEG"
+    }
+  },
+  {
+    "id": "S07",
+    "label": "Zapisana karta i komunikat potwierdzenia",
+    "file": "evidence/S07.jpg",
+    "fullPage": true,
+    "documentHeight": 1930,
+    "scrollY": 0,
+    "url": "https://doroboty-poster-board.wojtek872476.chatgpt.site/?category=Build&mode=Zdalnie&sort=salary",
+    "viewport": {
+      "height": 720,
+      "width": 1280
+    },
+    "bitmap": {
+      "width": 1280,
+      "height": 1930,
+      "format": "JPEG"
+    }
+  },
+  {
+    "id": "S08",
+    "label": "Pusta lista zapisanych ofert",
+    "file": "evidence/S08.jpg",
+    "fullPage": true,
+    "documentHeight": 1534,
+    "scrollY": 0,
+    "url": "https://doroboty-poster-board.wojtek872476.chatgpt.site/?category=Build&mode=Zdalnie&sort=salary&savedOnly=1",
+    "viewport": {
+      "height": 720,
+      "width": 1280
+    },
+    "bitmap": {
+      "width": 1280,
+      "height": 1534,
+      "format": "JPEG"
+    }
+  },
+  {
+    "id": "S06",
+    "label": "Brak wyników wyszukiwania",
+    "file": "evidence/S06.jpg",
+    "fullPage": true,
+    "documentHeight": 1534,
+    "scrollY": 0,
+    "url": "https://doroboty-poster-board.wojtek872476.chatgpt.site/?q=nieistniej%C4%85ca+rola&sort=salary",
+    "viewport": {
+      "height": 720,
+      "width": 1280
+    },
+    "bitmap": {
+      "width": 1280,
+      "height": 1534,
+      "format": "JPEG"
+    }
+  },
+  {
+    "id": "S02",
+    "label": "Listing — wszystkie oferty, mobile",
+    "file": "evidence/S02.jpg",
+    "fullPage": true,
+    "documentHeight": 4140,
+    "scrollY": 0,
+    "url": "https://doroboty-poster-board.wojtek872476.chatgpt.site/",
+    "viewport": {
+      "height": 844,
+      "width": 390
+    },
+    "bitmap": {
+      "width": 390,
+      "height": 4140,
+      "format": "JPEG"
+    }
+  },
+  {
+    "id": "S09",
+    "label": "Mobilne filtry — górna część i wybrany checkbox",
+    "file": "evidence/S09.jpg",
+    "fullPage": false,
+    "documentHeight": 4157,
+    "scrollY": 186,
+    "url": "https://doroboty-poster-board.wojtek872476.chatgpt.site/?mode=Zdalnie",
+    "viewport": {
+      "height": 844,
+      "width": 390
+    },
+    "bitmap": {
+      "width": 390,
+      "height": 844,
+      "format": "JPEG"
+    }
+  },
+  {
+    "id": "S16",
+    "label": "Mobilne filtry — pole wynagrodzenia i dolna akcja",
+    "file": "evidence/S16.jpg",
+    "fullPage": false,
+    "documentHeight": 2334,
+    "scrollY": 186,
+    "url": "https://doroboty-poster-board.wojtek872476.chatgpt.site/?mode=Zdalnie&salary=18000",
+    "viewport": {
+      "height": 844,
+      "width": 390
+    },
+    "bitmap": {
+      "width": 390,
+      "height": 844,
+      "format": "JPEG"
+    }
+  },
+  {
+    "id": "S04",
+    "label": "Pełna oferta — mobile",
+    "file": "evidence/S04.jpg",
+    "fullPage": true,
+    "documentHeight": 5880,
+    "scrollY": 0,
+    "url": "https://doroboty-poster-board.wojtek872476.chatgpt.site/oferta?id=1",
+    "viewport": {
+      "height": 844,
+      "width": 390
+    },
+    "bitmap": {
+      "width": 390,
+      "height": 5880,
+      "format": "JPEG"
+    }
+  },
+  {
+    "id": "S13",
+    "label": "Długi tytuł i inicjały firmy — mobile",
+    "file": "evidence/S13.jpg",
+    "fullPage": true,
+    "documentHeight": 5755,
+    "scrollY": 0,
+    "url": "https://doroboty-poster-board.wojtek872476.chatgpt.site/oferta?id=7",
+    "viewport": {
+      "height": 844,
+      "width": 390
+    },
+    "bitmap": {
+      "width": 390,
+      "height": 5755,
+      "format": "JPEG"
+    }
+  },
+  {
+    "id": "S14",
+    "label": "Brak wynagrodzenia — mobile",
+    "file": "evidence/S14.jpg",
+    "fullPage": true,
+    "documentHeight": 5397,
+    "scrollY": 0,
+    "url": "https://doroboty-poster-board.wojtek872476.chatgpt.site/oferta?id=10",
+    "viewport": {
+      "height": 844,
+      "width": 390
+    },
+    "bitmap": {
+      "width": 390,
+      "height": 5397,
+      "format": "JPEG"
+    }
+  },
+  {
+    "id": "S03",
+    "label": "Pełna oferta — desktop",
+    "file": "evidence/S03.jpg",
+    "fullPage": true,
+    "documentHeight": 3968,
+    "scrollY": 0,
+    "url": "https://doroboty-poster-board.wojtek872476.chatgpt.site/oferta?id=1",
+    "viewport": {
+      "height": 720,
+      "width": 1280
+    },
+    "bitmap": {
+      "width": 1280,
+      "height": 3968,
+      "format": "JPEG"
+    }
+  },
+  {
+    "id": "S11",
+    "label": "Okno aplikowania w demonstracji",
+    "file": "evidence/S11.jpg",
+    "fullPage": false,
+    "documentHeight": 3968,
+    "scrollY": 161,
+    "url": "https://doroboty-poster-board.wojtek872476.chatgpt.site/oferta?id=1",
+    "viewport": {
+      "height": 720,
+      "width": 1280
+    },
+    "bitmap": {
+      "width": 1280,
+      "height": 720,
+      "format": "JPEG"
+    }
+  },
+  {
+    "id": "S12",
+    "label": "Nieprawidłowy adres oferty",
+    "file": "evidence/S12.jpg",
+    "fullPage": false,
+    "documentHeight": 812,
+    "scrollY": 0,
+    "url": "https://doroboty-poster-board.wojtek872476.chatgpt.site/oferta?id=999",
+    "viewport": {
+      "height": 720,
+      "width": 1280
+    },
+    "bitmap": {
+      "width": 1280,
+      "height": 720,
+      "format": "JPEG"
+    }
+  },
+  {
+    "id": "S18",
+    "label": "Druga strona wyników i niedostępna następna strona",
+    "file": "evidence/S18.jpg",
+    "fullPage": true,
+    "documentHeight": 3252,
+    "scrollY": 0,
+    "url": "https://doroboty-poster-board.wojtek872476.chatgpt.site/?page=2",
+    "viewport": {
+      "height": 720,
+      "width": 1280
+    },
+    "bitmap": {
+      "width": 1280,
+      "height": 3252,
+      "format": "JPEG"
+    }
+  },
+  {
+    "id": "S20",
+    "label": "Potwierdzenie zapisu — rzeczywisty viewport",
+    "file": "evidence/S20.jpg",
+    "fullPage": false,
+    "documentHeight": 3252,
+    "scrollY": 276,
+    "url": "https://doroboty-poster-board.wojtek872476.chatgpt.site/?page=2",
+    "viewport": {
+      "height": 720,
+      "width": 1280
+    },
+    "bitmap": {
+      "width": 1280,
+      "height": 720,
+      "format": "JPEG"
+    }
+  },
+  {
+    "id": "S19",
+    "label": "Profil firmy i ilustracja po przewinięciu",
+    "file": "evidence/S19.jpg",
+    "fullPage": false,
+    "documentHeight": 3968,
+    "scrollY": 2756,
+    "url": "https://doroboty-poster-board.wojtek872476.chatgpt.site/oferta?id=1#company",
+    "viewport": {
+      "height": 720,
+      "width": 1280
+    },
+    "bitmap": {
+      "width": 1280,
+      "height": 720,
+      "format": "JPEG"
+    }
+  },
+  {
+    "id": "S10",
+    "label": "Okno informacji o demonstracji",
+    "file": "evidence/S10.jpg",
+    "fullPage": false,
+    "documentHeight": 3271,
+    "scrollY": 0,
+    "url": "https://doroboty-poster-board.wojtek872476.chatgpt.site/",
+    "viewport": {
+      "height": 720,
+      "width": 1280
+    },
+    "bitmap": {
+      "width": 1280,
+      "height": 720,
+      "format": "JPEG"
+    }
+  }
+]

@@ -1,103 +1,64 @@
 import { Link } from "react-router";
-import { ArrowRight, BriefcaseBusiness, ChartNoAxesColumnIncreasing, MapPin } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { ArrowUpRight, Bookmark, MapPin, Monitor } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { usePrototype } from "@/features/prototype/store";
-import type { JobWithCompany } from "@/features/jobs/types";
-import {
-  categoryLabels,
-  contractLabels,
-  formatSalary,
-  functionLabels,
-  remoteLabels,
-  seniorityLabels,
-} from "@/features/jobs/presentation";
-import { cn } from "@/lib/utils";
-import { CompanyLogo } from "@/features/jobs/company-logo";
-
-const relativeFormatter = new Intl.RelativeTimeFormat("pl", { numeric: "auto" });
-
-function publishedLabel(value: string) {
-  const days = Math.round((new Date(value).getTime() - Date.now()) / 86_400_000);
-  if (days > -7) return `Dodano ${relativeFormatter.format(days, "day")}`;
-  const weeks = Math.round(days / 7);
-  return `Dodano ${relativeFormatter.format(weeks, "week")}`;
-}
-
+import type { JobWithCompany } from "./types";
+import { categoryLabels, functionLabels, remoteLabels, seniorityLabels } from "./presentation";
+import { CompanyLogo } from "./company-logo";
+import { SalaryFact } from "./salary-fact";
 export function JobCard({ job, saved }: { job: JobWithCompany; saved?: boolean }) {
   const { run } = usePrototype();
   return (
-    <article className="group grid gap-5 py-5 shadow-[var(--gui-divider-bottom-shadow)] transition-colors hover:bg-muted/35 sm:grid-cols-[56px_minmax(0,1.35fr)_minmax(220px,0.8fr)_auto] sm:items-center sm:px-1">
+    <article className="pp-job-card">
       <CompanyLogo company={job.company} />
-
-      <div className="min-w-0">
-        <div className="flex flex-wrap items-center gap-2">
-          <h3 className="text-base font-semibold tracking-[var(--gui-tracking-s)] sm:text-lg">
-            <Link
-              className="rounded-sm transition-colors hover:text-[var(--gui-link)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--gui-focus)]"
-              to={`/oferty/${job.slug}`}
-            >
-              {job.title}
-            </Link>
-          </h3>
+      <div className="pp-job-main">
+        <div className="pp-job-topline">
+          <Link className="pp-job-company" to={`/firmy/${job.company.slug}`}>
+            {job.company.name}
+          </Link>
+          <span className="pp-separator">/</span>
+          <span className="pp-job-category">{categoryLabels[job.category]}</span>
         </div>
-        <Link
-          className="mt-0.5 block w-fit text-sm text-muted-foreground transition-colors hover:text-foreground"
-          to={`/firmy/${job.company.slug}`}
-        >
-          {job.company.name}
-        </Link>
-        <div className="mt-2 flex flex-wrap gap-1.5">
-          <Badge variant="secondary">{categoryLabels[job.category]}</Badge>
-          <Badge variant="secondary">{functionLabels[job.function]}</Badge>
-          <Badge variant="secondary">{seniorityLabels[job.seniority]}</Badge>
+        <h3 className="pp-job-title">
+          <Link to={`/oferty/${job.slug}`}>{job.title}</Link>
+        </h3>
+        <div className="pp-job-facts">
+          <span>
+            <MapPin className="pp-icon" />
+            {job.locations.join(" / ")}
+          </span>
+          <span>
+            <Monitor className="pp-icon" />
+            {remoteLabels[job.remoteStatus]}
+          </span>
+          <span>{seniorityLabels[job.seniority]}</span>
+        </div>
+        <div className="pp-job-tags">
+          <span>{functionLabels[job.function]}</span>
         </div>
       </div>
-
-      <dl className="grid gap-1.5 text-sm text-muted-foreground">
-        <div className="flex items-center gap-2">
-          <MapPin className="size-4 shrink-0" />
-          <dt className="sr-only">Miejsce</dt>
-          <dd>
-            {job.locations.join(" / ")} · {remoteLabels[job.remoteStatus]}
-          </dd>
-        </div>
-        <div className="flex items-center gap-2">
-          <BriefcaseBusiness className="size-4 shrink-0" />
-          <dt className="sr-only">Umowa</dt>
-          <dd>{contractLabels[job.contract]}</dd>
-        </div>
-        <div className="flex items-center gap-2">
-          <ChartNoAxesColumnIncreasing className="size-4 shrink-0" />
-          <dt className="sr-only">Wynagrodzenie</dt>
-          <dd>{formatSalary(job)}</dd>
-        </div>
-      </dl>
-
-      <div className="flex items-center justify-between gap-4 sm:block sm:text-right">
-        <p className="text-xs text-muted-foreground">{publishedLabel(job.publishedAt)}</p>
-        <Link
-          className={cn("mt-2", buttonVariants({ variant: "outline", size: "sm" }))}
-          to={`/oferty/${job.slug}`}
-        >
-          Zobacz rolę{" "}
-          <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
-        </Link>
-        {saved !== undefined && (
-          <div className="mt-2">
-            <input type="hidden" name="jobId" value={job.id} />
-            <input type="hidden" name="slug" value={job.slug} />
+      <div className="pp-job-side">
+        <div className="pp-job-side-top">
+          <span className="pp-job-age">
+            {new Intl.DateTimeFormat("pl-PL").format(new Date(job.publishedAt))}
+          </span>
+          {saved !== undefined && (
             <Button
-              type="button"
-              onClick={() => run({ type: "toggle_saved", jobId: job.id })}
+              className="pp-save-button"
               variant="ghost"
-              size="sm"
-              aria-label={`${saved ? "Usuń z zapisanych" : "Zapisz ofertę"}: ${job.title}`}
+              size="icon-sm"
+              aria-label={`Zapisz ofertę: ${job.title}`}
+              aria-pressed={saved}
+              onClick={() => run({ type: "toggle_saved", jobId: job.id })}
             >
-              {saved ? "Usuń z zapisanych" : "Zapisz ofertę"}
+              <Bookmark className="pp-icon" />
             </Button>
-          </div>
-        )}
+          )}
+        </div>
+        <SalaryFact job={job} />
+        <Link className="pp-detail-button" to={`/oferty/${job.slug}`}>
+          Zobacz rolę <ArrowUpRight className="pp-icon" />
+        </Link>
       </div>
     </article>
   );

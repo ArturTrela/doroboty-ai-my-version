@@ -1,0 +1,28 @@
+// Fictional fixtures for this standalone listing demonstration.
+const entries = [
+  [1,'AI Product Designer','Forma Studio','Apply','Warszawa','Hybrydowo','Senior','B2B',18000,24000,['Product design','AI products'],'FS','pink',0],
+  [2,'AI Engineer / LLM Applications','Lumen Labs','Build','Kraków','Zdalnie','Senior','B2B',22000,32000,['Python','LLM','RAG'],'LL','yellow',0],
+  [3,'Specjalista / Specjalistka ds. automatyzacji AI','Kolektyw','Apply','Wrocław','Zdalnie','Mid','B2B',14000,19000,['n8n','Automatyzacje','API'],'ko','white',1],
+  [4,'Head of AI & Innovation','Nurt','Lead','Warszawa','Hybrydowo','Lead','UoP',25000,34000,['Strategia','Zarządzanie','AI'],'n.','ink',1],
+  [5,'Machine Learning Engineer','Atlas AI','Build','Gdańsk','Zdalnie','Mid','B2B',16000,23000,['Python','PyTorch','ML'],'AA','white',1],
+  [6,'AI Content & Creative Specialist','Dobrze Studio','Apply','Poznań','Hybrydowo','Mid','UoP',10000,14500,['Content','Generative AI','Kreacja'],'ds','pink',2],
+  [7,'Senior Product Designer / AI Experience Lead — narzędzia dla zespołów operacyjnych','Pracownia Produktów i Automatyzacji','Apply','Warszawa','Zdalnie','Senior','B2B',20000,27000,['UX','AI workflows','Research'],'','yellow',2],
+  [8,'Junior AI Developer','Metrum','Build','Łódź','Hybrydowo','Junior','UoP',8000,11500,['Python','AI','API'],'M','white',2],
+  [9,'AI Transformation Consultant','Pracownia Zmiany','Lead','Kraków','Hybrydowo','Senior','B2B',19000,26000,['Consulting','Transformacja','AI'],'PZ','yellow',3],
+  [10,'Conversation Designer','Holo','Apply','Warszawa','Zdalnie','Mid','UoP',null,null,['Conversational AI','UX writing'],'h','pink',3],
+  [11,'MLOps Engineer','Lumen Labs','Build','Wrocław','Zdalnie','Senior','B2B',24000,31000,['MLOps','Docker','Cloud'],'LL','yellow',3],
+  [12,'Product Manager — AI Tools','Nurt','Lead','Warszawa','Hybrydowo','Senior','UoP',18000,24000,['Product','B2B SaaS','AI'],'n.','ink',4],
+  [13,'AI Research Intern','Atlas AI','Build','Gdańsk','Stacjonarnie','Junior','Zlecenie',6000,8500,['Research','Python','ML'],'AA','white',4],
+  [14,'AI Operations Specialist','Kolektyw','Apply','Poznań','Zdalnie','Mid','B2B',12000,17000,['Operations','AI workflows','SQL'],'ko','white',4],
+  [15,'Data Scientist / NLP','Metrum','Build','Łódź','Hybrydowo','Mid','UoP',15000,21000,['NLP','Python','Statystyka'],'M','white',5],
+  [16,'AI Enablement Lead','Pracownia Zmiany','Lead','Wrocław','Zdalnie','Lead','B2B',21000,28000,['Szkolenia','Change management','AI'],'PZ','yellow',5],
+  [17,'Generative AI Developer','Holo','Build','Kraków','Zdalnie','Mid','B2B',17000,25000,['TypeScript','LLM','API'],'h','pink',5],
+  [18,'UX Researcher — AI Experiences','Forma Studio','Apply','Warszawa','Hybrydowo','Senior','UoP',16000,21000,['Research','UX','AI products'],'FS','pink',6],
+  [19,'AI Governance Manager','Nurt','Lead','Warszawa','Hybrydowo','Lead','UoP',null,null,['Governance','Risk','AI'],'n.','ink',6],
+  [20,'AI Solutions Architect','Lumen Labs','Build','Gdańsk','Zdalnie','Lead','B2B',28000,38000,['Architektura','Cloud','LLM'],'LL','yellow',7],
+  [21,'AI Learning Designer','Dobrze Studio','Apply','Poznań','Zdalnie','Mid','Zlecenie',9000,13000,['Learning design','AI','Edukacja'],'ds','pink',7],
+  [22,'Computer Vision Engineer','Atlas AI','Build','Gdańsk','Stacjonarnie','Senior','B2B',21000,29000,['Computer vision','Python','PyTorch'],'AA','white',8],
+  [23,'AI Programme Manager','Pracownia Zmiany','Lead','Kraków','Hybrydowo','Lead','UoP',20000,27000,['Program management','AI','Strategia'],'PZ','yellow',8],
+  [24,'Marketing Automation & AI Specialist','Nowa Pracownia','Apply','Wrocław','Zdalnie','Junior','UoP',8500,12000,['Marketing','Automatyzacje','AI'],'','white',9],
+];
+export const jobs = entries.map(([id,title,company,category,city,mode,level,contract,salaryMin,salaryMax,tags,logo,tone,days])=>({id,title,company,category,city,mode,level,contract,salaryMin,salaryMax,tags,logo,tone,days}));

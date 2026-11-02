@@ -1,0 +1,43 @@
+{
+  "date": "2026-11-02",
+  "node": "24.20.0",
+  "sourceCommit": "6f1cd9e6980f40546d80732e228f39d2ad89fc3a",
+  "originalSourceHashesVerified": 9,
+  "originalSiteWorkingTreeClean": true,
+  "preservedReferenceFiles": 24,
+  "browserViewports": [
+    {
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "width": 390,
+      "height": 844
+    },
+    {
+      "width": 320,
+      "height": 800
+    },
+    {
+      "width": 850,
+      "height": 900
+    }
+  ],
+  "screenshots": [
+    "verification/components-desktop.jpg",
+    "verification/components-mobile.jpg",
+    "verification/keyboard-focus-mobile.jpg",
+    "verification/listing-desktop.jpg",
+    "verification/listing-mobile.jpg",
+    "verification/offer-desktop.jpg",
+    "verification/offer-long-title-mobile.jpg",
+    "verification/offer-missing-salary-mobile.jpg",
+    "verification/offer-mobile.jpg",
+    "verification/package-preview.jpg"
+  ],
+  "notes": [
+    "Browser interaction checks are manual, not an automated E2E suite.",
+    "This local package has not been deployed."
+  ],
+  "archiveExtractionCheck": "Passed Node 24 check from an independent temporary extraction."
+}
