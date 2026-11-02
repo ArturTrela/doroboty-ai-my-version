@@ -1,12 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  initialState,
-  transition,
-  currentPerson,
-  draftAnswer,
-  stateSchema,
-  type State,
-} from "./model";
+import { initialState, transition, stateSchema, type State } from "./model";
 const time = "2026-11-03T10:00:00.000Z";
 function as(state: State, id: string) {
   return transition(state, { type: "select_person", id });
@@ -58,7 +51,6 @@ describe("coherent browser scenario", () => {
     expect(app.candidateName).toBe("Anna Kowalska");
     expect(app.sourceNotes).toBe("Original notes");
     expect(app.generatedAnswer).toBe("Generated copy");
-    expect(draftAnswer(currentPerson(s)!, s.jobs[0].title, "My source")).toContain("My source");
   });
   it("supports employer review through conversation and continuation without skipping stages", () => {
     let s = as(submitted(), "employer-brightlabs");

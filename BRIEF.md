@@ -14,7 +14,8 @@ A participant can start with Node.js 24 and npm, extend the interface and test a
 - Use prepared personas instead of real accounts. Candidate and employer views share one browser-local scenario.
 - Store initial data in JSON and changes in React state/localStorage. Provide reset, validated import/export and recovery guidance.
 - Retain jobs, filters/list/map, companies, profiles, sample CVs, saved jobs, application drafts/submission and recruiting decisions.
-- AI writing uses local templates, and Match Scores/summaries are fixed persona scenario values. Preserve source notes separately from approved text. These are UX demonstrations, not evidence of model quality or hiring probability.
+- Candidates write their application answers directly; there is no candidate notes editor or AI proposal flow. Legacy candidate notes/generated text remain separate from approved answers in version-1 saves and imports, and are preserved when saving or submitting a resumed draft.
+- Employer AI writing uses local templates, and Match Scores/summaries are fixed persona scenario values. Preserve employer source briefs separately from approved descriptions. These are UX demonstrations, not evidence of model quality or hiring probability.
 - Keep submitted applications/CVs immutable while profiles and jobs evolve.
 - Keep historical teaching evidence separate from locally created prototype records. The shipped stage is baseline only.
 

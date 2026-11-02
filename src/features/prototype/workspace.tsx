@@ -10,14 +10,13 @@ import { usePrototype } from "./store";
 import {
   currentPerson,
   publishedJobs,
-  draftAnswer,
   nextStages,
   stageLabels,
   MIN_APPLICATION_ANSWER_LENGTH,
   type Application,
 } from "./model";
 import { PageTitle, Empty, NotFound, Notice } from "./shell";
-import { downloadText } from "./settings";
+import { CvAttachment } from "./cv-attachment";
 
 export function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -204,15 +203,7 @@ export function ProfilePage({ preview = false }: { preview?: boolean }) {
           <FileText className="size-5" />
           CV
         </h2>
-        <pre className="whitespace-pre-wrap font-ui text-sm leading-relaxed">{person.cv}</pre>
-        <Button
-          variant="outline"
-          size="sm"
-          className="mt-5"
-          onClick={() => downloadText(`cv-${person.id}.txt`, person.cv, "text/plain")}
-        >
-          Pobierz przykładowe CV
-        </Button>
+        <CvAttachment candidateId={person.id} fallbackText={person.cv} />
       </section>
     </>
   );
@@ -246,8 +237,8 @@ export function ApplyPage() {
   const navigate = useNavigate();
   const job = publishedJobs(state).find((x) => x.slug === slug);
   const draft = state.drafts.find((x) => x.jobId === job?.id && x.candidateId === person.id);
-  const [notes, setNotes] = useState(draft?.notes ?? "");
-  const [generated, setGenerated] = useState(draft?.generated ?? "");
+  const notes = draft?.notes ?? "";
+  const generated = draft?.generated ?? "";
   const [answer, setAnswer] = useState(draft?.answer ?? "");
   const [consent, setConsent] = useState(false);
   const [message, setMessage] = useState("");
@@ -295,49 +286,8 @@ export function ApplyPage() {
       <form noValidate onSubmit={submit} className="prototype-form mt-6">
         <section className="prototype-panel">
           <h2 className="mb-4">Twoje CV</h2>
-          <p className="whitespace-pre-wrap text-sm leading-relaxed">{person.cv}</p>
+          <CvAttachment candidateId={person.id} fallbackText={person.cv} />
         </section>
-        <Field label="Twoje notatki do aplikacji (opcjonalnie)">
-          <Textarea
-            value={notes}
-            maxLength={12000}
-            placeholder="Co z Twojego doświadczenia jest ważne dla tej roli?"
-            onChange={(e) => {
-              setNotes(e.target.value);
-              setGenerated("");
-              setMessage("");
-            }}
-          />
-        </Field>
-        <div>
-          <Button
-            variant="outline"
-            type="button"
-            onClick={() => {
-              setGenerated(draftAnswer(person, job.title, notes));
-              setMessage("");
-            }}
-          >
-            Przygotuj propozycję z AI
-          </Button>
-        </div>
-        {generated && (
-          <section className="prototype-panel">
-            <h2 className="mb-4">Propozycja odpowiedzi</h2>
-            <p className="whitespace-pre-wrap">{generated}</p>
-            <Button
-              className="mt-5"
-              type="button"
-              variant="outline"
-              onClick={() => {
-                setAnswer(generated);
-                setConsent(false);
-              }}
-            >
-              Użyj propozycji
-            </Button>
-          </section>
-        )}
         <Field label="Dlaczego pasujesz do tej roli?">
           <Textarea
             ref={answerInput}
@@ -496,7 +446,7 @@ export function ApplicationDetail({ employer = false }: { employer?: boolean }) 
       </section>
       <section className="prototype-panel mt-5">
         <h2 className="mb-4">CV z momentu aplikowania</h2>
-        <pre className="whitespace-pre-wrap font-ui text-sm leading-relaxed">{application.cv}</pre>
+        <CvAttachment candidateId={application.candidateId} fallbackText={application.cv} />
       </section>
       <section className="prototype-panel mt-5">
         <h2 className="mb-4">Historia procesu</h2>

@@ -255,9 +255,6 @@ export function publishedJobs(state: State): JobWithCompany[] {
 export function currentPerson(state: State) {
   return state.people.find((x) => x.id === state.activePersonId);
 }
-export function draftAnswer(person: Person, title: string, notes: string) {
-  return `Aplikuję na stanowisko ${title}. ${person.headline}.\n\n${person.cv.slice(0, 650)}${notes.trim() ? `\n\n${notes.trim().slice(0, 9000)}` : ""}\n\nChętnie przedstawię sposób pracy i decyzje podjęte w opisanych projektach.`;
-}
 export function transition(
   state: State,
   action: Action,
