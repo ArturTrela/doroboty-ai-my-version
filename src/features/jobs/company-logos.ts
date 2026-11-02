@@ -31,7 +31,7 @@ export const generatedCompanyLogos: Readonly<Record<string, string>> = {
 
 export function companyLogoUrl(company: Pick<Company, "slug" | "logoUrl">) {
   const custom = company.logoUrl?.trim();
-  if (custom && (/^https?:\/\//i.test(custom) || /^\/(?!\/)/.test(custom))) return custom;
+  if (custom && /^\/(?!\/)/.test(custom)) return custom;
   return Object.hasOwn(generatedCompanyLogos, company.slug)
     ? generatedCompanyLogos[company.slug]
     : undefined;

@@ -1,11 +1,12 @@
 ## Change
 
-What was the problem, and how does the application behave now?
+Describe the user-visible change and its acceptance criteria.
 
 ## Validation
 
-- [ ] `npm run check`
-- [ ] `npm run test:integration` — for database or auth changes
-- [ ] Mobile layout and keyboard support — for UI changes
+- [ ] ./scripts/verify
+- [ ] FEATURES.md updated, or reviewed with no behavior change
+- [ ] Mobile, desktop, keyboard and error states checked for UI changes
+- [ ] No service dependencies or external runtime requests introduced
 
-Describe the results and any limitations. Include a migration for schema changes.
+Report actual results and limitations.

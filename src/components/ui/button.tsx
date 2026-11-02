@@ -15,7 +15,7 @@ const buttonVariants = cva(
         ghost:
           "bg-transparent text-[var(--gui-text)] hover:bg-[var(--gui-neutral-3-transparent)] aria-expanded:bg-[var(--gui-neutral-3-transparent)]",
         destructive:
-          "bg-[var(--gui-error)] text-[var(--gui-neutral-10)] dark:text-[var(--gui-neutral-1)] focus-visible:outline-[var(--gui-focus)]",
+          "bg-[var(--gui-error)] text-[var(--gui-neutral-10)] focus-visible:outline-[var(--gui-focus)]",
         link: "bg-transparent px-0 text-[var(--gui-link)] underline-offset-4 hover:underline",
       },
       size: {

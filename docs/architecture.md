@@ -1,24 +1,25 @@
 # Architecture
 
-Next.js App Router composes pages. `src/features/dashboard` contains static data and the dashboard: metric cards, a chart, and a document table with search, status filtering, selection, and pagination. The layout follows the shadcn/ui `dashboard-01` block.
+One React/TypeScript application is built by Vite into static files. HashRouter renders routes under /#/; route parameters created in the browser require no hosting rewrites. The app uses the supplied Graphical tokens, local Timeless font and Base UI primitives. There is no server data/API layer.
 
-`/demo` → React components → file-backed data. Filters and selection exist only in page memory. The demo does not store data in localStorage or Supabase and requires no services or secrets. Only the theme preference is persisted by next-themes.
+## Data flow
 
-`/app` → verified Supabase session → the same dashboard with sample data. Supabase is currently used only for auth; the starter contains no domain tables or migrations. Missing configuration shows setup instructions, and a service failure never switches the application to demo mode.
+JSON marketplace/person fixtures → initialState → PrototypeProvider → feature views. Local operations go through transition with shared Zod schemas and explicit role/ownership/transition checks for coherent simulation. All roles still have access to the same browser data; these checks are not security.
 
-`src/features/auth` contains auth forms. `src/features/component-examples` contains a React Hook Form and Zod example that does not save or send data. Server libraries are separated from browser libraries and marked `server-only`.
+Candidate source notes, generated draft and approved application are distinct fields. Submission snapshots CV, candidate name, job title, scenario score and summary. Employer stage events are appended, with private-in-the-UI notes. Profile/job edits do not rewrite submitted records.
 
-## Adding features
+Storage uses one versioned localStorage key. Import validates schema/version, unique IDs, cross-references and stage history before replacing state. Unreadable/incompatible saves are protected against automatic overwrite; settings can download the original raw save, import a valid file or explicitly reset. Failed/quota-limited persistence leaves the in-memory app usable and offers export. Import/export is capped at 2 MB; no binary CV storage.
 
-1. Define the expected behavior and add the feature in `src/features`.
-2. Share the Zod input schema between the form and the server.
-3. If the feature needs a database, create a new migration with its table, indexes, and RLS. Do not edit migrations already applied to a remote database.
-4. Every server operation must verify its own session and input. Layouts do not replace mutation authorization. Never use service_role for normal user operations.
-5. Build the interface with existing components, covering loading, empty results, errors, and retries.
-6. Test critical behavior and RLS with two accounts, using only local Supabase. Keep the demo as a simple interface example with static data.
+## Features
 
-## Interface
+src/features/prototype owns model/storage/state and page compositions. src/features/jobs retains reusable presentation/filter/description logic; src/components/ui owns Base UI controls. Keep changes small and use plain functions rather than service adapters, repositories, API mocks or a database abstraction.
 
-shadcn/ui uses Base UI; components use `render`. The b0 preset (Nova, Neutral, Inter, Lucide, 0.625rem radius) defines the visual style. OKLCH tokens, fonts, and spacing live in `tokens.css`; layout styles live in `src/app/workspace.css`. Add new colors as tokens. Use visible field labels, error descriptions, accessible names for icon buttons, and dialog headings. Fonts are local; builds do not download Google Fonts.
+LocalStorage is origin-specific. Reload preserves state; another browser/device/port starts separately. No cross-tab live synchronization is provided; close other tabs before editing/importing. Hash links reference records in the receiving browser, not transferred records.
 
-Payments, uploads, multi-organization support, and AI are not included. Add them as separate features with tests and setup documentation.
+## Evidence and distribution
+
+The baseline historical CSV and JSON are separate from interactive state. Future evidence must arrive in a separately reviewed package. package:participant copies only explicit allowed files/directories and omits docs/source, historical task notes, agent run history and .git. A packet verifier checks the baseline data; packaging also verifies a pristine file/hash manifest. Ordinary checks permit participants to edit code and generate build/test output without invalidating a distribution fingerprint. Instructor repository history is never participant-safe.
+
+## Checks
+
+npm run check and ./scripts/verify run formatting, lint, types, unit tests, build and Playwright against the static preview. Playwright checks external requests, complete workflows, error/recovery behavior, keyboard controls and mobile layout. No test starts system services. npm run dev only starts Vite.

@@ -1,58 +1,36 @@
-# DoRoboty.ai participant guide
+# Participant guide
 
-This guide takes a clean checkout to a shareable course deployment without relying on instructor chat history.
+## Start
 
-Instructor operations, reset, release, and recovery are documented separately in
-[`case/INSTRUCTOR_RUNBOOK.md`](case/INSTRUCTOR_RUNBOOK.md).
-
-## What you receive
-
-- a participant repository or release archive containing only the currently unlocked stage;
-- one synthetic evidence packet and its release key;
-- acceptance criteria for the current week;
-- no production candidate data, instructor credentials, or future-stage fixtures.
-
-## Technical path
-
-Requirements: Git, Docker Desktop, Node.js 24, and npm.
+Use the prepared baseline package and Node.js 24 with npm.
 
 ```sh
-git clone <participant-repository-url> doroboty-ai
-cd doroboty-ai
-./scripts/setup-case
+npm ci
 npm run dev
 ```
 
-Open `http://localhost:3000`. Supabase Studio is at `http://localhost:54323`; local email is at `http://localhost:54324`.
+Open http://127.0.0.1:3001. Do not install system services, configure accounts or create an environment file. A coding agent needs no additional setup commands. If Node or registry access is blocked by your organization, ask your instructor/IT rather than bypassing the policy.
 
-The setup command checks tools, installs the locked dependency tree, starts local Supabase, rebuilds the database, validates the case fixtures, and runs product checks. It refuses unsupported Node versions and does not connect to a remote database.
+## Try a complete flow
 
-## Guided path
+1. Choose Anna Kowalska and browse offers.
+2. Save an offer, edit the profile and submit an approved application. Source notes and the editable proposal are separate.
+3. Choose Karolina Wiśniewska for BrightLabs and review its candidates.
+4. Record review, invitation, conversation and the next decision.
+5. Return to Anna and inspect the application history.
 
-If you do not maintain a local development environment, fork the prepared participant repository, import it into Vercel, and connect an isolated Supabase project by following [`deployment.md`](deployment.md). Never use a production database or an instructor project.
+Karolina and Tomasz see their respective companies in the interface; this is role simulation. All data is local and synthetic. CVs are prepared text examples, not real uploads. AI proposals and scores simulate the scenario.
 
-## Stage-safe forks
+## Save, share and recover
 
-Participants must never fork the instructor repository directly. Before each stage, the instructor creates a new repository from a clean, history-free participant template, copies only the application code and evidence approved for that release, runs `npm run case:packet -- <release>` outside the participant repository, and adds only that packet. The participant forks this sanitized repository. Do not use a hidden branch, tag, source map, disabled route, or RLS alone to conceal later fixtures: all of those remain discoverable to someone with repository access. Rotate Supabase, PostHog, Vercel, and AI credentials between instructor and participant projects.
+Changes survive reload in this browser. Settings can export a JSON file, import a scenario or reset to fixtures. Import/reset asks before replacing state. If a save is incompatible, download the original before resetting. Storage failure is shown explicitly; export before closing the tab. Use one editing tab at a time.
 
-After generating a packet, run `npm run case:verify-packet -- <release>`. The verifier checks the exact allowlist of files and columns, hashes against the manifest, credential-like values, and future release names. A passing verifier does not replace the clean-history repository step; application source still contains the instructor generator and must not be copied into the participant repository.
+A URL shares the interface, not your local changes. To transfer a scenario, share the exported file and import it in the other browser. Exports include all personas, applications and notes; never enter real personal data.
 
-## Current context
+## Static build
 
-Read, in order:
+Run npm run build. Serve dist/ through any static HTTP host. No provider account is needed for local development. Do not open index.html via file://; ES modules need HTTP. Hash links work without route rewrite configuration.
 
-1. [`../BRIEF.md`](../BRIEF.md) for the product and outcome;
-2. [`case/CASE_PROTOCOL.md`](case/CASE_PROTOCOL.md) only through the stage named in your packet;
-3. [`case/DATA_DICTIONARY.md`](case/DATA_DICTIONARY.md) for joins and metric definitions;
-4. the current task in `docs/tasks/`.
+## Verification
 
-## Configuration behavior
-
-- Missing Supabase: public fixture marketplace and setup notice work; authenticated routes do not silently use demo data.
-- Missing PostHog: product flows work and typed analytics calls become no-ops.
-- Missing AI key: deterministic course provider is used unless `AI_PROVIDER=openai-compatible` is explicitly selected.
-- Invalid public Supabase credentials: startup shows a safe configuration notice. Secret/service-role keys are rejected.
-
-## Before sharing
-
-Run `./scripts/verify`, create a new test account without email confirmation, complete one candidate flow, and verify a second account cannot read it. Keep Confirm email disabled for the synthetic teaching app. Share only synthetic data and test accounts. Remove test notes containing names, emails, phone numbers, or private URLs.
+Run ./scripts/verify or npm run check. Browser tests require provisioned Playwright Chromium; a missing test browser does not prevent npm run dev. Do not let an agent install system dependencies automatically.

@@ -1,8 +1,8 @@
-import Link from "next/link";
+import { Link } from "react-router";
 import { ArrowRight, BriefcaseBusiness, ChartNoAxesColumnIncreasing, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { toggleSavedJob } from "@/features/jobs/candidate-job-actions";
+import { usePrototype } from "@/features/prototype/store";
 import type { JobWithCompany } from "@/features/jobs/types";
 import {
   categoryLabels,
@@ -25,6 +25,7 @@ function publishedLabel(value: string) {
 }
 
 export function JobCard({ job, saved }: { job: JobWithCompany; saved?: boolean }) {
+  const { run } = usePrototype();
   return (
     <article className="group grid gap-5 py-5 shadow-[var(--gui-divider-bottom-shadow)] transition-colors hover:bg-muted/35 sm:grid-cols-[56px_minmax(0,1.35fr)_minmax(220px,0.8fr)_auto] sm:items-center sm:px-1">
       <CompanyLogo company={job.company} />
@@ -34,7 +35,7 @@ export function JobCard({ job, saved }: { job: JobWithCompany; saved?: boolean }
           <h3 className="text-base font-semibold tracking-[var(--gui-tracking-s)] sm:text-lg">
             <Link
               className="rounded-sm transition-colors hover:text-[var(--gui-link)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--gui-focus)]"
-              href={`/oferty/${job.slug}`}
+              to={`/oferty/${job.slug}`}
             >
               {job.title}
             </Link>
@@ -42,7 +43,7 @@ export function JobCard({ job, saved }: { job: JobWithCompany; saved?: boolean }
         </div>
         <Link
           className="mt-0.5 block w-fit text-sm text-muted-foreground transition-colors hover:text-foreground"
-          href={`/firmy/${job.company.slug}`}
+          to={`/firmy/${job.company.slug}`}
         >
           {job.company.name}
         </Link>
@@ -77,24 +78,25 @@ export function JobCard({ job, saved }: { job: JobWithCompany; saved?: boolean }
         <p className="text-xs text-muted-foreground">{publishedLabel(job.publishedAt)}</p>
         <Link
           className={cn("mt-2", buttonVariants({ variant: "outline", size: "sm" }))}
-          href={`/oferty/${job.slug}`}
+          to={`/oferty/${job.slug}`}
         >
           Zobacz rolę{" "}
           <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
         </Link>
         {saved !== undefined && (
-          <form action={toggleSavedJob} className="mt-2">
+          <div className="mt-2">
             <input type="hidden" name="jobId" value={job.id} />
             <input type="hidden" name="slug" value={job.slug} />
             <Button
-              type="submit"
+              type="button"
+              onClick={() => run({ type: "toggle_saved", jobId: job.id })}
               variant="ghost"
               size="sm"
               aria-label={`${saved ? "Usuń z zapisanych" : "Zapisz ofertę"}: ${job.title}`}
             >
               {saved ? "Usuń z zapisanych" : "Zapisz ofertę"}
             </Button>
-          </form>
+          </div>
         )}
       </div>
     </article>

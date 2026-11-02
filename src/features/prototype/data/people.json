@@ -1,0 +1,59 @@
+[
+  {
+    "id": "candidate-anna",
+    "role": "candidate",
+    "name": "Anna Kowalska",
+    "headline": "Product Manager · AI i automatyzacja",
+    "bio": "Łączę badania użytkowników, eksperymenty i pracę z zespołami technicznymi.",
+    "location": "Warszawa",
+    "cv": "Anna Kowalska — Product Manager\n2022–2026: prowadzenie rozwoju narzędzi dla zespołów operacyjnych. Badania z 18 użytkownikami, priorytetyzacja i wdrożenie asystenta do zgłoszeń. Skrócenie czasu obsługi o 30%.\n2019–2022: Product Analyst. Analiza lejków i eksperymenty A/B.\nUmiejętności: discovery, analityka produktu, współpraca z inżynierami, prototypowanie AI.",
+    "exampleScore": 84,
+    "exampleSummary": "Doświadczenie w badaniach użytkowników i wdrażaniu automatyzacji. Warto porozmawiać o sposobie mierzenia efektów i współpracy z zespołem."
+  },
+  {
+    "id": "candidate-marek",
+    "role": "candidate",
+    "name": "Marek Nowak",
+    "headline": "Product Owner · produkty B2B",
+    "bio": "Rozwijam narzędzia wspierające obsługę klientów.",
+    "location": "Kraków",
+    "cv": "Marek Nowak — Product Owner\n2021–2026: rozwój platformy B2B. Automatyzacja obsługi zgłoszeń i skrócenie czasu odpowiedzi o 25%. Prowadzenie warsztatów z użytkownikami, praca z backlogiem i zespołem wdrożeniowym.",
+    "exampleScore": 72,
+    "exampleSummary": "Doświadczenie w produktach B2B i automatyzacji obsługi. Podczas rozmowy warto doprecyzować zakres samodzielnych decyzji."
+  },
+  {
+    "id": "employer-brightlabs",
+    "role": "employer",
+    "companyId": "10000000-0000-4000-8000-000000000001",
+    "name": "Karolina Wiśniewska",
+    "headline": "Rekruterka · BrightLabs",
+    "bio": "",
+    "location": "Warszawa",
+    "cv": "",
+    "exampleScore": 0,
+    "exampleSummary": ""
+  },
+  {
+    "id": "employer-northstar",
+    "role": "employer",
+    "companyId": "10000000-0000-4000-8000-000000000002",
+    "name": "Tomasz Zieliński",
+    "headline": "Hiring Manager · Northstar Health",
+    "bio": "",
+    "location": "Kraków",
+    "cv": "",
+    "exampleScore": 0,
+    "exampleSummary": ""
+  },
+  {
+    "id": "operator",
+    "role": "operator",
+    "name": "Prowadzący",
+    "headline": "Materiały case study",
+    "bio": "",
+    "location": "Warszawa",
+    "cv": "",
+    "exampleScore": 0,
+    "exampleSummary": ""
+  }
+]

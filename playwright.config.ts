@@ -1,5 +1,4 @@
 import { defineConfig, devices } from "@playwright/test";
-const port = Number(process.env.DEMO_TEST_PORT ?? 3106);
 export default defineConfig({
   testDir: "./tests/e2e",
   fullyParallel: true,
@@ -8,15 +7,14 @@ export default defineConfig({
   workers: process.env.CI ? 2 : undefined,
   reporter: [["list"], ["html", { open: "never" }]],
   use: {
-    baseURL: `http://127.0.0.1:${port}`,
+    baseURL: "http://127.0.0.1:3106",
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
-    command: `npm run start -- --hostname 127.0.0.1 --port ${port}`,
-    url: `http://127.0.0.1:${port}`,
+    command: "npm run preview -- --port 3106",
+    url: "http://127.0.0.1:3106",
     reuseExistingServer: false,
-    timeout: 120000,
   },
 });

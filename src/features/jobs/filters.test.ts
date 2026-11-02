@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { filterJobs, hasIndexableFilters, parseJobFilters } from "@/features/jobs/filters";
-import { joinJobsWithCompanies } from "@/features/jobs/fixtures";
+import { initialState, publishedJobs } from "@/features/prototype/model";
+const joinJobsWithCompanies = () => publishedJobs(initialState());
 
 describe("job filters", () => {
   it("accepts controlled filter values", () => {

@@ -5,7 +5,7 @@ body:
     id: steps
     attributes:
       label: Steps to reproduce
-      description: Include the page, actions, and mode — demo or Supabase.
+      description: Include the page, actions, and selected persona and hash route.
     validations:
       required: true
   - type: textarea

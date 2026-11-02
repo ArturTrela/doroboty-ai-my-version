@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { Link } from "react-router";
+import type { FormEvent } from "react";
 import {
   BarChart3,
   BriefcaseBusiness,
@@ -28,13 +29,21 @@ const filterIcons = {
   contract: FileText,
 } as const;
 
-export function JobFiltersForm({ filters, view }: { filters: JobFilters; view?: "list" | "map" }) {
+export function JobFiltersForm({
+  filters,
+  view,
+  onSubmit,
+}: {
+  filters: JobFilters;
+  view?: "list" | "map";
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+}) {
   return (
-    <form className="pb-6 shadow-[var(--gui-divider-bottom-shadow)]" action="/oferty">
+    <form className="pb-6 shadow-[var(--gui-divider-bottom-shadow)]" onSubmit={onSubmit}>
       {view === "map" ? <input type="hidden" name="view" value="map" /> : null}
       <div className="flex rounded-lg bg-background p-1 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--gui-focus)]">
         <label className="relative min-w-0 flex-1">
-          <span className="sr-only">Szukaj</span>
+          <span className="sr-only">Szukaj ofert</span>
           <Search
             aria-hidden="true"
             className="absolute top-1/2 left-4 size-5 -translate-y-1/2 text-muted-foreground"
@@ -42,11 +51,12 @@ export function JobFiltersForm({ filters, view }: { filters: JobFilters; view?: 
           <Input
             className="h-12 border-0 bg-transparent pr-3 pl-12 text-base shadow-none focus-visible:outline-none"
             name="query"
+            maxLength={100}
             defaultValue={filters.query}
             placeholder="Szukaj po stanowisku, firmie lub słowach kluczowych..."
           />
         </label>
-        <Button aria-label="Szukaj / Filtruj" className="h-12 px-6 text-sm sm:px-9" type="submit">
+        <Button className="h-12 px-6 text-sm sm:px-9" type="submit">
           Szukaj
         </Button>
       </div>
@@ -84,7 +94,7 @@ export function JobFiltersForm({ filters, view }: { filters: JobFilters; view?: 
         />
         <Link
           className="inline-flex h-14 items-center justify-center gap-2 px-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:col-span-2 md:col-span-1"
-          href="/oferty"
+          to="/oferty"
         >
           <RotateCcw className="size-4" />
           Wyczyść
@@ -123,7 +133,6 @@ function FilterSelect({
         defaultValue={value ?? ""}
         ariaLabel={label}
         placeholder="Wszystkie"
-        progressiveFallback
         triggerClassName="rounded-none bg-transparent p-0 text-sm font-medium focus-visible:outline-none data-[size=default]:min-h-6"
         options={[
           { value: "", label: "Wszystkie" },

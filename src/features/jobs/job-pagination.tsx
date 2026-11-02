@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "react-router";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { jobListingHref, paginationNumbers, type paginateJobs } from "@/features/jobs/pagination";
@@ -23,8 +23,7 @@ export function JobPagination({
           {page > 1 ? (
             <Link
               rel="prev"
-              prefetch={false}
-              href={jobListingHref(filters, page - 1)}
+              to={jobListingHref(filters, page - 1)}
               className={buttonVariants({ variant: "outline", size: "sm" })}
             >
               <ChevronLeft aria-hidden="true" /> Poprzednia
@@ -51,8 +50,7 @@ export function JobPagination({
               ) : (
                 <Link
                   key={number}
-                  prefetch={false}
-                  href={jobListingHref(filters, number)}
+                  to={jobListingHref(filters, number)}
                   aria-label={`Strona ${number}`}
                   aria-current={page === number ? "page" : undefined}
                   className={buttonVariants({
@@ -68,8 +66,7 @@ export function JobPagination({
           {page < totalPages ? (
             <Link
               rel="next"
-              prefetch={false}
-              href={jobListingHref(filters, page + 1)}
+              to={jobListingHref(filters, page + 1)}
               className={buttonVariants({ variant: "outline", size: "sm" })}
             >
               Następna <ChevronRight aria-hidden="true" />
