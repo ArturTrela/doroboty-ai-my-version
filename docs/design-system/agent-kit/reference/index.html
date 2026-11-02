@@ -1,0 +1,2776 @@
+<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DoRoboty.ai — dokumentacja systemu · v1</title><style>*{box-sizing:border-box}html{scroll-behavior:auto;scroll-padding-top:24px}body{margin:0;background:#f4f5f7;color:#202326;font:15px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}a{color:#234d85;text-underline-offset:3px}a:hover{color:#142e51}a:focus-visible{outline:3px solid #234d85;outline-offset:4px}.top{padding:15px 28px;background:#fff;border-bottom:1px solid #dfe3e8;display:flex;gap:18px;align-items:center;justify-content:space-between}.top>b{font-size:15px}.top .version{font-size:12px;background:#ffe0f7;color:#262024;border-radius:8px;padding:5px 9px}.layout{max-width:1600px;margin:auto;display:grid;grid-template-columns:280px minmax(0,1fr)}aside{height:calc(100dvh - 66px);overflow:auto;position:sticky;top:0;padding:27px 20px 40px;border-right:1px solid #dfe3e8;font-size:12px}aside .nav-title{font-size:10px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:#636b76;margin:20px 10px 8px}aside a{display:block;text-decoration:none;color:#424a55;padding:7px 10px;border-radius:6px;line-height:1.4}aside a:hover{background:#e7ebf0}aside a>span{display:inline-block;color:#687586;font-size:10px;min-width:32px}main{padding:38px 54px 70px;min-width:0;max-width:1220px}.doc-cover{background:#fff;border:1px solid #dce1e7;border-radius:15px;padding:30px;margin-bottom:34px}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#5d6571;margin:0 0 12px}.doc-cover h1{font-size:36px;line-height:1.13;letter-spacing:-1.1px;max-width:680px;margin:0 0 14px}.doc-cover p{font-size:14px;color:#59616d;max-width:700px;margin:0}.cover-previews{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:25px}.cover-previews a{display:block;text-decoration:none;border:1px solid #dce1e7;border-radius:8px;overflow:hidden}.cover-previews img{width:100%;height:190px;object-fit:cover;object-position:top;display:block}.cover-previews span{display:block;background:#fafbfc;font-size:11px;padding:9px 12px;color:#4b5665}.doc-counts{display:flex;gap:16px;flex-wrap:wrap;margin:22px 0 0!important;color:#3c4654!important;font-size:12px!important}.doc-counts b{font-size:20px;font-weight:600;margin-right:4px}article>h1{font-size:28px;letter-spacing:-.6px;margin:24px 0 10px}h2{font-size:26px;line-height:1.25;margin:48px 0 20px;letter-spacing:-.5px;scroll-margin-top:24px}h3{font-size:17px;line-height:1.4;margin:28px 0 10px}h4{font-size:15px;margin:22px 0 10px}p{margin:12px 0}strong{font-weight:650}.source-fragment{margin:22px 0 28px;border:1px solid #dce1e7;border-radius:9px;overflow:hidden;background:white}.source-fragment figcaption{padding:10px 13px;font-size:10px;color:#657080;border-top:1px solid #dce1e7}.source-fragment a{display:block}code{font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;background:#e9edf2;border-radius:4px;padding:2px 5px;overflow-wrap:anywhere}.table-scroll{max-width:100%;overflow:auto;margin:18px 0 24px;border:1px solid #dce1e7;border-radius:9px;background:#fff}table{width:100%;border-collapse:collapse;font-size:12px;line-height:1.65}th,td{padding:12px 14px;text-align:left;vertical-align:top;border-bottom:1px solid #e5e9ed;min-width:120px}th{font-size:11px;background:#edf0f4;font-weight:650;color:#485360}tr:last-child td{border-bottom:0}tr:nth-child(even) td{background:#fbfcfd}table code{background:#f0f2f5;font-size:11px}blockquote{border-left:3px solid #d1a0c9;margin:20px 0;padding:8px 20px;background:#faf6f9}.family-title{display:flex;align-items:center;gap:15px;border-top:2px solid #d2d9e2;padding-top:30px;font-size:30px;line-height:1.2;margin-top:65px}.family-title>span{font-size:12px;letter-spacing:0;border-radius:8px;background:#202326;color:white;padding:8px 10px;flex-shrink:0}.color-dot{display:inline-block;width:15px;height:15px;border:1px solid #c8cdd2;border-radius:4px;vertical-align:middle;margin-right:6px}.gallery{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:24px}.gallery figure{margin:0;border:1px solid #dce1e7;border-radius:10px;overflow:hidden;background:#fff}.image-wrap{height:280px;overflow:hidden;background:#e9ecef}.image-wrap img{display:block;width:100%;height:auto}.mobile-shot img{width:180px;max-width:100%;margin:auto}.gallery figcaption{padding:13px 16px;font-size:12px;line-height:1.6}.gallery figcaption b{margin-right:6px}.gallery small{display:block;font-size:10px;color:#657080;margin-top:5px}.gallery-heading{margin-top:65px}.download-row{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;margin-top:18px}.download-row a{padding:7px 11px;border:1px solid #cfd7e1;border-radius:6px;background:white;text-decoration:none}.doc-end{font-size:12px;color:#6b7480;margin-top:40px;padding-top:20px;border-top:1px solid #dce1e7}a[id]{scroll-margin-top:24px}ul,ol{padding-left:23px}img{max-width:100%}@media(max-width:1050px){.layout{grid-template-columns:230px minmax(0,1fr)}aside{padding:22px 14px}main{padding:28px 30px 50px}.cover-previews img{height:140px}.doc-cover{padding:24px}.doc-cover h1{font-size:30px}}@media(max-width:720px){.top{padding:13px 18px;font-size:12px}.layout{display:block}aside{height:auto;max-height:280px;position:static;border-right:0;border-bottom:1px solid #dce1e7;padding:14px 18px;overflow:auto}aside .nav-title{margin-top:12px}aside a{padding:6px 8px}main{padding:24px 18px 45px}.doc-cover{padding:20px}.doc-cover h1{font-size:28px}.cover-previews{grid-template-columns:1fr}.cover-previews img{height:170px}.gallery{grid-template-columns:1fr}h2{font-size:23px}.family-title{font-size:25px;gap:12px}th,td{padding:10px;min-width:145px}body{font-size:14px}.doc-counts{gap:12px}.doc-counts b{font-size:18px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}@media print{body{background:white;color:black;font-size:10pt;line-height:1.5}.top,aside,.download-row,.cover-previews,.gallery{display:none}.layout{display:block}main{max-width:none;padding:0}.doc-cover{border:0;padding:0}.table-scroll{overflow:visible;break-inside:avoid}table{font-size:8pt}th,td{min-width:0;padding:6px}.family-title{break-before:page;margin-top:0;padding-top:12px}h2,h3{break-after:avoid}a{color:inherit}.family-title>span{background:white;color:black;border:1px solid black}code{font-size:8pt}}
+</style></head><body><header class="top"><b>DoRoboty.ai / Dokumentacja dla designerów</b><span class="version">v1 · do oceny</span></header><div class="layout"><aside aria-label="Spis treści"><a href="#start">Zakres i źródła</a><a href="#foundations">Fundamenty i tokeny</a><a href="#accessibility">Dostępność</a><div class="nav-title">22 rodziny komponentów</div><a href="#c01"><span>C01</span>Przyciski i linki działań</a><a href="#c02"><span>C02</span>Pole tekstowe i liczbowe</a><a href="#c03"><span>C03</span>Select lokalizacji i sortowania</a><a href="#c04"><span>C04</span>Checkbox i grupa wyboru</a><a href="#c05"><span>C05</span>Selektor kategorii</a><a href="#c06"><span>C06</span>Chip aktywnego filtra</a><a href="#c07"><span>C07</span>Etykiety faktów, umiejętności i liczniki</a><a href="#c08"><span>C08</span>Identyfikacja firmy i profil skrócony</a><a href="#c09"><span>C09</span>Karta oferty i powtarzany zbiór</a><a href="#c10"><span>C10</span>Paginacja</a><a href="#c11"><span>C11</span>Nagłówek globalny</a><a href="#c12"><span>C12</span>Stopka</a><a href="#c13"><span>C13</span>Nawigacja kontekstowa</a><a href="#c14"><span>C14</span>Pasek wyszukiwania</a><a href="#c15"><span>C15</span>Panel filtrów</a><a href="#c16"><span>C16</span>Wejście z ilustracją</a><a href="#c17"><span>C17</span>Pusty wynik i odzyskanie kontekstu</a><a href="#c18"><span>C18</span>Dialog informacyjny i filtry mobilne</a><a href="#c19"><span>C19</span>Toast i komunikat statusu</a><a href="#c20"><span>C20</span>Nagłówek pełnej oferty</a><a href="#c21"><span>C21</span>Panel warunków i działań</a><a href="#c22"><span>C22</span>Sekcja treści, benefity i proces</a><div class="nav-title">Ocena i dowody</div><a href="#review">Pokrycie i otwarte kwestie</a><a href="#evidence-gallery">Galeria 19 materiałów</a><a href="components.md" download>Pełny tekst Markdown</a></aside><main id="start"><section class="doc-cover"><p class="eyebrow">Istniejący interfejs · stan z 2 listopada 2026</p><h1>Jeden system.<br>Listing i pełna oferta pracy.</h1><p>Dokumentacja wyboru, konfiguracji i stosowania komponentów. Aktualna wersja z Geist Serif i dużymi zaokrągleniami — z dowodami, stanami i granicami wnioskowania.</p><p class="doc-counts"><span><b>22</b> rodziny</span><span><b>19</b> zrzutów</span><span><b>2</b> ekrany</span><span><b>11</b> obszarów każdej karty</span></p><div class="cover-previews"><a href="evidence/S01.jpg"><img src="evidence/S01.jpg" alt="Aktualny listing DoRoboty.ai"><span>S01 · Listing / desktop · pełny materiał</span></a><a href="evidence/S03.jpg"><img src="evidence/S03.jpg" alt="Aktualna pełna strona oferty"><span>S03 · Oferta / desktop · pełny materiał</span></a></div><div class="download-row"><a href="components.md" download>Pełny tekst · Markdown</a><a href="#c09">Przejdź do karty oferty</a><a href="#review">Decyzje do oceny</a></div></section><article><h2>DoRoboty.ai — dokumentacja systemu interfejsu</h2>
+<p><strong>v1 · 2 listopada 2026 · dokumentacja dla designerów · do oceny</strong></p>
+<p>Aktualna rodzina ekranów: plakatowy job board, papierowe tło, białe powierzchnie z cienkim konturem, duże zaokrąglenia, różowe działania i nagłówki Geist Serif. Dokument opisuje istniejący prototyp: listing i pełną stronę oferty. Nie jest specyfikacją nieznanej biblioteki ani deklaracją gotowości produkcyjnej.</p>
+<h2>Jak korzystać</h2>
+<p>Wybierz rodzinę w indeksie. Karta pokazuje przeznaczenie, anatomię, warianty, cechy konfigurowalne, style, wymiary, typografię, zachowanie, praktyki, dostępność i źródła. Każdy numer S prowadzi do zachowanego zrzutu; A wskazuje uzupełniającą adnotację z aktualnej implementacji. Nazwy rodzin C01–C22 są <strong>nazwami roboczymi dokumentacji</strong>, a nie nazwami istniejących komponentów w narzędziu projektowym.</p>
+<h3>Legenda dowodów</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Oznaczenie</th>
+  <th>Znaczenie</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>[P] Potwierdzone</strong></td>
+  <td>Widoczne na wskazanym obrazie albo jawnie określone we wskazanej adnotacji. Obraz dowodzi wyglądu; zachowanie opisujemy z zaobserwowanej interakcji lub źródła A.</td>
+</tr>
+<tr>
+  <td><strong>[S] Szacunek z obrazu</strong></td>
+  <td>Przybliżenie z bitmapy. W tej wersji nie ustalamy tokenów przez próbkowanie bitmap; dokładne liczby pochodzą z A01–A06.</td>
+</tr>
+<tr>
+  <td><strong>[R] Rekomendacja</strong></td>
+  <td>Proponowana zasada, model konfiguracji lub cel. Nie jest zatwierdzonym standardem zespołu.</td>
+</tr>
+<tr>
+  <td><strong>[?] Do potwierdzenia</strong></td>
+  <td>Konkretna luka albo decyzja projektowa bez wystarczającego dowodu.</td>
+</tr>
+<tr>
+  <td><strong>[T] Do testu we wdrożeniu</strong></td>
+  <td>Test zachowania, technologii asystującej albo warunków nieweryfikowanych w tym opracowaniu.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Typy cech w kartach są <strong>proponowanym modelem dla designerów [R]</strong>. Same pokazane wartości są [P]. To nie publiczne API. „Brak ustalonej wartości domyślnej” oznacza brak specyfikacji systemowej; nie odbiera materiałom statusu dowodu wyglądu.</p>
+<h2>Zakres i źródła</h2>
+<p><strong>Pokrycie: 19/19 zebranych zrzutów, 2 ekrany produktowe, 22 rodziny.</strong> Przeanalizowano również aktualne deklaracje stylów i zachowań A01–A06. Zakres obejmuje 24 przykładowe oferty, 2 strony wyników, filtry, zapisanie, brak wyników/danych, długi tytuł, nieprawidłowy adres, okna oraz focus. Nie obejmuje konta, edytora oferty, realnej aplikacji, zaplecza, trybu ciemnego, kompletnej biblioteki ikon ani wszystkich kombinacji stanów.</p>
+<p>Baza implementacji: commit <code>6f1cd9e6980f40546d80732e228f39d2ad89fc3a</code>. Dokumentacja nie zmienia aplikacji. Wcześniejsze zrzuty bez Serif, małe promienie oraz dawny modal szczegółów są historią i nie definiują tej wersji.</p>
+<h3>Materiały wizualne</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>ID</th>
+  <th>Materiał i stan</th>
+  <th>Viewport CSS</th>
+  <th>Rodzaj zrzutu</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a id="s01"></a><a href="evidence/S01.jpg">S01</a></td>
+  <td>Listing — wszystkie oferty, desktop</td>
+  <td>1280×720</td>
+  <td>Pełna strona</td>
+</tr>
+<tr>
+  <td><a id="s02"></a><a href="evidence/S02.jpg">S02</a></td>
+  <td>Listing — wszystkie oferty, mobile</td>
+  <td>390×844</td>
+  <td>Pełna strona</td>
+</tr>
+<tr>
+  <td><a id="s03"></a><a href="evidence/S03.jpg">S03</a></td>
+  <td>Pełna oferta — desktop</td>
+  <td>1280×720</td>
+  <td>Pełna strona</td>
+</tr>
+<tr>
+  <td><a id="s04"></a><a href="evidence/S04.jpg">S04</a></td>
+  <td>Pełna oferta — mobile</td>
+  <td>390×844</td>
+  <td>Pełna strona</td>
+</tr>
+<tr>
+  <td><a id="s05"></a><a href="evidence/S05.jpg">S05</a></td>
+  <td>Wybrana kategoria, checkbox i aktywny filtr</td>
+  <td>1280×720</td>
+  <td>Pełna strona</td>
+</tr>
+<tr>
+  <td><a id="s06"></a><a href="evidence/S06.jpg">S06</a></td>
+  <td>Brak wyników wyszukiwania</td>
+  <td>1280×720</td>
+  <td>Pełna strona</td>
+</tr>
+<tr>
+  <td><a id="s07"></a><a href="evidence/S07.jpg">S07</a></td>
+  <td>Zapisana karta i komunikat potwierdzenia</td>
+  <td>1280×720</td>
+  <td>Pełna strona</td>
+</tr>
+<tr>
+  <td><a id="s08"></a><a href="evidence/S08.jpg">S08</a></td>
+  <td>Pusta lista zapisanych ofert</td>
+  <td>1280×720</td>
+  <td>Pełna strona</td>
+</tr>
+<tr>
+  <td><a id="s09"></a><a href="evidence/S09.jpg">S09</a></td>
+  <td>Mobilne filtry — górna część i wybrany checkbox</td>
+  <td>390×844</td>
+  <td>Viewport</td>
+</tr>
+<tr>
+  <td><a id="s10"></a><a href="evidence/S10.jpg">S10</a></td>
+  <td>Okno informacji o demonstracji</td>
+  <td>1280×720</td>
+  <td>Viewport</td>
+</tr>
+<tr>
+  <td><a id="s11"></a><a href="evidence/S11.jpg">S11</a></td>
+  <td>Okno aplikowania w demonstracji</td>
+  <td>1280×720</td>
+  <td>Viewport</td>
+</tr>
+<tr>
+  <td><a id="s12"></a><a href="evidence/S12.jpg">S12</a></td>
+  <td>Nieprawidłowy adres oferty</td>
+  <td>1280×720</td>
+  <td>Viewport</td>
+</tr>
+<tr>
+  <td><a id="s13"></a><a href="evidence/S13.jpg">S13</a></td>
+  <td>Długi tytuł i inicjały firmy — mobile</td>
+  <td>390×844</td>
+  <td>Pełna strona</td>
+</tr>
+<tr>
+  <td><a id="s14"></a><a href="evidence/S14.jpg">S14</a></td>
+  <td>Brak wynagrodzenia — mobile</td>
+  <td>390×844</td>
+  <td>Pełna strona</td>
+</tr>
+<tr>
+  <td><a id="s15"></a><a href="evidence/S15.jpg">S15</a></td>
+  <td>Focus klawiatury — pole lokalizacji</td>
+  <td>1280×720</td>
+  <td>Viewport</td>
+</tr>
+<tr>
+  <td><a id="s16"></a><a href="evidence/S16.jpg">S16</a></td>
+  <td>Mobilne filtry — pole wynagrodzenia i dolna akcja</td>
+  <td>390×844</td>
+  <td>Viewport</td>
+</tr>
+<tr>
+  <td><a id="s18"></a><a href="evidence/S18.jpg">S18</a></td>
+  <td>Druga strona wyników i niedostępna następna strona</td>
+  <td>1280×720</td>
+  <td>Pełna strona</td>
+</tr>
+<tr>
+  <td><a id="s19"></a><a href="evidence/S19.jpg">S19</a></td>
+  <td>Profil firmy i ilustracja po przewinięciu</td>
+  <td>1280×720</td>
+  <td>Viewport</td>
+</tr>
+<tr>
+  <td><a id="s20"></a><a href="evidence/S20.jpg">S20</a></td>
+  <td>Potwierdzenie zapisu — rzeczywisty viewport</td>
+  <td>1280×720</td>
+  <td>Viewport</td>
+</tr>
+</tbody>
+</table></div>
+<p>Rozmiary viewportów pochodzą z pomiaru przeglądarki, a nie szerokości bitmap. Zrzuty „pełna strona” obejmują treść poniżej ekranu; stałe elementy, np. toast, mogą w takim eksporcie trafić na dół całej bitmapy. Rzeczywistą pozycję toastu pokazuje S20. S03/S04 wykonano przed doładowaniem ilustracji firmy przy przewinięciu — jej widoczny wariant potwierdza S19. Materiały pozostawiono bez retuszu.</p>
+<h3>Uzupełniające adnotacje</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>ID</th>
+  <th>Materiał</th>
+  <th>Co potwierdza</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a id="a01"></a>A01</td>
+  <td><code>dist/assets/tokens.css</code></td>
+  <td>Istniejące nazwy zmiennych, kolory, promienie i rodziny fontów.</td>
+</tr>
+<tr>
+  <td><a id="a02"></a>A02</td>
+  <td><code>dist/assets/styles.css</code></td>
+  <td>Dokładne reguły listingu, formularzy, stanów, dialogów i breakpointów.</td>
+</tr>
+<tr>
+  <td><a id="a03"></a>A03</td>
+  <td><code>dist/assets/offer.css</code></td>
+  <td>Reguły strony oferty, panelu, treści i profilu firmy.</td>
+</tr>
+<tr>
+  <td><a id="a04"></a>A04</td>
+  <td><code>dist/assets/ui.js</code></td>
+  <td>Anatomia wspólnej karty, format wynagrodzenia, inicjały i linki do oferty.</td>
+</tr>
+<tr>
+  <td><a id="a05"></a>A05</td>
+  <td><code>dist/index.html</code>, <code>dist/assets/app.js</code></td>
+  <td>Etykiety, wartości filtrów, stan początkowy demonstracji, wyszukiwanie, paginacja, zapis i walidacja.</td>
+</tr>
+<tr>
+  <td><a id="a06"></a>A06</td>
+  <td><code>dist/oferta.html</code>, <code>dist/assets/offer.js</code></td>
+  <td>Sekcje roli, warianty braku danych, udostępnianie, powrót i ograniczenia aplikowania.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Pliki A znajdują się w istniejącym projekcie <code>sites/doroboty-poster-listing</code>, obok katalogu dokumentacji w tej samej przestrzeni rozmowy. Manifest dowodów zawiera metadane obrazów, a <code>evidence/source-revisions.json</code> — sumy kontrolne czytanych plików. Kod aplikacji nie jest dołączonym fundamentem komponentów.</p>
+<h2>Indeks i zależności</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Rodzina — nazwa robocza</th>
+  <th>Decyzja projektowa / karta</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#c01">C01 · Przyciski i linki działań</a></td>
+  <td>Wybierz różowy przycisk dla głównej akcji zadania, biały z obrysem dla działania uzupełniającego, tekstowy dla cichej czynności.</td>
+</tr>
+<tr>
+  <td><a href="#c02">C02 · Pole tekstowe i liczbowe</a></td>
+  <td>Pole tekstowe służy zapytaniu, liczbowe dolnej granicy widełek.</td>
+</tr>
+<tr>
+  <td><a href="#c03">C03 · Select lokalizacji i sortowania</a></td>
+  <td>Używaj dla jednego wyboru z zamkniętej listy.</td>
+</tr>
+<tr>
+  <td><a href="#c04">C04 · Checkbox i grupa wyboru</a></td>
+  <td>Wybieraj dla niezależnych warunków lub kilku wartości w jednej grupie.</td>
+</tr>
+<tr>
+  <td><a href="#c05">C05 · Selektor kategorii</a></td>
+  <td>Służy do zmiany obszaru ofert w tym samym zbiorze.</td>
+</tr>
+<tr>
+  <td><a href="#c06">C06 · Chip aktywnego filtra</a></td>
+  <td>Pokazuje zastosowane kryterium i pozwala je pojedynczo usunąć.</td>
+</tr>
+<tr>
+  <td><a href="#c07">C07 · Etykiety faktów, umiejętności i liczniki</a></td>
+  <td>Używaj dla informacji, nie działania: płaca, kompetencje, kategoria obiektu, liczba wyników.</td>
+</tr>
+<tr>
+  <td><a href="#c08">C08 · Identyfikacja firmy i profil skrócony</a></td>
+  <td>Łączy znak z nazwą organizacji.</td>
+</tr>
+<tr>
+  <td><a href="#c09">C09 · Karta oferty i powtarzany zbiór</a></td>
+  <td>Wybieraj do porównywania tekstowych ofert.</td>
+</tr>
+<tr>
+  <td><a href="#c10">C10 · Paginacja</a></td>
+  <td>Pozwala przechodzić między częściami zbioru.</td>
+</tr>
+<tr>
+  <td><a href="#c11">C11 · Nagłówek globalny</a></td>
+  <td>Utrzymuje tożsamość oraz przejście do ofert i zapisanych.</td>
+</tr>
+<tr>
+  <td><a href="#c12">C12 · Stopka</a></td>
+  <td>Kończy stronę i utrzymuje informację o demonstracji.</td>
+</tr>
+<tr>
+  <td><a href="#c13">C13 · Nawigacja kontekstowa</a></td>
+  <td>Wybierz powrót do wyników przy zmianie strony, a kotwice przy poruszaniu się wewnątrz opisu.</td>
+</tr>
+<tr>
+  <td><a href="#c14">C14 · Pasek wyszukiwania</a></td>
+  <td>Łączy frazę i lokalizację w jedno wyszukanie.</td>
+</tr>
+<tr>
+  <td><a href="#c15">C15 · Panel filtrów</a></td>
+  <td>Stosuj do niezależnego doprecyzowania listingu.</td>
+</tr>
+<tr>
+  <td><a href="#c16">C16 · Wejście z ilustracją</a></td>
+  <td>Używaj raz do orientacji na początku listingu.</td>
+</tr>
+<tr>
+  <td><a href="#c17">C17 · Pusty wynik i odzyskanie kontekstu</a></td>
+  <td>Używaj, gdy nie ma elementów do pokazania, z powodem i działaniem naprawczym.</td>
+</tr>
+<tr>
+  <td><a href="#c18">C18 · Dialog informacyjny i filtry mobilne</a></td>
+  <td>Wybieraj dla krótkiej informacji lub tymczasowego mobilnego zadania filtracji.</td>
+</tr>
+<tr>
+  <td><a href="#c19">C19 · Toast i komunikat statusu</a></td>
+  <td>Potwierdza krótką, zakończoną czynność bez zatrzymywania zadania.</td>
+</tr>
+<tr>
+  <td><a href="#c20">C20 · Nagłówek pełnej oferty</a></td>
+  <td>Służy natychmiastowemu rozpoznaniu roli i firmy.</td>
+</tr>
+<tr>
+  <td><a href="#c21">C21 · Panel warunków i działań</a></td>
+  <td>Grupuje fakty potrzebne do decyzji i następny krok.</td>
+</tr>
+<tr>
+  <td><a href="#c22">C22 · Sekcja treści, benefity i proces</a></td>
+  <td>Porządkuje dłuższą lekturę oferty.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Zależności [R, mapa dokumentacyjna]:</strong> pasek wyszukiwania = pole + select + przycisk. Panel filtrów = checkboxy + pole liczbowe + działanie czyszczenia; mobilnie znajduje się w dialogu. Karta oferty = identyfikacja firmy + tytuł/link + fakty + etykiety + zapis. Panel warunków = wynagrodzenie + lista faktów + przyciski. Lista „Może też Cię zainteresować” ponownie używa karty oferty; nie tworzy odrębnej rodziny karty.</p>
+<p><a id="foundations"></a></p>
+<h2>Fundamenty i zasady wspólne</h2>
+<p><strong>Notacja:</strong> 28/400 oznacza 28 CSS px i weight 400; interlinia 1.12 jest mnożnikiem, r24 oznacza promień 24 px. Padding 11×17 to pion / poziom; zapis czterech wartości zachowuje kolejność CSS: góra, prawo, dół, lewo.</p>
+<h3>Kierunek</h3>
+<p><strong>[P, S01–S04; A01–A03]</strong> Nagłówki są szeryfowe; tekst roboczy pozostaje bezszeryfowy. Kontur ma przeważnie 1 CSS px. Wynagrodzenie dostaje jasny róż, działanie — intensywniejszy róż, wybór filtra — ciemne wypełnienie. Białe powierzchnie odcinają się od papieru. Ilustracja nie powtarza się w każdej ofercie. Żółty występuje w ilustracji i niektórych znakach firm.</p>
+<p><strong>[R]</strong> Najpierw uczyń czytelnymi stanowisko, firmę i warunki. Używaj ekspresji na wejściu, a powtarzane fakty układaj stabilnie. Nie interpretuj różowego wynagrodzenia jako przycisku. Nie dodawaj ocen, rabatów czy presji czasu na podstawie podobieństwa do marketplace'u.</p>
+<h3>Kolory — istniejące zmienne [P, A01]</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Rola</th>
+  <th>Istniejąca nazwa</th>
+  <th>Wartość</th>
+  <th>Zastosowanie widoczne w materiale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Papier</td>
+  <td><code>--paper</code></td>
+  <td><span class="color-dot" style="background:#f4f4f0" aria-hidden="true"></span><code>#f4f4f0</code></td>
+  <td>Tło stron, część wnętrza dialogu, neutralne oznaczenia.</td>
+</tr>
+<tr>
+  <td>Powierzchnia</td>
+  <td><code>--surface</code></td>
+  <td><span class="color-dot" style="background:#ffffff" aria-hidden="true"></span><code>#ffffff</code></td>
+  <td>Karty, nagłówek, formularze, panel działań.</td>
+</tr>
+<tr>
+  <td>Tusz</td>
+  <td><code>--ink</code></td>
+  <td><span class="color-dot" style="background:#181818" aria-hidden="true"></span><code>#181818</code></td>
+  <td>Nagłówki, tekst, obrys, wybrany filtr.</td>
+</tr>
+<tr>
+  <td>Tekst pomocniczy</td>
+  <td><code>--muted</code></td>
+  <td><span class="color-dot" style="background:#5e5a5c" aria-hidden="true"></span><code>#5e5a5c</code></td>
+  <td>Metadane, opisy, nazwy faktów.</td>
+</tr>
+<tr>
+  <td>Podział</td>
+  <td><code>--line</code></td>
+  <td><span class="color-dot" style="background:#d8d5d1" aria-hidden="true"></span><code>#d8d5d1</code></td>
+  <td>Wewnętrzne separatory i obrysy nieinteraktywnych tagów.</td>
+</tr>
+<tr>
+  <td>Działanie</td>
+  <td><code>--action</code></td>
+  <td><span class="color-dot" style="background:#ff90e8" aria-hidden="true"></span><code>#ff90e8</code></td>
+  <td>Główne CTA, akcent wejścia i zapisanej zakładki.</td>
+</tr>
+<tr>
+  <td>Hover działania</td>
+  <td><code>--action-hover</code></td>
+  <td><span class="color-dot" style="background:#ffacef" aria-hidden="true"></span><code>#ffacef</code></td>
+  <td>Hover przycisku głównego, opisany w A02.</td>
+</tr>
+<tr>
+  <td>Wyróżniony fakt</td>
+  <td><code>--fact</code></td>
+  <td><span class="color-dot" style="background:#ffe0f7" aria-hidden="true"></span><code>#ffe0f7</code></td>
+  <td>Wynagrodzenie, wybrane tła pomocnicze.</td>
+</tr>
+<tr>
+  <td>Żółty</td>
+  <td><code>--yellow</code></td>
+  <td><span class="color-dot" style="background:#ffe45b" aria-hidden="true"></span><code>#ffe45b</code></td>
+  <td>Ilustracja, znaki LL/PP/PZ w przykładach.</td>
+</tr>
+<tr>
+  <td>Hover karty</td>
+  <td><code>--surface-hover</code></td>
+  <td><span class="color-dot" style="background:#fffefa" aria-hidden="true"></span><code>#fffefa</code></td>
+  <td>Subtelna zmiana głównej powierzchni karty, A02.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Wybranie używa <code>--ink</code> i bieli, nie osobnego tokenu „selected”. Błąd, ostrzeżenie i sukces nie mają w A01 osobnych kolorów semantycznych <strong>[?]</strong>. Nie dopisujemy ich jako istniejących tokenów. Wszystkie materiały pokazują tryb jasny; ciemny pozostaje poza zakresem.</p>
+<h3>Geometria, kontur, ikony [P, A01–A03]</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Element</th>
+  <th>Potwierdzona wartość</th>
+  <th>Nazwa / granica zastosowania</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Mniejszy promień</td>
+  <td>10 px</td>
+  <td><code>--radius-small</code>: tagi, chipy i część liczników.</td>
+</tr>
+<tr>
+  <td>Domyślny promień</td>
+  <td>18 px</td>
+  <td><code>--radius</code>: przyciski, panel filtrów, część małych powierzchni.</td>
+</tr>
+<tr>
+  <td>Większy promień</td>
+  <td>24 px</td>
+  <td><code>--radius-large</code>: karta, search, dialog, nagłówek oferty i panel warunków.</td>
+</tr>
+<tr>
+  <td>Pastylka</td>
+  <td>999 px</td>
+  <td>Wartość lokalna: wynagrodzenie, kategoria i umiejętności na pełnej ofercie. Nie jest nazwaną zmienną.</td>
+</tr>
+<tr>
+  <td>Wyjątki</td>
+  <td>3 / 5 / 8 / 14 / 16 px</td>
+  <td>Lokalnie: sygnet i kreski, checkbox, podkreślenie wejścia, niektóre znaki i opisy. Nie są automatycznie skalą tokenów.</td>
+</tr>
+<tr>
+  <td>Obrys</td>
+  <td>Zwykle 1 px, bez offsetowego cienia</td>
+  <td><code>--ink</code> dla głównych granic; <code>--line</code> dla podziałów.</td>
+</tr>
+<tr>
+  <td>Focus</td>
+  <td>Obrys 3 px, odsunięcie 4 px</td>
+  <td>Reguła <code>:focus-visible</code>, A02; widoczna w S15/S16. Nie zaokrągla każdej kontrolki identycznie.</td>
+</tr>
+<tr>
+  <td>Ikony</td>
+  <td>Bazowy viewBox 24×24; obrys 1.65; różne wymiary 12–28 px</td>
+  <td>A04 zawiera ograniczony zestaw liniowych symboli. To nie pełna zewnętrzna biblioteka.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>[R]</strong> Zachowuj rodzinę trzech głównych promieni, lecz lokalne wyjątki dokumentuj jawnie. Nie nazywaj każdego odstępu tokenem: A01 nie zawiera skali spacingu. Często powtarzają się 6, 8, 12, 16, 20, 24, 28, 32 i 36 px, ale to deklaracje lokalne A02/A03.</p>
+<h3>Typografia [P, A01–A03]</h3>
+<p><code>--font-heading</code>: <strong>Geist Serif, Regular 400</strong>, lokalny plik <code>GeistSerif-Regular.woff2</code>, bez syntetycznego pogrubienia. Dotyczy wszystkich H1–H6. <code>--font</code>: <strong>Arial, Helvetica, system-ui, sans-serif</strong> — to stos fontów dla treści, nie Geist Sans. Wartości 600/650/700 niżej są deklaracjami CSS; nie dowodzą osobnych plików fontu.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Rola i selektor</th>
+  <th>Desktop bazowy</th>
+  <th>Mobile</th>
+  <th>Interlinia / tracking</th>
+  <th>Źródło / uwaga</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Wejście listingu <code>.intro-copy h1</code></td>
+  <td>72 px / 400</td>
+  <td>43 px / 400 przy ≤600</td>
+  <td>1.02 / −2.5 px; mobile 1.04 / −2 px</td>
+  <td>S01/S02, A02. Progi pośrednie: 58 px ≤1100; 52 px ≤850.</td>
+</tr>
+<tr>
+  <td>Tytuł karty <code>.job-title</code></td>
+  <td>28 px / 400</td>
+  <td>26 px / 400 przy ≤600</td>
+  <td>1.12 / −0.5 px; mobile 1.13 / −0.4 px</td>
+  <td>A02: 26 px dla 851–1100; ponownie 28 px dla 601–850. Nie ujednolicono tego w dokumentacji.</td>
+</tr>
+<tr>
+  <td>Tytuł pełnej oferty <code>.offer-hero h1</code></td>
+  <td>64 px / 400</td>
+  <td>47 px / 400 przy ≤700</td>
+  <td>1.04 / −2 px; mobile 1.06 / −1.5 px</td>
+  <td>A03: 54 px ≤1100; 46 px dla 701–850.</td>
+</tr>
+<tr>
+  <td>Nagłówek wyników</td>
+  <td>32 px / 400</td>
+  <td>30 px / 400</td>
+  <td>1.2 / −1 lub −0.8 px</td>
+  <td>A02.</td>
+</tr>
+<tr>
+  <td>Sekcja opisu oferty H2</td>
+  <td>36 px / 400</td>
+  <td>33 px / 400 ≤700</td>
+  <td>1.12 / −1 lub −0.7 px</td>
+  <td>A03; 32 px w paśmie 701–850.</td>
+</tr>
+<tr>
+  <td>Podtytuł opisu H3</td>
+  <td>27 px / 400</td>
+  <td>26 px / 400</td>
+  <td>1.2 / −0.6 px bazowo</td>
+  <td>A03. Benefity mają własny H3 24 px; etapy rekrutacji 25 px.</td>
+</tr>
+<tr>
+  <td>Lead oferty</td>
+  <td>Arial 21 px</td>
+  <td>20 px ≤700</td>
+  <td>1.5 / −0.2 px</td>
+  <td>A03; 19 px dla 701–850.</td>
+</tr>
+<tr>
+  <td>Akapit / lista oferty</td>
+  <td>Arial 15 px</td>
+  <td>15 px ≤700</td>
+  <td>1.85 akapit; 1.8 lista; mobile 1.8</td>
+  <td>A03; 14 px dla 701–850.</td>
+</tr>
+<tr>
+  <td>Tytuł firmy na karcie</td>
+  <td>Arial 12 px / 500</td>
+  <td>11 px</td>
+  <td>1.5</td>
+  <td>A02; nie jest nagłówkiem H.</td>
+</tr>
+<tr>
+  <td>Fakty karty</td>
+  <td>Arial 13 px</td>
+  <td>12 px</td>
+  <td>1.5</td>
+  <td>A02.</td>
+</tr>
+<tr>
+  <td>Główny przycisk</td>
+  <td>Arial 14 px / 600</td>
+  <td>Zależny od kontekstu: 12–14 px</td>
+  <td>Dziedziczona 1.5</td>
+  <td>A02/A03. Nie ma jednego mobilnego rozmiaru.</td>
+</tr>
+<tr>
+  <td>Opisy i metadane</td>
+  <td>Arial 9–13 px</td>
+  <td>9–12 px</td>
+  <td>1.5–1.75 zależnie od roli</td>
+  <td>Dokładne wartości w kartach. <strong>[R]</strong> Rozważyć zwiększenie najdrobniejszych tekstów.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Nie ustanowiono nazwanych stylów typu „Heading/L”. Nazwy ról powyżej są dokumentacyjnymi opisami. Nie ma potwierdzonych wariantów kursywy, innych wag Serif, RTL ani innego języka UI niż polski z angielskimi nazwami zawodów i umiejętności.</p>
+<h3>Układ i responsywność [P, A02/A03]</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Warunek</th>
+  <th>Co rzeczywiście zmienia implementacja</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Bazowo &gt;1100 px</td>
+  <td>Kontener <code>min(1280px, 100% − 80px)</code>; listing: filtry 245 px, odstęp do wyników 32 px. Oferta: kolumna boczna 350 px i gap 28 px.</td>
+</tr>
+<tr>
+  <td>≥1600 px</td>
+  <td>Kontener dostaje max-width 1340 px, ale nadal działa jego bazowe <code>width:min(1280px, …)</code>. Sama deklaracja max-width nie rozszerza go ponad 1280 px.</td>
+</tr>
+<tr>
+  <td>≤1100 px</td>
+  <td>Marginesy kontenera po 24 px; filtry 218 px i gap 24 px; boczny panel oferty 310 px.</td>
+</tr>
+<tr>
+  <td>≤850 px</td>
+  <td>Filtry listingu znikają z kolumny; pojawia się otwarcie dialogu. Panel oferty nadal boczny, 285 px.</td>
+</tr>
+<tr>
+  <td>≤700 px — oferta</td>
+  <td>Kolejność: tytuł → warunki i działania → opis → firma. Panel przestaje być sticky.</td>
+</tr>
+<tr>
+  <td>≤600 px — wspólne / listing</td>
+  <td>Marginesy po 18 px, header 72 px, ukryte środkowe menu; karty jednokolumnowe z dolnym pasem; kategorie przewijane poziomo.</td>
+</tr>
+</tbody>
+</table></div>
+<p>To progi zapisane w kodzie, nie ustalone przez analizę dwóch bitmap. Pokazano aktualne viewporty 1280×720 i 390×844. Szersze stany, 320 CSS px, zoom 200/400%, zmienione odstępy tekstu i długie tłumaczenia pozostają <strong>[T]</strong>. Istniejący zapis wcześniejszych testów 650/1422 px nie zastępuje pełnego testu reflow.</p>
+<p><a id="accessibility"></a></p>
+<h2>Dostępność — wspólne odniesienia</h2>
+<p><strong>[R] Cel: WCAG 2.2 AA dla webu.</strong> Nie jest to deklaracja zgodności prototypu. Zdjęcia ekranów, liczby CSS i wcześniejsze smoke testy nie zastępują audytu. W tym opracowaniu obejrzano focus, przełączenia i otwarte dialogi; nie przeprowadzono testu czytnikiem ekranu.</p>
+<h3>A11y-1 · Kolor i czytelność</h3>
+<p><a href="https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html">WCAG 1.4.3, AA</a>: co najmniej 4.5:1 dla zwykłego tekstu; 3:1 dla dużego, czyli od 18 pt regular lub 14 pt bold. Są wyjątki m.in. dla logotypów i tekstu nieaktywnych kontrolek. <a href="https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html">1.4.11, AA</a> dotyczy informacji potrzebnej do rozpoznania kontrolki/stanu wobec sąsiednich kolorów; nie nakazuje obrysu każdej kontrolki.</p>
+<p>Obliczenia własne z dokładnych kolorów A01: liniowa luminancja sRGB i <code>(Ljaśniejsze+0.05)/(Lciemniejsze+0.05)</code>. Brak próbkowania antyaliasowanych pikseli. Wyniki dotyczą par, nie całego komponentu, przezroczystych stanów ani zgodności produktu.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Para</th>
+  <th>Stosunek, zaokrąglony wyłącznie do prezentacji</th>
+  <th>Wniosek projektowy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>--ink</code> / biel</td>
+  <td>17.76:1</td>
+  <td>[P, obliczenie] Dobra baza dla tekstu i obrysu.</td>
+</tr>
+<tr>
+  <td><code>--muted</code> / biel</td>
+  <td>6.79:1</td>
+  <td>[P] Przekracza 4.5:1 w stanie pełnej opacity.</td>
+</tr>
+<tr>
+  <td><code>--muted</code> / papier</td>
+  <td>6.16:1</td>
+  <td>[P] Jak wyżej; nie potwierdza czytelności tekstu 9 px.</td>
+</tr>
+<tr>
+  <td><code>--ink</code> / róż działania</td>
+  <td>8.80:1</td>
+  <td>[P] Zachowuj ciemną etykietę CTA.</td>
+</tr>
+<tr>
+  <td>Biel / róż działania</td>
+  <td>2.02:1</td>
+  <td>[P] Nie wystarcza dla zwykłego ani dużego tekstu według 1.4.3.</td>
+</tr>
+<tr>
+  <td><code>--ink</code> / róż faktu</td>
+  <td>14.59:1</td>
+  <td>[P] Wyraźne wynagrodzenie.</td>
+</tr>
+<tr>
+  <td><code>--muted</code> / róż faktu</td>
+  <td>5.58:1</td>
+  <td>[P] Pomocniczy tekst zachowuje próg 4.5:1.</td>
+</tr>
+<tr>
+  <td><code>--line</code> / biel</td>
+  <td>1.46:1</td>
+  <td>[P] Linia dekoracyjna nie jest równoznaczna z obrysem kontrolki. Nie używaj jej jako jedynego potrzebnego sygnału interakcji.</td>
+</tr>
+</tbody>
+</table></div>
+<h3>A11y-2 · Cele, klawiatura i focus</h3>
+<p><a href="https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html">2.5.8, AA</a> wymaga celu 24×24 CSS px lub spełnionego wyjątku: odstępy, równoważny cel, tekst inline, niezmieniona kontrolka przeglądarki, niezbędność. Dla małych celów wyjątek odstępu bada okręgi średnicy 24 px; sam rozmiar ikonki nie wystarcza. Zaokrąglony cel również wymaga oceny, czy mieści kwadrat 24×24. <strong>[R]</strong> Dla częstych działań na telefonie preferować obszar co najmniej 44×44; nie przedstawiać tego jako minimum AA.</p>
+<p><a href="https://www.w3.org/WAI/WCAG22/quickref/">Zestaw kryteriów WCAG</a>: 2.1.1 i 2.1.2 (A) — klawiatura bez pułapki; 2.4.7 (AA) — widoczny focus. <a href="https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum.html">2.4.11, AA</a> wymaga, by focus nie był całkowicie zasłonięty treścią autora. <strong>[T]</strong> Sprawdzić dialog, sticky panel, chipy i poziomy rząd kategorii. APG jest wskazówką interakcji, a nie normatywnym kryterium WCAG.</p>
+<h3>A11y-3 · Struktura i treść</h3>
+<p><a href="https://www.w3.org/WAI/WCAG22/quickref/">WCAG Quick Reference</a>: 1.1.1 (A) — alternatywy grafik; 1.3.1/1.3.2 (A) — relacje i kolejność; 2.4.6 (AA) — opisowe nagłówki/etykiety; 3.3.1/3.3.2 (A) i 3.3.3 (AA) — rozpoznanie błędu, instrukcje i wskazówki naprawy; 4.1.2 (A) — nazwa, rola i wartość. <strong>[T]</strong> Zweryfikować drzewo dostępności oraz odczyt PL/EN. Nie ukrywać istotnych warunków w samej ilustracji lub ikonie.</p>
+<h3>A11y-4 · Reflow i komunikaty</h3>
+<p><a href="https://www.w3.org/WAI/WCAG22/Understanding/reflow.html">1.4.10, AA</a>: dla pionowej treści ocenia się szerokość równoważną 320 CSS px, z wyjątkiem treści wymagającej układu dwuwymiarowego. <a href="https://www.w3.org/WAI/WCAG22/Understanding/status-messages.html">4.1.3, AA</a>: statusy powinny być programowo dostępne bez przenoszenia na nie focusu. <strong>[T]</strong> Przetestować zoom, etykiety, liczbę wyników i toast w technologiach asystujących; obraz nie dowodzi odczytu <code>aria-live</code>.</p>
+<p><a id="c01"></a></p>
+<h2 class="family-title"><span>C01</span>Przyciski i linki działań</h2><figure class="source-fragment" style="max-width:270px"><a href="evidence/S01.jpg"><div style="aspect-ratio:200/78;position:relative;overflow:hidden"><img src="evidence/S01.jpg" alt="Fragment źródła S01 dla Przyciski i linki działań" loading="lazy" style="position:absolute;max-width:none;width:640.00000%;left:-520.00000%;top:-432.05128%"></div></a><figcaption>S01 · fragment oryginalnego zrzutu w skali ilustracyjnej. Otwórz pełne źródło.</figcaption></figure>
+<h3>Przeznaczenie i wybór</h3>
+<p>[R] Wybierz różowy przycisk dla głównej akcji zadania, biały z obrysem dla działania uzupełniającego, tekstowy dla cichej czynności. Nawigację realizuje link, nawet gdy wygląda jak przycisk. Ikona bez etykiety jest wariantem oszczędzającym miejsce, a nie domyślnym sposobem oznaczania głównej akcji.</p>
+<h3>Anatomia i części</h3>
+<p>[P] 1. Obszar interakcji [wymagany]. 2. Etykieta tekstowa albo ikona z nazwą dostępną [wymagane alternatywnie]. 3. Ikona kierunku/zakładki [opcjonalna, S01/S03]. 4. Licznik [tylko w działaniach na zapisanych, C11].</p>
+<h3>Warianty, stany i macierz obserwacji</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Oś</th>
+  <th>Pokazany wariant / stan</th>
+  <th>Zastosowanie, dowód i granica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Hierarchia</td>
+  <td>Primary: różowy + ciemny tekst</td>
+  <td>Wyszukanie, aplikowanie demo; S01/S03</td>
+</tr>
+<tr>
+  <td>Hierarchia</td>
+  <td>Secondary: biel + obrys</td>
+  <td>Zapisz, powrót, firma; S03/S11</td>
+</tr>
+<tr>
+  <td>Forma</td>
+  <td>Tekst / ikona</td>
+  <td>Wyczyść, udostępnij, zamknij; S05/S10</td>
+</tr>
+<tr>
+  <td>Stan</td>
+  <td>Default; opisany hover; focus; zapisany; disabled tylko w paginacji</td>
+  <td>S15/S20/S18; A02. Loading/pressed chwilowy nie pokazane.</td>
+</tr>
+</tbody>
+</table></div>
+<p>[P] Powyższe wiersze stanowią macierz rzeczywistych współwystąpień lub jawnych opisów. Nie tworzą pełnego iloczynu kombinacji.</p>
+<h3>Właściwości i atrybuty</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Cecha</th>
+  <th>Typ roboczy [R]</th>
+  <th>Wartości / zakres [P]</th>
+  <th>Domyślność, efekt i zależność</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Etykieta / ikona</td>
+  <td>tekst / symbol</td>
+  <td>Zależne od akcji</td>
+  <td>Brak jednej wartości domyślnej</td>
+</tr>
+<tr>
+  <td>Hierarchia</td>
+  <td>wybór</td>
+  <td>primary / secondary / text / icon</td>
+  <td>Nazwy robocze [R]</td>
+</tr>
+<tr>
+  <td>Stan zapisu</td>
+  <td>logiczny</td>
+  <td>niezapisana / zapisana</td>
+  <td>Początkowo nie, A05/A06; parametry nawigacji mogą przekazać wybór</td>
+</tr>
+<tr>
+  <td>Cel</td>
+  <td>odsyłacz lub działanie</td>
+  <td>strona, sekcja, dialog, zmiana stanu</td>
+  <td>Zgodny z faktyczną funkcją</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Tokeny i style</h3>
+<p>[P] <code>--action</code>, <code>--action-hover</code>, <code>--surface</code>, <code>--ink</code>, <code>--fact</code>; r18 dla <code>.button</code>, r10 dla zakładki. Bez cienia; bazowy przycisk ma obrys 1 px, a wariant tekstowy i zakładka nie mają obrysu [A01/A02]. Wszystkie dane dotyczą trybu jasnego.</p>
+<h3>Wymiary, odległości i układ</h3>
+<p>[P, deklaracje CSS, nie pomiar bitmapy] Bazowe minimum wysokości 44 px; padding 11×17 px i gap 12 px. Search 52 px desktop / 42 px mobile. Oferta 50 px w panelu. Zamknięcie dialogu 36×36 px; zakładka 32×32 desktop / minimum 44×44 mobile. To różne konteksty, nie jedna skala S/M/L [A02/A03].</p>
+<h3>Typografia</h3>
+<p>[P] Arial 14/600 bazowo; search mobile 12, link karty 12/600 desktop i 11/600 mobile; ikony zwykle 16–20 px. Nagłówkowego Serif nie przenosi się na etykiety przycisków [A02/A03].</p>
+<h3>Zachowanie, treści i lokalizacja</h3>
+<p>[P, A05/A06; S11/S20] Zapis zmienia stan i pokazuje toast. Aplikuj otwiera informację demo, nie formularz ani wysyłkę. Brak asynchronicznego loadingu. Długie etykiety mogą zwiększać wysokość; część lokalnych kontrolek ma <code>nowrap</code>. RTL [?].</p>
+<h3>Zalecane i niewskazane praktyki</h3>
+<p>Zalecane: „Wyczyść” usuwa kryteria; „Zobacz ofertę” jest linkiem. Niewskazane: różowa pastylka płacy udaje CTA albo sama strzałka zastępuje „Aplikuj”. [R] Zachowuje to przewidywalność celu.</p>
+<h3>Dostępność</h3>
+<p>[T] A11y-1/2/3; <a href="https://www.w3.org/WAI/ARIA/apg/patterns/button/">APG Button</a> i <a href="https://www.w3.org/WAI/ARIA/apg/patterns/link/">Link</a>. Działanie: Enter/Spacja; link: Enter. Obecny zapis zmienia nazwę razem z <code>aria-pressed</code>; model stałej nazwy toggle albo zwykłej zmiennej akcji wymaga decyzji [?]. Cel proponowany: WCAG 2.2 AA; zasady i wyjątki opisuje sekcja <a href="#accessibility">Dostępność</a>.</p>
+<h3>Źródła i otwarte kwestie</h3>
+<p><strong>Podstawa:</strong> S01, S03, S10, S11, S15, S18, S20; A02 <code>.button</code>, <code>.save-button</code>, <code>.detail-button</code>; A05/A06.</p>
+<p><strong>Materiały do otwarcia:</strong> <a href="evidence/S01.jpg">S01</a>, <a href="evidence/S03.jpg">S03</a>, <a href="evidence/S10.jpg">S10</a>, <a href="evidence/S11.jpg">S11</a>, <a href="evidence/S15.jpg">S15</a>, <a href="evidence/S18.jpg">S18</a>, <a href="evidence/S20.jpg">S20</a>.</p>
+<p><strong>[?] Luki:</strong> Loading, błąd działania, ikona+wyłącznie-tooltip i destructive nie zostały pokazane. Nie ustanawiać ich przez analogię do primary.</p>
+<p><a id="c02"></a></p>
+<h2 class="family-title"><span>C02</span>Pole tekstowe i liczbowe</h2>
+<h3>Przeznaczenie i wybór</h3>
+<p>[R] Pole tekstowe służy zapytaniu, liczbowe dolnej granicy widełek. Dla zamkniętego zbioru lokalizacji wybierz C03, a dla niezależnego warunku C04.</p>
+<h3>Anatomia i części</h3>
+<p>[P] 1. Powiązana etykieta [wymagana w źródle; dla search wizualnie ukryta]. 2. Wartość / placeholder. 3. Lupa i przycisk czyszczenia [search]. 4. Jednostka „zł / mies.” i wskazówka [pole płacy].</p>
+<h3>Warianty, stany i macierz obserwacji</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Oś</th>
+  <th>Pokazany wariant / stan</th>
+  <th>Zastosowanie, dowód i granica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Typ</td>
+  <td>Search: pusty / wpisany</td>
+  <td>Lupa, tekst, pojawiający się krzyżyk; S01/S06</td>
+</tr>
+<tr>
+  <td>Typ</td>
+  <td>Number: pusty / 18000</td>
+  <td>Jednostka i opis; S01/S16</td>
+</tr>
+<tr>
+  <td>Stan</td>
+  <td>Focus</td>
+  <td>Czarny obrys; S16</td>
+</tr>
+<tr>
+  <td>Stan</td>
+  <td>Błąd liczby</td>
+  <td>Opisany natywny <code>reportValidity</code>; brak zachowanego widoku błędu, A05</td>
+</tr>
+</tbody>
+</table></div>
+<p>[P] Powyższe wiersze stanowią macierz rzeczywistych współwystąpień lub jawnych opisów. Nie tworzą pełnego iloczynu kombinacji.</p>
+<h3>Właściwości i atrybuty</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Cecha</th>
+  <th>Typ roboczy [R]</th>
+  <th>Wartości / zakres [P]</th>
+  <th>Domyślność, efekt i zależność</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Wartość</td>
+  <td>tekst albo liczba</td>
+  <td>q; salary</td>
+  <td>Start pusty, A05</td>
+</tr>
+<tr>
+  <td>Placeholder</td>
+  <td>tekst</td>
+  <td>„Stanowisko, firma lub umiejętność”; „np. 12 000”</td>
+  <td>Podany w A05</td>
+</tr>
+<tr>
+  <td>Liczba</td>
+  <td>ograniczenie</td>
+  <td>min 0, max 100000, step 1</td>
+  <td>To ograniczenia demonstracji, nie ustalony standard płac</td>
+</tr>
+<tr>
+  <td>Pomoc / jednostka</td>
+  <td>tekst</td>
+  <td>dolna granica; zł / mies.</td>
+  <td>Nie są wpisywaną wartością</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Tokeny i style</h3>
+<p>[P] Biel/transparentne wnętrze, <code>--ink</code>, <code>--muted</code>, r18 pola płacy; obrys rodzica search r24. Focus: wspólny obrys 3 px [A02]. Wszystkie dane dotyczą trybu jasnego.</p>
+<h3>Wymiary, odległości i układ</h3>
+<p>[P, deklaracje CSS, nie pomiar bitmapy] Search: 52 px wysokości, lewy padding 49 px desktop; mobile 46 px i 37 px. Liczba: 41 px wysokości, padding lewy 12 px; label nad nią z odstępem 8 px. Nie wyprowadzać wymiaru hit area z samej cyfry [A02].</p>
+<h3>Typografia</h3>
+<p>[P] Arial: search 14 px desktop / 12 mobile; liczba 13; label płacy 11–12, wskazówka 10–11. Unit 10 px. Interlinia bazowa 1.5 [A02].</p>
+<h3>Zachowanie, treści i lokalizacja</h3>
+<p>[P, A05] Samo pisanie q nie filtruje; submit to robi. Krzyżyk czyści q i od razu aktualizuje wynik. Poprawna liczba filtruje na input; puste = brak progu. Dotyczy dolnej, nie górnej granicy widełek. Walidacja jest natywna. Komunikaty błędu i RTL [?].</p>
+<h3>Zalecane i niewskazane praktyki</h3>
+<p>Zalecane: label „Dolna granica widełek od” i osobna jednostka. Niewskazane: placeholder jako jedyna etykieta albo „od 18000” bez wyjaśnienia, którego końca widełek dotyczy filtr [R].</p>
+<h3>Dostępność</h3>
+<p>[T] A11y-2/3/4: label powiązany z kontrolką, opis i błąd czytane razem z polem; naprawa liczby bez utraty wartości. Test przy klawiaturze ekranowej, zoomie i wpisie spoza zakresu. Nie oceniano natywnego dymka błędu. Cel proponowany: WCAG 2.2 AA; zasady i wyjątki opisuje sekcja <a href="#accessibility">Dostępność</a>.</p>
+<h3>Źródła i otwarte kwestie</h3>
+<p><strong>Podstawa:</strong> S01, S06, S16; A02 <code>.search-field input</code>, <code>.salary-input</code>; A05 HTML oraz listenery input/change.</p>
+<p><strong>Materiały do otwarcia:</strong> <a href="evidence/S01.jpg">S01</a>, <a href="evidence/S06.jpg">S06</a>, <a href="evidence/S16.jpg">S16</a>.</p>
+<p><strong>[?] Luki:</strong> Nie pokazano custom error, sukcesu pola, walidacji serwerowej, readonly poza fallbackiem udostępniania ani limitu długości UI. q jest obcinane do 200 znaków w A05 — to zachowanie prototypu.</p>
+<p><a id="c03"></a></p>
+<h2 class="family-title"><span>C03</span>Select lokalizacji i sortowania</h2>
+<h3>Przeznaczenie i wybór</h3>
+<p>[R] Używaj dla jednego wyboru z zamkniętej listy. Checkboxy C04 obsługują wielokrotny wybór. Nie przedstawiaj natywnego selecta jako autorskiego comboboxa z wyszukiwaniem.</p>
+<h3>Anatomia i części</h3>
+<p>[P] 1. Powiązana, wizualnie ukryta etykieta. 2. Wybrana opcja. 3. Strzałka. 4. Pin [tylko lokalizacja]. Lista rozwijana należy do przeglądarki.</p>
+<h3>Warianty, stany i macierz obserwacji</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Oś</th>
+  <th>Pokazany wariant / stan</th>
+  <th>Zastosowanie, dowód i granica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Kontekst</td>
+  <td>Lokalizacja</td>
+  <td>Wspólna ramka search i separator; S01</td>
+</tr>
+<tr>
+  <td>Kontekst</td>
+  <td>Sortowanie</td>
+  <td>Bez osobnej ramki, przy wynikach; S05</td>
+</tr>
+<tr>
+  <td>Stan</td>
+  <td>Początkowy / zmieniony / focus</td>
+  <td>Cała Polska, Najnowsze / Najwyższe widełki; S01/S05/S15</td>
+</tr>
+<tr>
+  <td>Stan</td>
+  <td>Otwarty</td>
+  <td>Natywny wygląd listy nie został utrwalony</td>
+</tr>
+</tbody>
+</table></div>
+<p>[P] Powyższe wiersze stanowią macierz rzeczywistych współwystąpień lub jawnych opisów. Nie tworzą pełnego iloczynu kombinacji.</p>
+<h3>Właściwości i atrybuty</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Cecha</th>
+  <th>Typ roboczy [R]</th>
+  <th>Wartości / zakres [P]</th>
+  <th>Domyślność, efekt i zależność</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Opcje lokalizacji</td>
+  <td>lista tekstów</td>
+  <td>Cała Polska, Warszawa, Kraków, Wrocław, Poznań, Gdańsk, Łódź</td>
+  <td>Pierwsza opcja na starcie A05</td>
+</tr>
+<tr>
+  <td>Opcje sortowania</td>
+  <td>lista</td>
+  <td>Najnowsze / Najwyższe widełki / Firma A–Z</td>
+  <td>Najnowsze na starcie A05</td>
+</tr>
+<tr>
+  <td>Wybrana wartość</td>
+  <td>pojedynczy wybór</td>
+  <td>Jedna opcja naraz</td>
+  <td>Lista nie jest zbiorem tagów</td>
+</tr>
+<tr>
+  <td>Ikona</td>
+  <td>pin / chevron</td>
+  <td>Zależna od kontekstu</td>
+  <td>Brak konfigurowalnego API</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Tokeny i style</h3>
+<p>[P] <code>--ink</code>, <code>--muted</code>, separator <code>--line</code>. Chevron to tło SVG; samo pole ma <code>appearance:none</code>, lista pozostaje natywna [A02/A05]. Wszystkie dane dotyczą trybu jasnego.</p>
+<h3>Wymiary, odległości i układ</h3>
+<p>[P, deklaracje CSS, nie pomiar bitmapy] Lokalizacja: slot 250 px w bazowym search, wysokość 52; mobile wysokość 42. Sort: max-width 200 px desktop / 170 mobile, padding 8px 26px 8px 4px bazowo [A02].</p>
+<h3>Typografia</h3>
+<p>[P] Arial 14 px lokalizacja bazowo / 12 mobile; sort 12 / 11; interlinia dziedziczona. To tekst roboczy, bez Serif [A02].</p>
+<h3>Zachowanie, treści i lokalizacja</h3>
+<p>[P, A05] Lokalizacja stosowana po „Szukaj ofert”; sort zmienia wyniki od razu i wraca na pierwszą stronę. Sort płacowy porównuje dolne granice, braki są na końcu. Nie pokazano zdalnego pobierania opcji ani błędu.</p>
+<h3>Zalecane i niewskazane praktyki</h3>
+<p>Zalecane: zachowaj pełne znaczenie „Najwyższe widełki”, doprecyzuj w razie potrzeby dolną granicę. Niewskazane: dodawanie wyszukiwarki w select bez odrębnej specyfikacji comboboxa [R].</p>
+<h3>Dostępność</h3>
+<p>[T] A11y-2/3: natywna klawiatura selecta, czytelna nazwa „Sortuj oferty” i wybrana opcja. Widok nie dowodzi zachowania na iOS/Android. Dla obecnej natywnej kontrolki nie narzucamy wzorca autorskiego APG combobox. Cel proponowany: WCAG 2.2 AA; zasady i wyjątki opisuje sekcja <a href="#accessibility">Dostępność</a>.</p>
+<h3>Źródła i otwarte kwestie</h3>
+<p><strong>Podstawa:</strong> S01, S05, S15; A02 <code>.location-field select</code>, <code>.sort-field select</code>; A05.</p>
+<p><strong>Materiały do otwarcia:</strong> <a href="evidence/S01.jpg">S01</a>, <a href="evidence/S05.jpg">S05</a>, <a href="evidence/S15.jpg">S15</a>.</p>
+<p><strong>[?] Luki:</strong> Brak projektu natywnej otwartej listy na innych platformach; brak wariantu wielokrotnego, wyszukiwalnego i disabled w użyciu.</p>
+<p><a id="c04"></a></p>
+<h2 class="family-title"><span>C04</span>Checkbox i grupa wyboru</h2>
+<h3>Przeznaczenie i wybór</h3>
+<p>[R] Wybieraj dla niezależnych warunków lub kilku wartości w jednej grupie. Kategoria C05 jest pojedynczym wyborem; nie utożsamiaj jej z tą rodziną.</p>
+<h3>Anatomia i części</h3>
+<p>[P] 1. Kwadrat z obrysem i znacznikiem. 2. Etykieta klikalnego wiersza. 3. Liczba pasujących ofert [tylko tryb pracy]. 4. Nagłówek grupy; label grupuje pokrewne wartości.</p>
+<h3>Warianty, stany i macierz obserwacji</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Oś</th>
+  <th>Pokazany wariant / stan</th>
+  <th>Zastosowanie, dowód i granica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Stan</td>
+  <td>Niezaznaczony</td>
+  <td>Białe wnętrze; S01</td>
+</tr>
+<tr>
+  <td>Stan</td>
+  <td>Zaznaczony</td>
+  <td>Ciemne wnętrze i jasny znacznik; S05/S09</td>
+</tr>
+<tr>
+  <td>Kontekst</td>
+  <td>Desktop / dialog mobile</td>
+  <td>Gęstszy / wyższy wiersz; S01/S09</td>
+</tr>
+<tr>
+  <td>Semantyka</td>
+  <td>Dwa stany</td>
+  <td>Brak pokazanego indeterminate lub zbiorczego zaznaczania</td>
+</tr>
+</tbody>
+</table></div>
+<p>[P] Powyższe wiersze stanowią macierz rzeczywistych współwystąpień lub jawnych opisów. Nie tworzą pełnego iloczynu kombinacji.</p>
+<h3>Właściwości i atrybuty</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Cecha</th>
+  <th>Typ roboczy [R]</th>
+  <th>Wartości / zakres [P]</th>
+  <th>Domyślność, efekt i zależność</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Etykieta</td>
+  <td>tekst</td>
+  <td>Zdalnie, Senior, B2B, Tylko oferty z widełkami itd.</td>
+  <td>Wszystkie niezaznaczone na czystym starcie A05</td>
+</tr>
+<tr>
+  <td>Wybór</td>
+  <td>logiczny</td>
+  <td>tak / nie</td>
+  <td>W grupie można kilka wartości</td>
+</tr>
+<tr>
+  <td>Licznik</td>
+  <td>liczba opcjonalna</td>
+  <td>12, 5, 0 itd.</td>
+  <td>Tylko zaobserwowane grupy z liczbą</td>
+</tr>
+<tr>
+  <td>Grupa</td>
+  <td>zestaw</td>
+  <td>tryb, doświadczenie, forma, widełki</td>
+  <td>Wartości jawnie podane w A05</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Tokeny i style</h3>
+<p>[P] <code>--surface</code>, <code>--muted</code> obrys; po wyborze <code>--ink</code> i biały check. Zaokrąglenie lokalne 5 px; nie r10 [A02]. Wszystkie dane dotyczą trybu jasnego.</p>
+<h3>Wymiary, odległości i układ</h3>
+<p>[P, deklaracje CSS, nie pomiar bitmapy] Sam kwadrat 17×17 px. Wiersz etykiety minimum 32 px desktop i 39 px mobile; gap 10 px. Licznik jest wyrównany do prawej. To pole wraz z etykietą, nie sam kwadrat, stanowi cel do zmierzenia [A02].</p>
+<h3>Typografia</h3>
+<p>[P] Arial 13 px desktop / 15 mobile; grupa 13/650 lub 15/650; licznik 11 px. Checkbox widełek ma lokalnie 12/14 px [A02].</p>
+<h3>Zachowanie, treści i lokalizacja</h3>
+<p>[P, A05; S05/S09] Wybór aktualizuje wyniki od razu. OR wewnątrz grupy, AND między grupami. Licznik trybu liczony z pominięciem bieżącego wyboru trybu. Zamknięcie mobilnego panelu nie cofa zaznaczenia. RTL [?].</p>
+<h3>Zalecane i niewskazane praktyki</h3>
+<p>Zalecane: klikany label z jasnym tekstem „Tylko oferty z widełkami”. Niewskazane: sam różowy kwadrat bez znaku wyboru albo licznik udający trzeci stan [R].</p>
+<h3>Dostępność</h3>
+<p>[T] A11y-2/3; <a href="https://www.w3.org/WAI/ARIA/apg/patterns/checkbox/">APG Checkbox</a>: Spacja zmienia wybór, nazwa i stan są dostępne, grupa ma nazwę. Zweryfikować obszar aktywny całego labela; grafika 17 px sama nie dowodzi naruszenia ani spełnienia 2.5.8. Cel proponowany: WCAG 2.2 AA; zasady i wyjątki opisuje sekcja <a href="#accessibility">Dostępność</a>.</p>
+<h3>Źródła i otwarte kwestie</h3>
+<p><strong>Podstawa:</strong> S01, S05, S09, S16; A02 <code>.filter-group</code>, końcowa reguła wyglądu input; A05.</p>
+<p><strong>Materiały do otwarcia:</strong> <a href="evidence/S01.jpg">S01</a>, <a href="evidence/S05.jpg">S05</a>, <a href="evidence/S09.jpg">S09</a>, <a href="evidence/S16.jpg">S16</a>.</p>
+<p><strong>[?] Luki:</strong> Indeterminate, disabled i error nie pokazane. Nie ma potwierdzonego zbiorczego „Zaznacz wszystko”.</p>
+<p><a id="c05"></a></p>
+<h2 class="family-title"><span>C05</span>Selektor kategorii</h2>
+<h3>Przeznaczenie i wybór</h3>
+<p>[R] Służy do zmiany obszaru ofert w tym samym zbiorze. Nie jest nawigacją do strony firmy ani zestawem zakładek z panelami treści.</p>
+<h3>Anatomia i części</h3>
+<p>[P] 1. Kontener przycisku. 2. Nazwa kategorii. 3. Wyjaśnienie [Build/Apply/Lead na szerokim widoku]. 4. Liczba wyników. Wyjaśnienie jest ukrywane na mobile, nie usuwane z modelu treści.</p>
+<h3>Warianty, stany i macierz obserwacji</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Oś</th>
+  <th>Pokazany wariant / stan</th>
+  <th>Zastosowanie, dowód i granica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Wybór</td>
+  <td>Wszystkie / Build / Apply / Lead</td>
+  <td>Jeden aktywny wariant; S01/S05</td>
+</tr>
+<tr>
+  <td>Stan</td>
+  <td>Wybrany / niewybrany</td>
+  <td>Ciemny / transparentny, cienki obrys; S05</td>
+</tr>
+<tr>
+  <td>Układ</td>
+  <td>Cztery kolumny / poziomy rząd</td>
+  <td>Pełniejsze opisy / krótkie etykiety; S01/S02</td>
+</tr>
+<tr>
+  <td>Kombinacja</td>
+  <td>Build + Zdalnie</td>
+  <td>Licznik Build 5 i wynik 5; S05</td>
+</tr>
+</tbody>
+</table></div>
+<p>[P] Powyższe wiersze stanowią macierz rzeczywistych współwystąpień lub jawnych opisów. Nie tworzą pełnego iloczynu kombinacji.</p>
+<h3>Właściwości i atrybuty</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Cecha</th>
+  <th>Typ roboczy [R]</th>
+  <th>Wartości / zakres [P]</th>
+  <th>Domyślność, efekt i zależność</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Kategoria</td>
+  <td>wybór pojedynczy</td>
+  <td>all / Build / Apply / Lead</td>
+  <td>all na czystym starcie A05</td>
+</tr>
+<tr>
+  <td>Opis</td>
+  <td>tekst</td>
+  <td>Twórz AI / Wdrażaj AI / Wyznaczaj kierunek</td>
+  <td>Obserwowany, nie ogólny slot API</td>
+</tr>
+<tr>
+  <td>Licznik</td>
+  <td>liczba</td>
+  <td>0…24 w danych przykładowych</td>
+  <td>Wyliczany, nie maksymalny limit systemu</td>
+</tr>
+<tr>
+  <td>Wybranie</td>
+  <td>logiczny</td>
+  <td>Jeden aktywny przycisk</td>
+  <td><code>aria-pressed</code> w A05</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Tokeny i style</h3>
+<p>[P] <code>--ink</code> + biel dla wybrania; papier dla reszty, obrys 1 px, r18; hover niewybranego biel [A02]. Wszystkie dane dotyczą trybu jasnego.</p>
+<h3>Wymiary, odległości i układ</h3>
+<p>[P, deklaracje CSS, nie pomiar bitmapy] Desktop grid 1.1fr / 1fr / 1fr / 1fr, gap 12 px, min-height 56, padding 12×18. Mobile flex z overflow-x, gap 7, min-height 44, padding 10×12; końcowy element może być częściowo widoczny [A02].</p>
+<h3>Typografia</h3>
+<p>[P] Arial: nazwa 14–15 px, opis 11, licznik 12. Mobile nazwy 11–12, licznik 10. Bez Serif; to kontrolki [A02].</p>
+<h3>Zachowanie, treści i lokalizacja</h3>
+<p>[P, A05] Zmiana natychmiast filtruje i zeruje stronę paginacji. Liczniki kategorii uwzględniają inne filtry, ale ignorują wybraną kategorię. Stan z zerowym licznikiem nie jest automatycznie disabled. RTL i odkrywalność przewijania [?].</p>
+<h3>Zalecane i niewskazane praktyki</h3>
+<p>Zalecane: wybranie czernią i czytelny licznik. Niewskazane: nazywanie widocznej formy „tabs” i dodanie ról tab/tabpanel bez odpowiadającej im interakcji [R].</p>
+<h3>Dostępność</h3>
+<p>[T] A11y-2/3/4; obecnie przyciski przełączające, nie APG Tabs. [?] Rozważyć model pojedynczego wyboru według <a href="https://www.w3.org/WAI/ARIA/apg/patterns/radio/">APG Radio Group</a> dopiero po decyzji; wtedy konsekwentnie wdrożyć klawiaturę. Tab nie może gubić elementu poza przewijanym rzędem. Cel proponowany: WCAG 2.2 AA; zasady i wyjątki opisuje sekcja <a href="#accessibility">Dostępność</a>.</p>
+<h3>Źródła i otwarte kwestie</h3>
+<p><strong>Podstawa:</strong> S01, S02, S05, S06; A02 <code>.category-tabs</code>, <code>.category-tab</code>; A05.</p>
+<p><strong>Materiały do otwarcia:</strong> <a href="evidence/S01.jpg">S01</a>, <a href="evidence/S02.jpg">S02</a>, <a href="evidence/S05.jpg">S05</a>, <a href="evidence/S06.jpg">S06</a>.</p>
+<p><strong>[?] Luki:</strong> Brak projektu piątej kategorii, dłuższych tłumaczeń i dynamicznego doładowania. Przyciski nie mają dedykowanego loadingu.</p>
+<p><a id="c06"></a></p>
+<h2 class="family-title"><span>C06</span>Chip aktywnego filtra</h2>
+<h3>Przeznaczenie i wybór</h3>
+<p>[R] Pokazuje zastosowane kryterium i pozwala je pojedynczo usunąć. Nie używaj go dla nieinteraktywnych umiejętności C07 ani jako głównego wyboru kategorii C05.</p>
+<h3>Anatomia i części</h3>
+<p>[P] 1. Tekst kryterium. 2. Ikona ×. 3. Wspólny obszar przycisku. Kategoria jest osobnym selektorem; nie pojawia się automatycznie jako taki chip.</p>
+<h3>Warianty, stany i macierz obserwacji</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Oś</th>
+  <th>Pokazany wariant / stan</th>
+  <th>Zastosowanie, dowód i granica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Treść</td>
+  <td>Fraza / miasto / tryb / poziom / umowa / płaca / widełki</td>
+  <td>S05/S06/S16 i opis A05</td>
+</tr>
+<tr>
+  <td>Obecność</td>
+  <td>Brak filtrów / co najmniej jeden</td>
+  <td>Rząd ukryty / widoczny; S01/S05</td>
+</tr>
+<tr>
+  <td>Układ</td>
+  <td>Jeden / kilka wierszy</td>
+  <td>Zawijanie bez limitu liczby w źródle</td>
+</tr>
+<tr>
+  <td>Stan</td>
+  <td>Default / opisany hover</td>
+  <td>Focus jako wspólna reguła; brak stanu wybranego</td>
+</tr>
+</tbody>
+</table></div>
+<p>[P] Powyższe wiersze stanowią macierz rzeczywistych współwystąpień lub jawnych opisów. Nie tworzą pełnego iloczynu kombinacji.</p>
+<h3>Właściwości i atrybuty</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Cecha</th>
+  <th>Typ roboczy [R]</th>
+  <th>Wartości / zakres [P]</th>
+  <th>Domyślność, efekt i zależność</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Etykieta</td>
+  <td>tekst</td>
+  <td>„Zdalnie”, „Od 18 000 zł”, cytowane zapytanie</td>
+  <td>Wynika z wartości</td>
+</tr>
+<tr>
+  <td>Rodzaj / wartość</td>
+  <td>cecha + wartość</td>
+  <td>q, city, mode, level, contract, minSalary, salaryOnly</td>
+  <td>Nazwy techniczne A05, nie zatwierdzone propsy biblioteki</td>
+</tr>
+<tr>
+  <td>Usunięcie</td>
+  <td>akcja</td>
+  <td>Czyści tylko wskazany filtr</td>
+  <td>Brak domyślnego chipa</td>
+</tr>
+<tr>
+  <td>Ikona</td>
+  <td>stała × w przykładach</td>
+  <td>12 px</td>
+  <td>Nie potwierdzono innej ikony</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Tokeny i style</h3>
+<p>[P] Biel, obrys <code>--ink</code> 1 px, r10; hover <code>--fact</code> [A02]. Wszystkie dane dotyczą trybu jasnego.</p>
+<h3>Wymiary, odległości i układ</h3>
+<p>[P, deklaracje CSS, nie pomiar bitmapy] Min-height 32 px, padding 5×8, gap do ikony 8, odstęp między chipami 8. Mobile min-height 31, padding 5×7 i gap grupy 6. Szerokość wynika z etykiety [A02].</p>
+<h3>Typografia</h3>
+<p>[P] Arial 11 px desktop / 10 mobile, regular. Długie kryterium nie ma specyfikowanego skracania ani limitu projektowego [A02/A05].</p>
+<h3>Zachowanie, treści i lokalizacja</h3>
+<p>[P, A05] Kliknięcie całego chipa usuwa kryterium, aktualizuje kontrolkę źródłową i wraca na stronę 1. Nie ma osobnego kliknięcia w tekst jako nawigacji. Zmiana liczby wyników jest statusem. RTL [?].</p>
+<h3>Zalecane i niewskazane praktyki</h3>
+<p>Zalecane: „Usuń filtr: Zdalnie” jako opis celu. Niewskazane: sama nazwa „Zdalnie” dla dwóch niezależnych interakcji lub tag umiejętności z mylącym krzyżykiem [R].</p>
+<h3>Dostępność</h3>
+<p>[T] A11y-2/3/4 i APG Button z C01. Po usunięciu element znika; sprawdzić logiczne miejsce focusu i ogłoszenie nowej liczby wyników. Zaokrąglenie i niski tekst wymagają pomiaru celu. Cel proponowany: WCAG 2.2 AA; zasady i wyjątki opisuje sekcja <a href="#accessibility">Dostępność</a>.</p>
+<h3>Źródła i otwarte kwestie</h3>
+<p><strong>Podstawa:</strong> S05, S06, S08, S16; A02 <code>.active-filters</code>, <code>.filter-chip</code>; A05 <code>activeFilters</code> i <code>data-remove</code>.</p>
+<p><strong>Materiały do otwarcia:</strong> <a href="evidence/S05.jpg">S05</a>, <a href="evidence/S06.jpg">S06</a>, <a href="evidence/S08.jpg">S08</a>, <a href="evidence/S16.jpg">S16</a>.</p>
+<p><strong>[?] Luki:</strong> Brak długiego chipa z przewijaniem i udokumentowanej polityki focusu po usunięciu. Nie projektowano stanów błędu/loading.</p>
+<p><a id="c07"></a></p>
+<h2 class="family-title"><span>C07</span>Etykiety faktów, umiejętności i liczniki</h2>
+<h3>Przeznaczenie i wybór</h3>
+<p>[R] Używaj dla informacji, nie działania: płaca, kompetencje, kategoria obiektu, liczba wyników. Wizualnie podobna pastylka nie oznacza tej samej semantyki co C05 lub C06.</p>
+<h3>Anatomia i części</h3>
+<p>[P] 1. Wartość. 2. Tło/obrys zależny od roli. 3. Podpis jednostki/umowy [wynagrodzenie, wymagany kontekst]. 4. Opcjonalna etykieta nagłówkowa w panelu. Ikony faktów należą do wiersza metadanych, nie każdej pastylki.</p>
+<h3>Warianty, stany i macierz obserwacji</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Oś</th>
+  <th>Pokazany wariant / stan</th>
+  <th>Zastosowanie, dowód i granica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Rola</td>
+  <td>Wynagrodzenie</td>
+  <td>Jasny róż i mocniejszy tekst; S01/S03</td>
+</tr>
+<tr>
+  <td>Rola</td>
+  <td>Umiejętność / kategoria obiektu / licznik</td>
+  <td>Delikatny obrys, papier/biel; S01/S03</td>
+</tr>
+<tr>
+  <td>Brak danych</td>
+  <td>Nie podano wynagrodzenia</td>
+  <td>Zwykły tekst zamiast pustej pastylki; S14</td>
+</tr>
+<tr>
+  <td>Rozmiar</td>
+  <td>Karta / pełny panel</td>
+  <td>Inna skala, ta sama informacja; S01/S03</td>
+</tr>
+</tbody>
+</table></div>
+<p>[P] Powyższe wiersze stanowią macierz rzeczywistych współwystąpień lub jawnych opisów. Nie tworzą pełnego iloczynu kombinacji.</p>
+<h3>Właściwości i atrybuty</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Cecha</th>
+  <th>Typ roboczy [R]</th>
+  <th>Wartości / zakres [P]</th>
+  <th>Domyślność, efekt i zależność</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Kwota</td>
+  <td>liczby + waluta</td>
+  <td>min–max zł</td>
+  <td>Brak domyślnych kwot</td>
+</tr>
+<tr>
+  <td>Podstawa</td>
+  <td>tekst warunków</td>
+  <td>B2B netto + VAT / UoP brutto / Zlecenie brutto; miesięcznie</td>
+  <td>Zależne od danych A04</td>
+</tr>
+<tr>
+  <td>Tagi</td>
+  <td>lista tekstów</td>
+  <td>W fixture 2–3; bez udokumentowanego maksimum</td>
+  <td>Zawijane</td>
+</tr>
+<tr>
+  <td>Licznik</td>
+  <td>liczba</td>
+  <td>0, 1, 24 itd.</td>
+  <td>Zakres danych, nie wariant wielkości API</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Tokeny i style</h3>
+<p>[P] Płaca: <code>--fact</code> + <code>--ink</code>, r999. Tagi kart: biel, <code>--line</code>, r10. Kategorie na ofercie: papier, obrys ink, r999. Liczniki wyników r10, nie jednolicie r999 [A02/A03]. Wszystkie dane dotyczą trybu jasnego.</p>
+<h3>Wymiary, odległości i układ</h3>
+<p>[P, deklaracje CSS, nie pomiar bitmapy] Płaca karty padding 5px 15px 5px 8px; mobile 4px 13px 4px 6px. Tagi: 2×6 px, gap 6; mobile 1×5 i gap 5. Duża płaca panelu padding 8×13. Wartości nie są klikalne [A02/A03].</p>
+<h3>Typografia</h3>
+<p>[P] Płaca karty Arial 15/600, line 1.45, tracking −0.25; mobile 13/600, 1.35, −0.1. Panel 24/600 desktop i 25 mobile. Tagi 11 / 10. Opis warunków 10 px w karcie, 12 w panelu [A02/A03].</p>
+<h3>Zachowanie, treści i lokalizacja</h3>
+<p>[P, A04] Format pl-PL, półpauza między kwotami, „zł”; 8000 w danych przykładowych występuje bez separatora. Warunki i okres pozostają przy liczbie. Brak płacy nie oznacza 0. Loading i wybór: nie dotyczy statycznej etykiety.</p>
+<h3>Zalecane i niewskazane praktyki</h3>
+<p>Zalecane: kwota wraz z „B2B · netto + VAT / mies.”. Niewskazane: sama kwota, czarny wybrany wygląd filtra dla tagu lub biała etykieta na różu działania [R; A11y-1].</p>
+<h3>Dostępność</h3>
+<p>[T] A11y-1/3: relacje kwota–waluta–umowa–okres czytane łącznie, kolejność logiczna. Nie polegać na kolorze do odróżnienia brutto/netto. Brak klawiatury: nie dotyczy nieinteraktywnej etykiety. Cel proponowany: WCAG 2.2 AA; zasady i wyjątki opisuje sekcja <a href="#accessibility">Dostępność</a>.</p>
+<h3>Źródła i otwarte kwestie</h3>
+<p><strong>Podstawa:</strong> S01–S04, S14; A02 <code>.salary-tag</code>, <code>.salary-description</code>, <code>.job-tags</code>; A03 <code>.offer-pay</code>; A04.</p>
+<p><strong>Materiały do otwarcia:</strong> <a href="evidence/S01.jpg">S01</a>, <a href="evidence/S04.jpg">S04</a>, <a href="evidence/S14.jpg">S14</a>.</p>
+<p><strong>[?] Luki:</strong> Nie pokazano dwóch umów/różnych walut w jednej ofercie, siedmiu tagów ani długiej wielomiejskiej lokalizacji. To scenariusze do uzupełnienia, nie istniejące warianty.</p>
+<p><a id="c08"></a></p>
+<h2 class="family-title"><span>C08</span>Identyfikacja firmy i profil skrócony</h2>
+<h3>Przeznaczenie i wybór</h3>
+<p>[R] Łączy znak z nazwą organizacji. Mały wariant pomaga porównywać role; rozwinięty profil daje kontekst po warunkach oferty. Ilustracja platformy nie zastępuje tożsamości pracodawcy.</p>
+<h3>Anatomia i części</h3>
+<p>[P] 1. Znak tekstowy lub inicjały [wymagany fallback]. 2. Nazwa [wymagana w użyciu]. 3. Metadane/kategoria [zależne od kontekstu]. 4. Opis, informacja demo i link do ofert [tylko rozwinięty profil]. 5. Ilustracja platformy [w profilu, zależna od szerokości i załadowania].</p>
+<h3>Warianty, stany i macierz obserwacji</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Oś</th>
+  <th>Pokazany wariant / stan</th>
+  <th>Zastosowanie, dowód i granica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Kontekst</td>
+  <td>Karta / header oferty / profil</td>
+  <td>Mały znak / wiersz / panel opisowy; S01/S03/S19</td>
+</tr>
+<tr>
+  <td>Znak</td>
+  <td>FS, LL, ko, n., PP itd.</td>
+  <td>Róż, żółty, papier albo ciemny; S01</td>
+</tr>
+<tr>
+  <td>Fallback</td>
+  <td>Brak podanego logo tekstowego</td>
+  <td>Inicjały z pierwszych dwóch słów; PP w S13</td>
+</tr>
+<tr>
+  <td>Treść</td>
+  <td>Długa nazwa</td>
+  <td>Zawijanie w headerze; skrót z wielokropkiem tylko w nawigacji, S13</td>
+</tr>
+</tbody>
+</table></div>
+<p>[P] Powyższe wiersze stanowią macierz rzeczywistych współwystąpień lub jawnych opisów. Nie tworzą pełnego iloczynu kombinacji.</p>
+<h3>Właściwości i atrybuty</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Cecha</th>
+  <th>Typ roboczy [R]</th>
+  <th>Wartości / zakres [P]</th>
+  <th>Domyślność, efekt i zależność</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Znak</td>
+  <td>tekst</td>
+  <td>Podany skrót albo wyliczone inicjały</td>
+  <td>Wyliczany, nie stała ikona</td>
+</tr>
+<tr>
+  <td>Nazwa</td>
+  <td>tekst</td>
+  <td>Forma Studio / długi przykład PP</td>
+  <td>Bez limitu projektowego</td>
+</tr>
+<tr>
+  <td>Ton</td>
+  <td>wybór</td>
+  <td>pink / yellow / white / ink</td>
+  <td>Wartości danych przykładowych A04; nie znaczenie statusu firmy</td>
+</tr>
+<tr>
+  <td>Rozwinięcie</td>
+  <td>zestaw opcjonalny</td>
+  <td>opis, link, ilustracja</td>
+  <td>Zależy od kontekstu; brak publicznego API</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Tokeny i style</h3>
+<p>[P] Obrys ink 1 px. Kolor znaku: <code>--fact</code>, <code>--yellow</code>, <code>--paper</code>, <code>--ink</code> z bielą. Profil: biel, r24. Znak ma lokalne promienie: r18 / 16 / 14 zależnie od miejsca [A02/A03]. Wszystkie dane dotyczą trybu jasnego.</p>
+<h3>Wymiary, odległości i układ</h3>
+<p>[P, deklaracje CSS, nie pomiar bitmapy] Karta: znak 43×43, mobile 35×35. Header oferty 60×60 bazowo i 47×47 przy ≤850. Profil 55×55, mobile 47×47; padding profilu 30×36 bazowo / 25×23 mobile. Ilustracja 180×145 bazowo, 120×120 ≤1100, ukryta 701–850, 90×100 ≤700 [A02/A03].</p>
+<h3>Typografia</h3>
+<p>[P] Znak Arial 17/700 w karcie / 14 mobile. Nazwa w headerze Arial 16/600. Nazwa profilu H2 Geist Serif 34/400 i 31 mobile. Opis Arial 14/1.8 lub 13 mobile [A02/A03].</p>
+<h3>Zachowanie, treści i lokalizacja</h3>
+<p>[P, A04/A06; S19] Nazwa w headerze prowadzi do sekcji firmy. „Oferty tej firmy” otwiera wyszukiwanie nazwy. Znak w przykładach jest tekstem, nie potwierdzonym komponentem obrazu logo. Firma i jej opis są fikcyjne. RTL [?].</p>
+<h3>Zalecane i niewskazane praktyki</h3>
+<p>Zalecane: pełna nazwa obok PP i wyjaśnienie profilu demo. Niewskazane: duża pusta okładka przy braku logo lub zastąpienie inicjałów postacią platformy [R].</p>
+<h3>Dostępność</h3>
+<p>[T] A11y-3: nazwa firmy musi wystarczyć bez odczytywania liter logo. W źródle znak jest dekoracyjny, a ilustracja profilu ma pusty alt. Właściwy opis dla prawdziwego logo wymaga kontekstu, nie automatycznego powtórzenia nazwy. Cel proponowany: WCAG 2.2 AA; zasady i wyjątki opisuje sekcja <a href="#accessibility">Dostępność</a>.</p>
+<h3>Źródła i otwarte kwestie</h3>
+<p><strong>Podstawa:</strong> S01, S03, S13, S19; A02 <code>.company-logo</code>; A03 <code>.offer-identity</code>, <code>.offer-employer</code>; A04/A06.</p>
+<p><strong>Materiały do otwarcia:</strong> <a href="evidence/S01.jpg">S01</a>, <a href="evidence/S03.jpg">S03</a>, <a href="evidence/S13.jpg">S13</a>, <a href="evidence/S19.jpg">S19</a>.</p>
+<p><strong>[?] Luki:</strong> Prawdziwe logotypy SVG/raster i ich stany błędu nie są pokazane. S03/S04 mogą mieć pustą strefę obrazu przed lazy-load; widoczny obraz potwierdza S19.</p>
+<p><a id="c09"></a></p>
+<h2 class="family-title"><span>C09</span>Karta oferty i powtarzany zbiór</h2><figure class="source-fragment" style="max-width:925px"><a href="evidence/S01.jpg"><div style="aspect-ratio:925/185;position:relative;overflow:hidden"><img src="evidence/S01.jpg" alt="Fragment źródła S01 dla Karta oferty i powtarzany zbiór" loading="lazy" style="position:absolute;max-width:none;width:138.37838%;left:-34.16216%;top:-330.81081%"></div></a><figcaption>S01 · fragment oryginalnego zrzutu w skali ilustracyjnej. Otwórz pełne źródło.</figcaption></figure>
+<h3>Przeznaczenie i wybór</h3>
+<p>[R] Wybieraj do porównywania tekstowych ofert. Używa tej samej anatomii w wynikach, zapisanych i podobnych rolach. Nie zamieniaj jej w galerię okładek bez uzasadnienia treścią.</p>
+<h3>Anatomia i części</h3>
+<p>[P] 1. C08 znak. 2. Firma i kategoria. 3. Tytuł-link [wymagany]. 4. Miasto, tryb, poziom. 5. C07 umiejętności. 6. Data i C01 zapis. 7. Płaca z warunkami albo jawny brak. 8. Link „Zobacz ofertę”.</p>
+<h3>Warianty, stany i macierz obserwacji</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Oś</th>
+  <th>Pokazany wariant / stan</th>
+  <th>Zastosowanie, dowód i granica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Kontekst</td>
+  <td>Listing / podobne oferty / zapisane</td>
+  <td>Ta sama karta; S01/S03/S07</td>
+</tr>
+<tr>
+  <td>Szerokość</td>
+  <td>Trzy kolumny / część główna + dolny pas</td>
+  <td>Separacja wynagrodzenia zmienia oś; S01/S02</td>
+</tr>
+<tr>
+  <td>Treść</td>
+  <td>Krótki / długi tytuł; płaca / brak; znak / inicjały</td>
+  <td>S01/S02/S14; brak osobnych limitów znaków</td>
+</tr>
+<tr>
+  <td>Stan</td>
+  <td>Niezapisana / zapisana; opisany hover</td>
+  <td>S07/S20; brak loadingu/skeletona</td>
+</tr>
+</tbody>
+</table></div>
+<p>[P] Powyższe wiersze stanowią macierz rzeczywistych współwystąpień lub jawnych opisów. Nie tworzą pełnego iloczynu kombinacji.</p>
+<h3>Właściwości i atrybuty</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Cecha</th>
+  <th>Typ roboczy [R]</th>
+  <th>Wartości / zakres [P]</th>
+  <th>Domyślność, efekt i zależność</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Obiekt oferty</td>
+  <td>zestaw danych</td>
+  <td>tytuł, firma, warunki, tagi, data, ID</td>
+  <td>Bez domyślnego obiektu</td>
+</tr>
+<tr>
+  <td>Płaca</td>
+  <td>para liczb albo brak</td>
+  <td>Warunki zależą od umowy</td>
+  <td>Brak nie może zmieniać tytułu ani fałszować kwoty</td>
+</tr>
+<tr>
+  <td>Zapis</td>
+  <td>logiczny</td>
+  <td>false / true</td>
+  <td>C01, stan wizyty</td>
+</tr>
+<tr>
+  <td>Link</td>
+  <td>adres</td>
+  <td>Pełna oferta z odpowiednim ID</td>
+  <td>Tytuł i CTA mają ten sam cel</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Tokeny i style</h3>
+<p>[P] Biel, obrys ink 1 px, r24; biały panel płacy z własnym podziałem; hover głównej powierzchni <code>--surface-hover</code>. Zależności C01/C07/C08 [A02/A04]. Wszystkie dane dotyczą trybu jasnego.</p>
+<h3>Wymiary, odległości i układ</h3>
+<p>[P, deklaracje CSS, nie pomiar bitmapy] Listing bazowy: 66px / minmax(0,1fr) / 236px. Podobne oferty: 75px / elastyczna / 270px. Karta mobile: 50px / elastyczna, pas płacy przez oba pola. Główny padding 22px 20px 23px 16px, mobile 18px 15px 18px 13px. Gap zbioru 14 / 13 px. Wysokość rośnie z tytułem, nie jest stała [A02/A03].</p>
+<h3>Typografia</h3>
+<p>[P] Tytuł według skali fundamentów: Geist Serif 28/400 desktop i 26 mobile. Firma 12/11 Arial; fakty 13/12; tagi 11/10; data 10 px ukryta mobile. Link CTA 12/11, 600 [A02].</p>
+<h3>Zachowanie, treści i lokalizacja</h3>
+<p>[P, A04–A06] Tytuł i CTA otwierają pełną stronę, zapis jest oddzielnym przyciskiem. Cała powierzchnia nie ma jednego nadrzędnego linku. Tytuły zawijają się w całości. W podobnych rolach są trzy przykłady, a wynik demo ma 12 na stronę — to nie pojemność rodziny.</p>
+<h3>Zalecane i niewskazane praktyki</h3>
+<p>Zalecane: długi tytuł zwiększa kartę, fakty zachowują miejsca. Niewskazane: mniejszy font tylko w jednej długiej ofercie, obcięcie nazwy roli albo zagnieżdżenie przycisku zapisu w linku całej karty [R].</p>
+<h3>Dostępność</h3>
+<p>[T] A11y-1/2/3/4: h3 w listach, nazwa linku zgodna z rolą, oddzielny dostępny zapis, kolejność na mobile. Odczyt statusu i długich metadanych wymaga czytnika. Dane w 390 px nie dowodzą reflow 320 px. Cel proponowany: WCAG 2.2 AA; zasady i wyjątki opisuje sekcja <a href="#accessibility">Dostępność</a>.</p>
+<h3>Źródła i otwarte kwestie</h3>
+<p><strong>Podstawa:</strong> S01–S05, S07, S14, S18–S20; A02 <code>.job-card</code>, <code>.job-main</code>, <code>.job-side</code>; A03 podobne; A04 <code>jobCard</code>.</p>
+<p><strong>Materiały do otwarcia:</strong> <a href="evidence/S01.jpg">S01</a>, <a href="evidence/S05.jpg">S05</a>, <a href="evidence/S07.jpg">S07</a>, <a href="evidence/S14.jpg">S14</a>, <a href="evidence/S18.jpg">S18</a>, <a href="evidence/S20.jpg">S20</a>.</p>
+<p><strong>[?] Luki:</strong> Skala 26→28→26 na pośrednich progach pozostaje otwartą decyzją. Nie pokazano błędu pobrania karty, wygasłej oferty, wielu miast i setek rekordów.</p>
+<p><a id="c10"></a></p>
+<h2 class="family-title"><span>C10</span>Paginacja</h2>
+<h3>Przeznaczenie i wybór</h3>
+<p>[R] Pozwala przechodzić między częściami zbioru. Nie używaj jej jako procesu etapowego; rekrutacja w C22 jest informacyjną listą kroków.</p>
+<h3>Anatomia i części</h3>
+<p>[P] 1. Podsumowanie zakresu. 2. Poprzednia. 3. Numery stron. 4. Następna. Bieżący numer i niedostępny kierunek są odrębnymi stanami.</p>
+<h3>Warianty, stany i macierz obserwacji</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Oś</th>
+  <th>Pokazany wariant / stan</th>
+  <th>Zastosowanie, dowód i granica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Strona</td>
+  <td>1 z 2</td>
+  <td>Poprzednia disabled, 1 ciemna; S01</td>
+</tr>
+<tr>
+  <td>Strona</td>
+  <td>2 z 2</td>
+  <td>Następna disabled, 2 ciemna; S18</td>
+</tr>
+<tr>
+  <td>Wynik</td>
+  <td>Jedna strona / zero</td>
+  <td>Obie strzałki disabled / paginacja ukryta; S05/S06</td>
+</tr>
+<tr>
+  <td>Szerokość</td>
+  <td>Wspólny wiersz / podsumowanie nad przyciskami</td>
+  <td>S01/S02</td>
+</tr>
+</tbody>
+</table></div>
+<p>[P] Powyższe wiersze stanowią macierz rzeczywistych współwystąpień lub jawnych opisów. Nie tworzą pełnego iloczynu kombinacji.</p>
+<h3>Właściwości i atrybuty</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Cecha</th>
+  <th>Typ roboczy [R]</th>
+  <th>Wartości / zakres [P]</th>
+  <th>Domyślność, efekt i zależność</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Strona</td>
+  <td>liczba</td>
+  <td>1 / 2 w danych</td>
+  <td>Start 1, chyba że URL A05</td>
+</tr>
+<tr>
+  <td>Liczba wyników</td>
+  <td>liczba</td>
+  <td>24, 5, 0 itd.</td>
+  <td>Wyliczana</td>
+</tr>
+<tr>
+  <td>Rozmiar porcji</td>
+  <td>liczba</td>
+  <td>12 w demonstracji</td>
+  <td>Jawnie A05; nie zatwierdzona zmienna design systemu</td>
+</tr>
+<tr>
+  <td>Disabled</td>
+  <td>logiczny</td>
+  <td>Na granicy zbioru</td>
+  <td>Nie to samo co wybranie</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Tokeny i style</h3>
+<p>[P] Biel/papier, obrys ink 1 px, r18; bieżąca strona ink + biel; disabled opacity 0.45 ze wspólnej reguły [A02]. Wszystkie dane dotyczą trybu jasnego.</p>
+<h3>Wymiary, odległości i układ</h3>
+<p>[P, deklaracje CSS, nie pomiar bitmapy] Przycisk min-width 36 i height 36 px, gap 8, margines nad grupą 26. Mobile 33×33, gap 6 i margines 23; podsumowanie zajmuje cały pierwszy wiersz [A02].</p>
+<h3>Typografia</h3>
+<p>[P] Arial 12 px numery i 11 podsumowanie desktop; mobile 11 / 10. Ikony 16 px [A02].</p>
+<h3>Zachowanie, treści i lokalizacja</h3>
+<p>[P, A05] Przejście zmienia porcję i ustawia wynik jako punkt powrotu/focusu. Filtry i sort zerują stronę. Zero wyników usuwa całą nawigację. Brak skracania długiej listy numerów w specyfikacji.</p>
+<h3>Zalecane i niewskazane praktyki</h3>
+<p>Zalecane: „13–24 z 24” i dostępna nazwa kierunku. Niewskazane: pokazanie 0–0 z 0 z aktywną następną stroną albo użycie ciemnego tła dla disabled [R].</p>
+<h3>Dostępność</h3>
+<p>[T] A11y-2/3: nazwany region nawigacji, numer bieżący programowo oznaczony, disabled pomijany przy aktywacji. Sprawdzić focus po wymianie przycisków i realne cele zaokrąglonych kontrolek. Cel proponowany: WCAG 2.2 AA; zasady i wyjątki opisuje sekcja <a href="#accessibility">Dostępność</a>.</p>
+<h3>Źródła i otwarte kwestie</h3>
+<p><strong>Podstawa:</strong> S01, S02, S05, S06, S18; A02 <code>.pagination</code>, <code>.page-button</code>; A05 render i data-page.</p>
+<p><strong>Materiały do otwarcia:</strong> <a href="evidence/S01.jpg">S01</a>, <a href="evidence/S02.jpg">S02</a>, <a href="evidence/S05.jpg">S05</a>, <a href="evidence/S06.jpg">S06</a>, <a href="evidence/S18.jpg">S18</a>.</p>
+<p><strong>[?] Luki:</strong> Wiele dziesiątek stron, wielokropek, skok do strony oraz infinite scroll nie są pokazane.</p>
+<p><a id="c11"></a></p>
+<h2 class="family-title"><span>C11</span>Nagłówek globalny</h2>
+<h3>Przeznaczenie i wybór</h3>
+<p>[R] Utrzymuje tożsamość oraz przejście do ofert i zapisanych. Nie powtarzaj w nim nagłówka marketingowego ani tytułu bieżącej roli.</p>
+<h3>Anatomia i części</h3>
+<p>[P] 1. Wordmark-link z różowym sygnetem. 2. Środkowa nawigacja [desktop]. 3. Zapisane z ikoną i liczbą. Na mobile menu środkowe znika, marka i zapisane pozostają.</p>
+<h3>Warianty, stany i macierz obserwacji</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Oś</th>
+  <th>Pokazany wariant / stan</th>
+  <th>Zastosowanie, dowód i granica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Kontekst</td>
+  <td>Listing</td>
+  <td>Zapisane jest przełącznikiem filtra; S01/S08</td>
+</tr>
+<tr>
+  <td>Kontekst</td>
+  <td>Oferta</td>
+  <td>Zapisane przenosi do listingu zapisanych; S03</td>
+</tr>
+<tr>
+  <td>Szerokość</td>
+  <td>80 px header desktop / 72 mobile</td>
+  <td>S01/S02</td>
+</tr>
+<tr>
+  <td>Stan</td>
+  <td>Aktywne „Oferty pracy”; zapisane 0/1 i tryb wybrany</td>
+  <td>S01/S07/S08</td>
+</tr>
+</tbody>
+</table></div>
+<p>[P] Powyższe wiersze stanowią macierz rzeczywistych współwystąpień lub jawnych opisów. Nie tworzą pełnego iloczynu kombinacji.</p>
+<h3>Właściwości i atrybuty</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Cecha</th>
+  <th>Typ roboczy [R]</th>
+  <th>Wartości / zakres [P]</th>
+  <th>Domyślność, efekt i zależność</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Marka</td>
+  <td>tekst + sygnet</td>
+  <td>DoRoboty.ai</td>
+  <td>Bez alternatywnego brandu w źródle</td>
+</tr>
+<tr>
+  <td>Nawigacja</td>
+  <td>lista</td>
+  <td>Oferty pracy, O DoRoboty.ai</td>
+  <td>Środek ukryty ≤600</td>
+</tr>
+<tr>
+  <td>Zapisane</td>
+  <td>liczba i działanie</td>
+  <td>0 / 1 itd.</td>
+  <td>Start 0 bez przekazanego wyboru A05/A06</td>
+</tr>
+<tr>
+  <td>Aktywny link</td>
+  <td>wskazanie</td>
+  <td>Oferty pracy</td>
+  <td>Pozostaje wskazany także na ofercie</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Tokeny i style</h3>
+<p>[P] Biała powierzchnia, dolny kontur ink 1 px. Aktywny link ma różowe podkreślenie 5 px, r3. Przycisk zapisanych r18, jego aktywny stan ink + biel [A02]. Wszystkie dane dotyczą trybu jasnego.</p>
+<h3>Wymiary, odległości i układ</h3>
+<p>[P, deklaracje CSS, nie pomiar bitmapy] Wysokość 80/72 px, główne odstępy 32 px desktop / 15 mobile. Zapisane padding 10×13 i gap 10; mobile bez ramki w niewybranym stanie. Szerokość całej zawartości wg kontenera [A02].</p>
+<h3>Typografia</h3>
+<p>[P] Wordmark Arial 28/760, tracking −1.7, mobile 25/−1.5; to styl tekstowego znaku, nie nagłówek H. Menu 14 px, zapisane 14/12, licznik 11/10 [A02].</p>
+<h3>Zachowanie, treści i lokalizacja</h3>
+<p>[P, A05/A06] Marka wraca do listingu. Otwieranie „O DoRoboty.ai” jest dialogiem. Mobile nie ma pokazanej szuflady menu ani hamburgera. Zapis nie oznacza konta ani trwałej synchronizacji.</p>
+<h3>Zalecane i niewskazane praktyki</h3>
+<p>Zalecane: liczba opisuje zapisane, podkreślenie wskazuje obszar. Niewskazane: dodanie awatara/logowania jako istniejącego wariantu lub wymienne traktowanie nawigacji i przełącznika zapisanych [R].</p>
+<h3>Dostępność</h3>
+<p>[T] A11y-2/3: landmark header/nav, link marki z jednoznaczną nazwą, widoczna etykieta zapisu. Porównać semantykę obu kontekstów. Sprawdzić skip-link i kolejność Tab. Cel proponowany: WCAG 2.2 AA; zasady i wyjątki opisuje sekcja <a href="#accessibility">Dostępność</a>.</p>
+<h3>Źródła i otwarte kwestie</h3>
+<p><strong>Podstawa:</strong> S01–S04, S07, S08; A02 <code>.header-inner</code>, <code>.wordmark</code>, <code>.saved-nav</code>; A05/A06.</p>
+<p><strong>Materiały do otwarcia:</strong> <a href="evidence/S01.jpg">S01</a>, <a href="evidence/S04.jpg">S04</a>, <a href="evidence/S07.jpg">S07</a>, <a href="evidence/S08.jpg">S08</a>.</p>
+<p><strong>[?] Luki:</strong> Wariant mobilnego pełnego menu, użytkownik zalogowany i aktywne inne sekcje nie są pokazane.</p>
+<p><a id="c12"></a></p>
+<h2 class="family-title"><span>C12</span>Stopka</h2>
+<h3>Przeznaczenie i wybór</h3>
+<p>[R] Kończy stronę i utrzymuje informację o demonstracji. Nie zastępuje panelu aplikowania ani menu głównego.</p>
+<h3>Anatomia i części</h3>
+<p>[P] 1. Wordmark-link. 2. Tekst o fikcyjnych ofertach i firmach. 3. „O tej stronie” z symbolem kierunku. Bez kolumn marketingowych w dostarczonym zakresie.</p>
+<h3>Warianty, stany i macierz obserwacji</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Oś</th>
+  <th>Pokazany wariant / stan</th>
+  <th>Zastosowanie, dowód i granica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Szerokość</td>
+  <td>Wiersz / zawijanie</td>
+  <td>Informacja przeniesiona pod markę i link mobile; S01/S02</td>
+</tr>
+<tr>
+  <td>Kontekst</td>
+  <td>Listing / oferta</td>
+  <td>Te same części; S01/S03</td>
+</tr>
+<tr>
+  <td>Stan</td>
+  <td>Spoczynkowy, linki działań</td>
+  <td>Brak osobnego wyboru lub disabled</td>
+</tr>
+<tr>
+  <td>Treść</td>
+  <td>Informacja demo</td>
+  <td>Nie jest stopką prawną produkcyjnego serwisu</td>
+</tr>
+</tbody>
+</table></div>
+<p>[P] Powyższe wiersze stanowią macierz rzeczywistych współwystąpień lub jawnych opisów. Nie tworzą pełnego iloczynu kombinacji.</p>
+<h3>Właściwości i atrybuty</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Cecha</th>
+  <th>Typ roboczy [R]</th>
+  <th>Wartości / zakres [P]</th>
+  <th>Domyślność, efekt i zależność</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Marka</td>
+  <td>tekst</td>
+  <td>DoRoboty.ai</td>
+  <td>Pokazana stała</td>
+</tr>
+<tr>
+  <td>Opis</td>
+  <td>tekst</td>
+  <td>Wszystkie oferty i firmy przykładowe</td>
+  <td>Wymagany kontekst demo w tej wersji</td>
+</tr>
+<tr>
+  <td>Link informacji</td>
+  <td>działanie</td>
+  <td>O tej stronie</td>
+  <td>Otwiera istniejący dialog</td>
+</tr>
+<tr>
+  <td>Pozycja</td>
+  <td>układ</td>
+  <td>Po treści strony</td>
+  <td>Nie jest fixed</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Tokeny i style</h3>
+<p>[P] Biel, górny kontur ink 1 px; tekst pomocniczy muted. Brak własnego promienia na pełnej szerokości strony [A02]. Wszystkie dane dotyczą trybu jasnego.</p>
+<h3>Wymiary, odległości i układ</h3>
+<p>[P, deklaracje CSS, nie pomiar bitmapy] Padding pionowy 28 px desktop / 24 mobile; gap 30 / 18. Opis ma auto lewy margines na szerokim widoku, mobile order 3 i szerokość całego wiersza [A02].</p>
+<h3>Typografia</h3>
+<p>[P] Wordmark stopki 23 px desktop / 24 mobile. Opis 10 / 9 Arial, link 11 / 10. [R] Najdrobniejszą informację warto powiększyć; WCAG nie podaje jednego minimalnego rozmiaru fontu.</p>
+<h3>Zachowanie, treści i lokalizacja</h3>
+<p>[P, A05/A06] Marka nawiguje, „O tej stronie” otwiera opis demonstracji. Błędy i loading: nie dotyczy statycznej kompozycji. Lokalizacja poza PL i linki prawne [?].</p>
+<h3>Zalecane i niewskazane praktyki</h3>
+<p>Zalecane: czytelnie zachować status demo. Niewskazane: publikowanie tej treści jako kompletnej polityki prywatności lub dodawanie nieistniejących linków do regulaminów [R].</p>
+<h3>Dostępność</h3>
+<p>[T] A11y-1/2/3/4: landmark contentinfo, link/działanie z nazwą, czytelność informacji po powiększeniu. Sam poprawny kontrast nie rozstrzyga wygody czytania 9 px. Cel proponowany: WCAG 2.2 AA; zasady i wyjątki opisuje sekcja <a href="#accessibility">Dostępność</a>.</p>
+<h3>Źródła i otwarte kwestie</h3>
+<p><strong>Podstawa:</strong> S01–S04 i S18, dolne części; A02 <code>.site-footer</code>, <code>.footer-inner</code>; A05/A06.</p>
+<p><strong>Materiały do otwarcia:</strong> <a href="evidence/S01.jpg">S01</a>, <a href="evidence/S04.jpg">S04</a>, <a href="evidence/S18.jpg">S18</a>.</p>
+<p><strong>[?] Luki:</strong> Nie ma specyfikacji stopki produkcyjnej, wersji prawnej, wielojęzycznej ani z sekcjami organizacji.</p>
+<p><a id="c13"></a></p>
+<h2 class="family-title"><span>C13</span>Nawigacja kontekstowa</h2>
+<h3>Przeznaczenie i wybór</h3>
+<p>[R] Wybierz powrót do wyników przy zmianie strony, a kotwice przy poruszaniu się wewnątrz opisu. Podobny wygląd linków nie oznacza wspólnego „tab panelu”.</p>
+<h3>Anatomia i części</h3>
+<p>[P] Powrót: strzałka + etykieta + opcjonalny tekst firmy po prawej. Sekcje: rząd czterech linków, dolny separator i podkreślenie pierwszej pozycji. To dwa udokumentowane podwzorce tej rodziny.</p>
+<h3>Warianty, stany i macierz obserwacji</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Oś</th>
+  <th>Pokazany wariant / stan</th>
+  <th>Zastosowanie, dowód i granica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Cel</td>
+  <td>Wróć do ofert</td>
+  <td>Zmiana strony i kontekst wyników; S03</td>
+</tr>
+<tr>
+  <td>Cel</td>
+  <td>O roli / Wymagania / Co oferujemy / Rekrutacja</td>
+  <td>Kotwice; S03/S04</td>
+</tr>
+<tr>
+  <td>Treść</td>
+  <td>Długa firma w pasku powrotu</td>
+  <td>Prawa nazwa może mieć wielokropek; S13</td>
+</tr>
+<tr>
+  <td>Stan</td>
+  <td>Podkreślona pierwsza pozycja</td>
+  <td>W kodzie statyczne <code>:first-child</code>, nie śledzenie scrolla</td>
+</tr>
+</tbody>
+</table></div>
+<p>[P] Powyższe wiersze stanowią macierz rzeczywistych współwystąpień lub jawnych opisów. Nie tworzą pełnego iloczynu kombinacji.</p>
+<h3>Właściwości i atrybuty</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Cecha</th>
+  <th>Typ roboczy [R]</th>
+  <th>Wartości / zakres [P]</th>
+  <th>Domyślność, efekt i zależność</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Cel linku</td>
+  <td>adres / kotwica</td>
+  <td>listing / #role itd.</td>
+  <td>Rzeczywisty cel A06</td>
+</tr>
+<tr>
+  <td>Etykiety sekcji</td>
+  <td>lista tekstów</td>
+  <td>Cztery pokazane</td>
+  <td>Brak standardu dla dowolnej liczby</td>
+</tr>
+<tr>
+  <td>Nazwa firmy</td>
+  <td>tekst opcjonalny</td>
+  <td>Forma Studio / długi przykład</td>
+  <td>Nie jest breadcrumb z wielu poziomów</td>
+</tr>
+<tr>
+  <td>Bieżąca sekcja</td>
+  <td>stan</td>
+  <td>Brak dynamicznego modelu</td>
+  <td>[?] Decyzja o śledzeniu pozycji</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Tokeny i style</h3>
+<p>[P] Ink/muted; podkreślenie action 4 px, separator ink 1 px. Nie ma osobnego tokenu active-section [A03]. Wszystkie dane dotyczą trybu jasnego.</p>
+<h3>Wymiary, odległości i układ</h3>
+<p>[P, deklaracje CSS, nie pomiar bitmapy] Powrót: font 13/12, min-height 36, ikona 17, gap 9. Sekcje: gap 30 px, padding poziomy 36 i pionowy linków 20; mobile gap 24, padding poziomy 23, linki 19. Rząd ma overflow-x [A03].</p>
+<h3>Typografia</h3>
+<p>[P] Arial 12 px linki sekcji / 11 mobile. Powrót 13/12. Długi prawy tekst firmy jest elipsowany, ale główna nazwa i rola pozostają pełne [A03].</p>
+<h3>Zachowanie, treści i lokalizacja</h3>
+<p>[P, A06] Powrót przenosi dostępne parametry listingu i przekazany wybór zapisu. Kotwice przewijają do sekcji; underline „O roli” pozostaje na pierwszym linku. Nie jest to dowód wybranej sekcji. RTL [?].</p>
+<h3>Zalecane i niewskazane praktyki</h3>
+<p>Zalecane: nazywać rząd „Sekcje oferty”. Niewskazane: dokumentować zmianę podkreślenia przy scrollu jako gotową funkcję albo ukryć pełny tytuł roli pod wielokropkiem paska [R].</p>
+<h3>Dostępność</h3>
+<p>[T] A11y-2/3/4 i <a href="https://www.w3.org/WAI/ARIA/apg/patterns/link/">APG Link</a>. <a href="https://www.w3.org/WAI/ARIA/apg/patterns/breadcrumb/">APG Breadcrumb</a> jest odniesieniem dla prawdziwej hierarchicznej ścieżki; obecny pojedynczy powrót nie dowodzi takiej struktury. Cel proponowany: WCAG 2.2 AA; zasady i wyjątki opisuje sekcja <a href="#accessibility">Dostępność</a>.</p>
+<h3>Źródła i otwarte kwestie</h3>
+<p><strong>Podstawa:</strong> S03, S04, S13; A03 <code>.offer-breadcrumb</code>, <code>.offer-section-nav</code>; A06.</p>
+<p><strong>Materiały do otwarcia:</strong> <a href="evidence/S03.jpg">S03</a>, <a href="evidence/S04.jpg">S04</a>, <a href="evidence/S13.jpg">S13</a>.</p>
+<p><strong>[?] Luki:</strong> Bieżąca sekcja i jej semantyka do potwierdzenia. Nie pokazano wielopoziomowych breadcrumbs ani zwijanego spisu treści.</p>
+<p><a id="c14"></a></p>
+<h2 class="family-title"><span>C14</span>Pasek wyszukiwania</h2>
+<h3>Przeznaczenie i wybór</h3>
+<p>[R] Łączy frazę i lokalizację w jedno wyszukanie. Dla wielu warunków używaj panelu C15; nie umieszczaj wszystkich filtrów w jednym rosnącym polu.</p>
+<h3>Anatomia i części</h3>
+<p>[P] 1. C02 pole z lupą i opcjonalnym czyszczeniem. 2. C03 lokalizacja z pinem i chevronem. 3. C01 różowy submit. 4. Wspólny obrys i separator.</p>
+<h3>Warianty, stany i macierz obserwacji</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Oś</th>
+  <th>Pokazany wariant / stan</th>
+  <th>Zastosowanie, dowód i granica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Szerokość</td>
+  <td>Jeden wiersz / dwa rzędy</td>
+  <td>Search u góry, lokalizacja i submit pod nim na mobile; S01/S02</td>
+</tr>
+<tr>
+  <td>Treść</td>
+  <td>Pusta / zapytanie</td>
+  <td>Krzyżyk w wpisanym polu; S06</td>
+</tr>
+<tr>
+  <td>Stan</td>
+  <td>Focus lokalizacji / wartość</td>
+  <td>S15; brak całego paska w loadingu</td>
+</tr>
+<tr>
+  <td>Wynik</td>
+  <td>24 / zero</td>
+  <td>Ten sam formularz, różny wynik C17</td>
+</tr>
+</tbody>
+</table></div>
+<p>[P] Powyższe wiersze stanowią macierz rzeczywistych współwystąpień lub jawnych opisów. Nie tworzą pełnego iloczynu kombinacji.</p>
+<h3>Właściwości i atrybuty</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Cecha</th>
+  <th>Typ roboczy [R]</th>
+  <th>Wartości / zakres [P]</th>
+  <th>Domyślność, efekt i zależność</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Fraza</td>
+  <td>tekst</td>
+  <td>stanowisko, firma, umiejętność</td>
+  <td>Pusta na starcie A05</td>
+</tr>
+<tr>
+  <td>Lokalizacja</td>
+  <td>pojedynczy wybór</td>
+  <td>C03</td>
+  <td>Cała Polska na starcie</td>
+</tr>
+<tr>
+  <td>Submit</td>
+  <td>działanie</td>
+  <td>Szukaj ofert</td>
+  <td>Jedna wspólna akcja</td>
+</tr>
+<tr>
+  <td>Zawartość</td>
+  <td>kompozycja</td>
+  <td>Pole + select + CTA</td>
+  <td>Nie dowód konfigurowalnego slot API</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Tokeny i style</h3>
+<p>[P] Powierzchnia white, obrys ink 1 px, r24; CTA r18; separator line [A02]. Wszystkie dane dotyczą trybu jasnego.</p>
+<h3>Wymiary, odległości i układ</h3>
+<p>[P, deklaracje CSS, nie pomiar bitmapy] Grid bazowy: elastyczna fraza / 250 px / 180 px, padding zewnętrzny 7. Odstęp do kategorii: margin-bottom 28. Mobile: elastyczna / 125 px, pole frazy przez oba pola, padding 5, margin-bottom 18. Wnętrze i odstęp od następnego komponentu to różne reguły [A02].</p>
+<h3>Typografia</h3>
+<p>[P] Arial 14 desktop; mobile 12. Submit 600; placeholder muted. Widoczne etykiety pól są zastąpione opisowymi placeholderami, ale istnieją osobne ukryte labele [A05].</p>
+<h3>Zachowanie, treści i lokalizacja</h3>
+<p>[P, A05] Enter/submit stosuje frazę i miasto; kasowanie frazy działa od razu. Formularz nie wysyła żądania do realnej bazy. Wynik i aktywne chipy są poza obrysem paska. Błąd sieci nie został pokazany.</p>
+<h3>Zalecane i niewskazane praktyki</h3>
+<p>Zalecane: zachować jeden submit i czytelny pin lokalizacji. Niewskazane: obietnica filtrowania już przy każdym znaku, skoro aktualne zachowanie wymaga wyszukania [R].</p>
+<h3>Dostępność</h3>
+<p>[T] A11y-2/3/4: landmark search, powiązane labele, kolejność pola → lokalizacja → przycisk; sprawdzić, czy focus ring nie jest obcięty przez ramkę i jak odczytywane są wyniki. Dowód S15 jest jednym stanem, nie pełnym testem. Cel proponowany: WCAG 2.2 AA; zasady i wyjątki opisuje sekcja <a href="#accessibility">Dostępność</a>.</p>
+<h3>Źródła i otwarte kwestie</h3>
+<p><strong>Podstawa:</strong> S01, S02, S06, S15; A02 <code>.search-form</code>; A05 formularz i submit.</p>
+<p><strong>Materiały do otwarcia:</strong> <a href="evidence/S01.jpg">S01</a>, <a href="evidence/S02.jpg">S02</a>, <a href="evidence/S06.jpg">S06</a>, <a href="evidence/S15.jpg">S15</a>.</p>
+<p><strong>[?] Luki:</strong> Brak autouzupełniania, sugestii, historii i trybu loading. Nie zakładać, że to istniejące warianty.</p>
+<p><a id="c15"></a></p>
+<h2 class="family-title"><span>C15</span>Panel filtrów</h2>
+<h3>Przeznaczenie i wybór</h3>
+<p>[R] Stosuj do niezależnego doprecyzowania listingu. Na szerokim ekranie wspiera porównywanie; na wąskim otwierany osobno, zamiast zajmować całą górę wyników.</p>
+<h3>Anatomia i części</h3>
+<p>[P] 1. Nagłówek „Po Twojemu” i Wyczyść [desktop]. 2. Grupy C04: tryb, doświadczenie, umowa. 3. C02 dolna granica płacy. 4. C04 widełki. Mobile: C18 z tytułem, × i dolnym przyciskiem; ten sam zestaw filtrów.</p>
+<h3>Warianty, stany i macierz obserwacji</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Oś</th>
+  <th>Pokazany wariant / stan</th>
+  <th>Zastosowanie, dowód i granica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Kontekst</td>
+  <td>Kolumna</td>
+  <td>Widoczna po lewej; S01</td>
+</tr>
+<tr>
+  <td>Kontekst</td>
+  <td>Dialog</td>
+  <td>Otwarcie „Filtry”, licznik aktywnych i „Pokaż N ofert”; S09/S16</td>
+</tr>
+<tr>
+  <td>Stan</td>
+  <td>Start / wybór / kilka kryteriów</td>
+  <td>S01/S05/S16</td>
+</tr>
+<tr>
+  <td>Kombinacja</td>
+  <td>Zdalnie + min 18000</td>
+  <td>Mobilny przycisk pokazuje 5 ofert; S16</td>
+</tr>
+</tbody>
+</table></div>
+<p>[P] Powyższe wiersze stanowią macierz rzeczywistych współwystąpień lub jawnych opisów. Nie tworzą pełnego iloczynu kombinacji.</p>
+<h3>Właściwości i atrybuty</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Cecha</th>
+  <th>Typ roboczy [R]</th>
+  <th>Wartości / zakres [P]</th>
+  <th>Domyślność, efekt i zależność</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Grupy</td>
+  <td>zestaw</td>
+  <td>cztery obszary oraz widełki</td>
+  <td>Wartości w A05</td>
+</tr>
+<tr>
+  <td>Liczba aktywnych</td>
+  <td>liczba</td>
+  <td>chipy + wybrana kategoria</td>
+  <td>Wyliczana; nie liczba zaznaczonych kwadratów tylko w panelu</td>
+</tr>
+<tr>
+  <td>Reset</td>
+  <td>działanie</td>
+  <td>Czyści kryteria i tryb zapisanych</td>
+  <td>Zachowuje sortowanie, A05</td>
+</tr>
+<tr>
+  <td>Pokaż N</td>
+  <td>tekst + działanie</td>
+  <td>Bieżąca liczba wyników</td>
+  <td>Zamyka dialog, nie zatwierdza osobnego draftu</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Tokeny i style</h3>
+<p>[P] Biel, obrys ink 1 px, r18 na kolumnie; separator line pomiędzy grupami. W dialogu zewnętrzna ramka panelu znika [A02]. Wszystkie dane dotyczą trybu jasnego.</p>
+<h3>Wymiary, odległości i układ</h3>
+<p>[P, deklaracje CSS, nie pomiar bitmapy] Kolumna 245 px, przy ≤1100: 218; przy ≤850 zastąpiona wywołaniem dialogu. Nagłówek padding 20, grupa 22px 20px 20px. Mobile grupy padding 24, sticky header i footer dialogu; footer uwzględnia dolny safe area [A02].</p>
+<h3>Typografia</h3>
+<p>[P] Tytuł kolumny Geist Serif 24/400. Nazwy grup Arial 13/650 desktop i 15/650 mobile. Reszta wg C02/C04. Przycisk Filtry ma 12 px albo 11 na mobile [A02].</p>
+<h3>Zachowanie, treści i lokalizacja</h3>
+<p>[P, A05; S09/S16] Zmiany od razu aktualizują wynik w tle. × i Escape nie anulują zmian. Reset nie resetuje sortowania. Brak oczekiwania na backend i stanu sieciowego. „Pokaż” jest trafniejsze niż „Zastosuj” dla tego modelu.</p>
+<h3>Zalecane i niewskazane praktyki</h3>
+<p>Zalecane: przywróć widoczne kryteria jako chipy i pozwól usuwać je pojedynczo. Niewskazane: przedstawianie zamknięcia jako Anuluj przy zachowaniu zmian albo dodanie nowych grup bez obsługi pustego wyniku [R].</p>
+<h3>Dostępność</h3>
+<p>[T] A11y-2/3/4 plus C18: nazwy grup, kolejność, focus przy otwarciu/zamknięciu i przewijanie do płacy bez przykrywania pola stopką. Licznik wyników wymaga sprawdzenia czytnikiem. Cel proponowany: WCAG 2.2 AA; zasady i wyjątki opisuje sekcja <a href="#accessibility">Dostępność</a>.</p>
+<h3>Źródła i otwarte kwestie</h3>
+<p><strong>Podstawa:</strong> S01, S05, S09, S16; A02 <code>.filter-panel</code>, <code>.filter-group</code>, <code>.filter-dialog</code>; A05.</p>
+<p><strong>Materiały do otwarcia:</strong> <a href="evidence/S01.jpg">S01</a>, <a href="evidence/S05.jpg">S05</a>, <a href="evidence/S09.jpg">S09</a>, <a href="evidence/S16.jpg">S16</a>.</p>
+<p><strong>[?] Luki:</strong> Brak osobnego draftu i przycisku czyszczenia wewnątrz mobilnej wersji nagłówka. [?] Czy przyszły produkt ma zachować natychmiastowy model, czy zatwierdzany?</p>
+<p><a id="c16"></a></p>
+<h2 class="family-title"><span>C16</span>Wejście z ilustracją</h2>
+<h3>Przeznaczenie i wybór</h3>
+<p>[R] Używaj raz do orientacji na początku listingu. Na stronie oceny konkretnej roli wybierz nagłówek C20, a nie drugi marketingowy hero.</p>
+<h3>Anatomia i części</h3>
+<p>[P] 1. Jedno H1, dwa wiersze. 2. Różowe podkreślenie fragmentu. 3. Krótki opis. 4. Autorska scena dwóch postaci. Search C14 i kategorie C05 są sąsiadującymi komponentami, nie tekstem ilustracji.</p>
+<h3>Warianty, stany i macierz obserwacji</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Oś</th>
+  <th>Pokazany wariant / stan</th>
+  <th>Zastosowanie, dowód i granica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Szerokość</td>
+  <td>Układ tekst / duża scena</td>
+  <td>S01</td>
+</tr>
+<tr>
+  <td>Szerokość</td>
+  <td>Pełny tytuł + opis / mała scena</td>
+  <td>S02</td>
+</tr>
+<tr>
+  <td>Treść</td>
+  <td>Dobra robota. Z AI w środku.</td>
+  <td>Tylko ta treść została pokazana</td>
+</tr>
+<tr>
+  <td>Stan</td>
+  <td>Statyczny</td>
+  <td>Brak wersji ładowania, karuzeli lub wideo</td>
+</tr>
+</tbody>
+</table></div>
+<p>[P] Powyższe wiersze stanowią macierz rzeczywistych współwystąpień lub jawnych opisów. Nie tworzą pełnego iloczynu kombinacji.</p>
+<h3>Właściwości i atrybuty</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Cecha</th>
+  <th>Typ roboczy [R]</th>
+  <th>Wartości / zakres [P]</th>
+  <th>Domyślność, efekt i zależność</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Tytuł / wyróżnienie</td>
+  <td>tekst + fragment</td>
+  <td>Drugi wiersz podkreślony</td>
+  <td>Bez systemowego limitu znaków</td>
+</tr>
+<tr>
+  <td>Opis</td>
+  <td>tekst</td>
+  <td>Dwa krótkie zdania</td>
+  <td>Nie wbudowany w bitmapę</td>
+</tr>
+<tr>
+  <td>Ilustracja</td>
+  <td>obraz</td>
+  <td>Ludzie z laptopem i kartą</td>
+  <td>Jedna autorska scena, nie ogólna biblioteka</td>
+</tr>
+<tr>
+  <td>Alt</td>
+  <td>tekst</td>
+  <td>Opis dwóch pracujących postaci na listingu</td>
+  <td>A05, nie dowód odczytu</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Tokeny i style</h3>
+<p>[P] Papier, ink, podkreślenie action o lokalnym r8, obrót −1°. Ilustracja: czarny kontur, róż, żółty, przezroczystość. Nie dodaje własnej ramki [A02, S01]. Wszystkie dane dotyczą trybu jasnego.</p>
+<h3>Wymiary, odległości i układ</h3>
+<p>[P, deklaracje CSS, nie pomiar bitmapy] Grid 1.15fr / .85fr; min-height 250, gap 40, padding 20×0. Scena height 220, max-width 490. Mobile grid: elastyczna /128px, gap13, padding 27px 0 21px; obraz 128×110, tytuł na obu kolumnach [A02].</p>
+<h3>Typografia</h3>
+<p>[P] H1 Geist Serif 72/400, 1.02, −2.5 desktop; 43/400, 1.04, −2 mobile. Opis Arial 15/1.6 desktop i 12/1.6 mobile. Dodatkowe progi w fundamentach [A02].</p>
+<h3>Zachowanie, treści i lokalizacja</h3>
+<p>[P] Bez interakcji wewnątrz obrazu. Jego zadaniem jest charakter, a nie przenoszenie warunków pracy. Długi H1 i inny obraz nie są pokazane. Lokalizacja i RTL [?].</p>
+<h3>Zalecane i niewskazane praktyki</h3>
+<p>Zalecane: scenę z aktywnością i wolną przestrzeń wokół tekstu. Niewskazane: umieszczanie frazy wyszukiwania w grafice lub powtarzanie postaci w każdej karcie [R].</p>
+<h3>Dostępność</h3>
+<p>[T] A11y-1/3/4: H1 jako tekst, kontrast poza różowym podkreśleniem też wystarczający, sensowna alternatywa obrazu. Ocenę alt trzeba odróżnić od dekoracyjnego obrazu w profilu C08. Cel proponowany: WCAG 2.2 AA; zasady i wyjątki opisuje sekcja <a href="#accessibility">Dostępność</a>.</p>
+<h3>Źródła i otwarte kwestie</h3>
+<p><strong>Podstawa:</strong> S01/S02; A02 <code>.intro-grid</code>, <code>.intro-copy</code>, <code>.people-art</code>; A05.</p>
+<p><strong>Materiały do otwarcia:</strong> <a href="evidence/S01.jpg">S01</a>, <a href="evidence/S02.jpg">S02</a>.</p>
+<p><strong>[?] Luki:</strong> Nie ma wariantów tematycznych postaci, trybu ciemnego, alternatywnego wycięcia ani potwierdzonych zasad dla nowych ilustracji.</p>
+<p><a id="c17"></a></p>
+<h2 class="family-title"><span>C17</span>Pusty wynik i odzyskanie kontekstu</h2>
+<h3>Przeznaczenie i wybór</h3>
+<p>[R] Używaj, gdy nie ma elementów do pokazania, z powodem i działaniem naprawczym. Brak płacy w pojedynczej karcie jest etykietą C07, nie pustym stanem całej listy.</p>
+<h3>Anatomia i części</h3>
+<p>[P] 1. Znak w różowym kole. 2. Nagłówek. 3. Wyjaśnienie. 4. Główne działanie. 5. Kontekst wyników / zapisanych / błędnego adresu definiuje tekst. Nie ma rysunkowej postaci w tych przykładach.</p>
+<h3>Warianty, stany i macierz obserwacji</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Oś</th>
+  <th>Pokazany wariant / stan</th>
+  <th>Zastosowanie, dowód i granica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Powód</td>
+  <td>Zero wyników</td>
+  <td>„Tym razem nic tu nie ma.”, reset; S06</td>
+</tr>
+<tr>
+  <td>Powód</td>
+  <td>Brak zapisanych</td>
+  <td>„Zapisz coś dla siebie.”, powrót; S08</td>
+</tr>
+<tr>
+  <td>Powód</td>
+  <td>Nieznany adres oferty</td>
+  <td>„Nie ma tu takiej oferty.”, listing; S12</td>
+</tr>
+<tr>
+  <td>Powód</td>
+  <td>Zapisane nie pasują do filtrów</td>
+  <td>Opisany w A05; brak osobnego utrwalonego zrzutu</td>
+</tr>
+</tbody>
+</table></div>
+<p>[P] Powyższe wiersze stanowią macierz rzeczywistych współwystąpień lub jawnych opisów. Nie tworzą pełnego iloczynu kombinacji.</p>
+<h3>Właściwości i atrybuty</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Cecha</th>
+  <th>Typ roboczy [R]</th>
+  <th>Wartości / zakres [P]</th>
+  <th>Domyślność, efekt i zależność</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Powód</td>
+  <td>wybór</td>
+  <td>results / saved / invalid-offer</td>
+  <td>Nazwy robocze [R]</td>
+</tr>
+<tr>
+  <td>Tytuł / opis / CTA</td>
+  <td>tekst</td>
+  <td>Różne w każdym powodzie</td>
+  <td>Brak jednego domyślnego komunikatu</td>
+</tr>
+<tr>
+  <td>Ikona</td>
+  <td>symbol</td>
+  <td>Lupa w utrwalonych przykładach</td>
+  <td>Nie dowód pełnej biblioteki stanów</td>
+</tr>
+<tr>
+  <td>Kryteria</td>
+  <td>kontekst</td>
+  <td>Wciąż widoczne chipy i filtry</td>
+  <td>Nie znikają przy 0</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Tokeny i style</h3>
+<p>[P] Biel, obrys ink 1 px; empty wyników r18, nieprawidłowa oferta r24; koło fact + ink. Przycisk primary C01 [A02/A03]. Wszystkie dane dotyczą trybu jasnego.</p>
+<h3>Wymiary, odległości i układ</h3>
+<p>[P, deklaracje CSS, nie pomiar bitmapy] Wyniki: padding65×25, koło63×63, opis max410; mobile padding44×20. Nieznana oferta: max850, padding65×25 i własne marginesy; mobile45×23. Nie ustanawiać jednej stałej wysokości [A02/A03].</p>
+<h3>Typografia</h3>
+<p>[P] Wyniki: Geist Serif H3 26/400, mobile24; opis Arial14/13. Invalid: H1 48/400, mobile39; opis15/14. Różny poziom H wynika z kontekstu strony [A02/A03].</p>
+<h3>Zachowanie, treści i lokalizacja</h3>
+<p>[P, A05/A06] Reset wyników wraca do wszystkich i czyści kryteria; powrót z invalid prowadzi do listingu. To nie błąd serwera i nie potwierdzenie braku ofert na całym rynku. Loading/sukces: nie dotyczy tych powodów.</p>
+<h3>Zalecane i niewskazane praktyki</h3>
+<p>Zalecane: zachować kryteria nad pustym wynikiem i konkretną drogę powrotu. Niewskazane: „Błąd 500” dla zera wyników albo samotny rysunek bez objaśnienia [R].</p>
+<h3>Dostępność</h3>
+<p>[T] A11y-2/3/4: logiczny nagłówek, dostępne CTA, ogłoszenie zmiany liczby wyników, rozsądne przeniesienie focusu. Sam obraz nie dowodzi ogłoszenia stanu. Cel proponowany: WCAG 2.2 AA; zasady i wyjątki opisuje sekcja <a href="#accessibility">Dostępność</a>.</p>
+<h3>Źródła i otwarte kwestie</h3>
+<p><strong>Podstawa:</strong> S06, S08, S12; A02 <code>.empty-state</code>; A03 <code>.offer-not-found</code>; A05/A06.</p>
+<p><strong>Materiały do otwarcia:</strong> <a href="evidence/S06.jpg">S06</a>, <a href="evidence/S08.jpg">S08</a>, <a href="evidence/S12.jpg">S12</a>.</p>
+<p><strong>[?] Luki:</strong> Awaria sieci, brak uprawnień, wygasła oferta i błąd publikacji nie są pokazane. Nie rozszerzać tej rodziny na nie bez osobnej treści.</p>
+<p><a id="c18"></a></p>
+<h2 class="family-title"><span>C18</span>Dialog informacyjny i filtry mobilne</h2><figure class="source-fragment" style="max-width:584px"><a href="evidence/S10.jpg"><div style="aspect-ratio:584/473;position:relative;overflow:hidden"><img src="evidence/S10.jpg" alt="Fragment źródła S10 dla Dialog informacyjny i filtry mobilne" loading="lazy" style="position:absolute;max-width:none;width:219.17808%;left:-59.58904%;top:-26.21564%"></div></a><figcaption>S10 · fragment oryginalnego zrzutu w skali ilustracyjnej. Otwórz pełne źródło.</figcaption></figure>
+<h3>Przeznaczenie i wybór</h3>
+<p>[R] Wybieraj dla krótkiej informacji lub tymczasowego mobilnego zadania filtracji. Czytanie całej roli odbywa się na stronie C20–C22; dawny modal oferty jest wycofany z bieżącej kompozycji.</p>
+<h3>Anatomia i części</h3>
+<p>[P] 1. Backdrop. 2. Zaokrąglona powierzchnia. 3. H2 i ×. 4. Treść. 5. Akcja zamknięcia/powrotu lub dolne Pokaż. Wariant filtrów ma przewijane wnętrze, sticky header/footer; zwykły ma treść i CTA.</p>
+<h3>Warianty, stany i macierz obserwacji</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Oś</th>
+  <th>Pokazany wariant / stan</th>
+  <th>Zastosowanie, dowód i granica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Cel</td>
+  <td>O DoRoboty.ai</td>
+  <td>Opis i trzy obszary, S10</td>
+</tr>
+<tr>
+  <td>Cel</td>
+  <td>Aplikowanie demo</td>
+  <td>Uczciwe ograniczenie i kontekst roli, S11</td>
+</tr>
+<tr>
+  <td>Cel</td>
+  <td>Filtry</td>
+  <td>Pełny ekran mobilny, S09/S16</td>
+</tr>
+<tr>
+  <td>Cel</td>
+  <td>Link do skopiowania</td>
+  <td>Fallback opisany w A06; nie został wywołany do osobnego zrzutu</td>
+</tr>
+</tbody>
+</table></div>
+<p>[P] Powyższe wiersze stanowią macierz rzeczywistych współwystąpień lub jawnych opisów. Nie tworzą pełnego iloczynu kombinacji.</p>
+<h3>Właściwości i atrybuty</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Cecha</th>
+  <th>Typ roboczy [R]</th>
+  <th>Wartości / zakres [P]</th>
+  <th>Domyślność, efekt i zależność</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Tytuł / treść</td>
+  <td>tekst lub kompozycja</td>
+  <td>Zależne od celu</td>
+  <td>Brak jednego domyślnego tytułu</td>
+</tr>
+<tr>
+  <td>Otwarcie</td>
+  <td>logiczny</td>
+  <td>open / closed</td>
+  <td>Start zamknięty A05/A06</td>
+</tr>
+<tr>
+  <td>Rozmiar</td>
+  <td>kontekst</td>
+  <td>580px max / pełny mobilny</td>
+  <td>Nie publiczne warianty rozmiaru API</td>
+</tr>
+<tr>
+  <td>Zamknięcie</td>
+  <td>działanie</td>
+  <td>×, odpowiednie CTA, Escape</td>
+  <td>Brak potwierdzonego kliknięcia w backdrop jako zamknięcia</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Tokeny i style</h3>
+<p>[P] R24, obrys ink1 na zwykłym dialogu, papier we wnętrzu i biel nagłówka. Backdrop <code>rgba(24,24,24,.6)</code>; brak cienia [A02]. Wszystkie dane dotyczą trybu jasnego.</p>
+<h3>Wymiary, odległości i układ</h3>
+<p>[P, deklaracje CSS, nie pomiar bitmapy] Info width min(580px,100%−36px); max-height calc(100dvh−48px). Nagłówek i treść padding25. Mobile padding22×20. Filtry width/height100%, max-height100dvh, r24 i bez obrysu zewnętrznego, footer padding15×24 z safe area [A02].</p>
+<h3>Typografia</h3>
+<p>[P] H2 Geist Serif24/400, line1.2, tracking−.7; mobile23. Treść Arial15/1.7, mobile14. Etykiety filtrów wg C04. Akcje C01.</p>
+<h3>Zachowanie, treści i lokalizacja</h3>
+<p>[P, A05/A06] Natywne showModal/close i Escape. „Aplikuj” tylko wyjaśnia ograniczenie demo. Filtry zmieniają wynik przed zamknięciem. Fallback udostępniania ma readonly input i zaznaczenie adresu. Błąd/ładowanie: brak widoków.</p>
+<h3>Zalecane i niewskazane praktyki</h3>
+<p>Zalecane: podać kontekst roli w oknie aplikowania demo. Niewskazane: udawać wysłanie CV lub traktować zamknięcie mobilnych filtrów jak rollback [R].</p>
+<h3>Dostępność</h3>
+<p>[T] A11y-2/3/4; <a href="https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/">APG Modal Dialog</a>: focus wewnątrz, Tab/Shift+Tab w obrębie, Escape zamyka, powrót do wywołania lub logicznego następcy. Zweryfikować inert tła, nazwę, mały viewport i czytnik. Natywny element nie dowodzi całej zgodności. Cel proponowany: WCAG 2.2 AA; zasady i wyjątki opisuje sekcja <a href="#accessibility">Dostępność</a>.</p>
+<h3>Źródła i otwarte kwestie</h3>
+<p><strong>Podstawa:</strong> S09/S10/S11/S16; A02 dialog i filter-dialog; A05/A06 HTML oraz obsługa otwarcia.</p>
+<p><strong>Materiały do otwarcia:</strong> <a href="evidence/S09.jpg">S09</a>, <a href="evidence/S10.jpg">S10</a>, <a href="evidence/S11.jpg">S11</a>, <a href="evidence/S16.jpg">S16</a>.</p>
+<p><strong>[?] Luki:</strong> Brak projektu destructive confirm, nested dialog, błędu formularza i loadingu. Fallback udostępniania jest opisany, ale nie potwierdzony obrazem.</p>
+<p><a id="c19"></a></p>
+<h2 class="family-title"><span>C19</span>Toast i komunikat statusu</h2><figure class="source-fragment" style="max-width:280px"><a href="evidence/S20.jpg"><div style="aspect-ratio:200/55;position:relative;overflow:hidden"><img src="evidence/S20.jpg" alt="Fragment źródła S20 dla Toast i komunikat statusu" loading="lazy" style="position:absolute;max-width:none;width:640.00000%;left:-270.00000%;top:-1174.54545%"></div></a><figcaption>S20 · fragment oryginalnego zrzutu w skali ilustracyjnej. Otwórz pełne źródło.</figcaption></figure>
+<h3>Przeznaczenie i wybór</h3>
+<p>[R] Potwierdza krótką, zakończoną czynność bez zatrzymywania zadania. Dla informacji wymagającej decyzji użyj C18; dla pustego zbioru C17.</p>
+<h3>Anatomia i części</h3>
+<p>[P] 1. Ciemny, zwarty kontener. 2. Jedno zdanie. Brak ikony, przycisku zamknięcia i akcji cofnięcia w utrwalonych przykładach.</p>
+<h3>Warianty, stany i macierz obserwacji</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Oś</th>
+  <th>Pokazany wariant / stan</th>
+  <th>Zastosowanie, dowód i granica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Treść</td>
+  <td>Zapisano / usunięto</td>
+  <td>S07/S20 i S08</td>
+</tr>
+<tr>
+  <td>Treść</td>
+  <td>Skopiowany link</td>
+  <td>Jawnie opisany w A06; brak nowego zrzutu tej treści</td>
+</tr>
+<tr>
+  <td>Kontekst</td>
+  <td>Listing / oferta</td>
+  <td>Ta sama rodzina; różne sformułowanie zapisu A05/A06</td>
+</tr>
+<tr>
+  <td>Stan</td>
+  <td>Widoczny / ukryty</td>
+  <td>Znika po czasie; nie jest listą powiadomień</td>
+</tr>
+</tbody>
+</table></div>
+<p>[P] Powyższe wiersze stanowią macierz rzeczywistych współwystąpień lub jawnych opisów. Nie tworzą pełnego iloczynu kombinacji.</p>
+<h3>Właściwości i atrybuty</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Cecha</th>
+  <th>Typ roboczy [R]</th>
+  <th>Wartości / zakres [P]</th>
+  <th>Domyślność, efekt i zależność</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Wiadomość</td>
+  <td>tekst</td>
+  <td>Potwierdzenie czynności</td>
+  <td>Brak domyślnego komunikatu</td>
+</tr>
+<tr>
+  <td>Widoczność</td>
+  <td>logiczny</td>
+  <td>true / false</td>
+  <td>Start ukryty</td>
+</tr>
+<tr>
+  <td>Czas</td>
+  <td>liczba</td>
+  <td>2800 ms w A05/A06</td>
+  <td>Implementacyjna wartość, nie zatwierdzona polityka systemu</td>
+</tr>
+<tr>
+  <td>Priorytet</td>
+  <td>status</td>
+  <td>Nieprzerywający</td>
+  <td>Brak error/alert wariantu</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Tokeny i style</h3>
+<p>[P] Ink i biel, kontur ink1, r18. Nie ma osobnego zielonego koloru sukcesu [A02]. Wszystkie dane dotyczą trybu jasnego.</p>
+<h3>Wymiary, odległości i układ</h3>
+<p>[P, deklaracje CSS, nie pomiar bitmapy] Fixed: środek poziomy, bottom24 px; padding12×18; max-width calc(100%−36px). Mobile bottom18 i tekst może się zawijać. S20 pokazuje viewport, podczas gdy pełne S07 lokuje fixed na dole bitmapy [A02].</p>
+<h3>Typografia</h3>
+<p>[P] Arial13 px desktop i11 mobile, regular, line1.5. Nie jest H ani etykietą akcji [A02].</p>
+<h3>Zachowanie, treści i lokalizacja</h3>
+<p>[P, A05/A06] Kolejna wiadomość zastępuje poprzednią i restartuje timer. Nie ma widocznego archiwum ani cofania. <code>role=status</code>, polite są zapisane w HTML; to nie potwierdzenie odczytu czytnikiem.</p>
+<h3>Zalecane i niewskazane praktyki</h3>
+<p>Zalecane: „Zapisano ofertę…” po rzeczywistej zmianie, dodatkowo widoczny stan zakładki. Niewskazane: toast jako jedyny nośnik krytycznego błędu albo „Wysłano aplikację” w demonstracji [R].</p>
+<h3>Dostępność</h3>
+<p>[T] A11y-1/4, zwłaszcza 4.1.3 AA: ogłoszenie bez zabierania focusu. Sprawdzić czas czytania i zasłanianie akcji. 2800 ms nie jest automatycznie gwarancją dostępności ani samoistnym wynikiem testu czasu. Cel proponowany: WCAG 2.2 AA; zasady i wyjątki opisuje sekcja <a href="#accessibility">Dostępność</a>.</p>
+<h3>Źródła i otwarte kwestie</h3>
+<p><strong>Podstawa:</strong> S07/S08/S20; A02 <code>.toast</code>; A05/A06 <code>notify</code>.</p>
+<p><strong>Materiały do otwarcia:</strong> <a href="evidence/S07.jpg">S07</a>, <a href="evidence/S08.jpg">S08</a>, <a href="evidence/S20.jpg">S20</a>.</p>
+<p><strong>[?] Luki:</strong> Brak wariantu trwałego, krytycznego błędu, wielu komunikatów, undo i potwierdzonej polityki czasu. Rozważyć spójne brzmienie zapisu w obu kontekstach.</p>
+<p><a id="c20"></a></p>
+<h2 class="family-title"><span>C20</span>Nagłówek pełnej oferty</h2><figure class="source-fragment" style="max-width:825px"><a href="evidence/S03.jpg"><div style="aspect-ratio:825/386;position:relative;overflow:hidden"><img src="evidence/S03.jpg" alt="Fragment źródła S03 dla Nagłówek pełnej oferty" loading="lazy" style="position:absolute;max-width:none;width:155.15152%;left:-4.72727%;top:-44.55959%"></div></a><figcaption>S03 · fragment oryginalnego zrzutu w skali ilustracyjnej. Otwórz pełne źródło.</figcaption></figure>
+<h3>Przeznaczenie i wybór</h3>
+<p>[R] Służy natychmiastowemu rozpoznaniu roli i firmy. Nie jest marketingowym wejściem C16 i nie zastępuje warunków C21.</p>
+<h3>Anatomia i części</h3>
+<p>[P] 1. C08 znak, nazwa-link i data. 2. C07 kategoria. 3. Jedno H1 z pełną nazwą roli. 4. Fakty z ikonami: miasto, tryb, poziom. 5. Umiejętności. 6. Drobny opis i udostępnienie pod separatorem.</p>
+<h3>Warianty, stany i macierz obserwacji</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Oś</th>
+  <th>Pokazany wariant / stan</th>
+  <th>Zastosowanie, dowód i granica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Treść</td>
+  <td>Krótki / bardzo długi tytuł</td>
+  <td>S03/S13; wysokość rośnie</td>
+</tr>
+<tr>
+  <td>Znak</td>
+  <td>Podany / inicjały</td>
+  <td>S03/S13</td>
+</tr>
+<tr>
+  <td>Szerokość</td>
+  <td>Desktop / mobile</td>
+  <td>Pełne fakty, zmiana rozmiaru i zawijanie; S03/S04</td>
+</tr>
+<tr>
+  <td>Kategoria</td>
+  <td>Build / Apply / Lead</td>
+  <td>Dane A06; S03 pokazuje Apply</td>
+</tr>
+</tbody>
+</table></div>
+<p>[P] Powyższe wiersze stanowią macierz rzeczywistych współwystąpień lub jawnych opisów. Nie tworzą pełnego iloczynu kombinacji.</p>
+<h3>Właściwości i atrybuty</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Cecha</th>
+  <th>Typ roboczy [R]</th>
+  <th>Wartości / zakres [P]</th>
+  <th>Domyślność, efekt i zależność</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Rola / firma</td>
+  <td>teksty</td>
+  <td>Z wybranej oferty</td>
+  <td>Brak stałej wartości domyślnej; ID musi istnieć</td>
+</tr>
+<tr>
+  <td>Data</td>
+  <td>tekst względny</td>
+  <td>Dzisiaj, dni temu</td>
+  <td>Dane przykładowe, nie aktualny rynek</td>
+</tr>
+<tr>
+  <td>Fakty / tagi</td>
+  <td>zestaw</td>
+  <td>Miasto, tryb, poziom i umiejętności</td>
+  <td>Nie dopowiadać brakujących danych</td>
+</tr>
+<tr>
+  <td>Udostępnij</td>
+  <td>działanie</td>
+  <td>Kopia czystego adresu</td>
+  <td>Bez filtrów i zapisanych z nawigacji A06</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Tokeny i style</h3>
+<p>[P] Biel, ink1, r24. Tagi i kategoria mają r999. Separator line; ikony muted; żadna duża ilustracja za tytułem [A03]. Wszystkie dane dotyczą trybu jasnego.</p>
+<h3>Wymiary, odległości i układ</h3>
+<p>[P, deklaracje CSS, nie pomiar bitmapy] Padding32px 36px 0 bazowo, mobile24px 23px 0. H1 odstępy30px 0 24px; mobile25px 0 22px. Fakty gap22 desktop /12×18 mobile. Rząd tagów margin22px 0 30px. Długie słowa i nazwy muszą się zawijać [A03].</p>
+<h3>Typografia</h3>
+<p>[P] Geist Serif H1:64/400,1.04,−2px; mobile47/400,1.06,−1.5px. Firma Arial16/600, data11, fakty14/12, tagi12/11. Podpis i share11/10. Progi w fundamentach.</p>
+<h3>Zachowanie, treści i lokalizacja</h3>
+<p>[P, A06] Nazwa firmy przewija do jej sekcji; udostępnij próbuje kopiować URL, a przy niedostępności schowka otwiera fallback C18. Nagłówek nie uruchamia aplikacji. Dla nieznanego ID używany jest C17 zamiast pustego H1.</p>
+<h3>Zalecane i niewskazane praktyki</h3>
+<p>Zalecane: pełny długi tytuł jak w S13 i warunki poza ozdobną narracją. Niewskazane: osobne zmniejszanie fontu długiej roli, zastąpienie nazwy firmy ilustracją albo wklejenie hero z listingu [R].</p>
+<h3>Dostępność</h3>
+<p>[T] A11y-2/3/4: jeden główny H1, nazwa firmy i dostępny share; brak utraty pełnej treści przy zoomie. Potwierdzenie kopiowania to status C19. Tekst „AI” i mieszane nazwy zawodów wymagają odczytu PL/EN do oceny. Cel proponowany: WCAG 2.2 AA; zasady i wyjątki opisuje sekcja <a href="#accessibility">Dostępność</a>.</p>
+<h3>Źródła i otwarte kwestie</h3>
+<p><strong>Podstawa:</strong> S03/S04/S13; A03 <code>.offer-hero</code>, <code>.offer-key-facts</code>; A06.</p>
+<p><strong>Materiały do otwarcia:</strong> <a href="evidence/S03.jpg">S03</a>, <a href="evidence/S04.jpg">S04</a>, <a href="evidence/S13.jpg">S13</a>.</p>
+<p><strong>[?] Luki:</strong> Nie pokazano wielu umów, pracodawcy bez nazwy, ogłoszenia zamkniętego i tłumaczonej wersji. Brak stanu ładowania roli.</p>
+<p><a id="c21"></a></p>
+<h2 class="family-title"><span>C21</span>Panel warunków i działań</h2><figure class="source-fragment" style="max-width:420px"><a href="evidence/S03.jpg"><div style="aspect-ratio:354/521;position:relative;overflow:hidden"><img src="evidence/S03.jpg" alt="Fragment źródła S03 dla Panel warunków i działań" loading="lazy" style="position:absolute;max-width:none;width:361.58192%;left:-250.84746%;top:-33.01344%"></div></a><figcaption>S03 · fragment oryginalnego zrzutu w skali ilustracyjnej. Otwórz pełne źródło.</figcaption></figure>
+<h3>Przeznaczenie i wybór</h3>
+<p>[R] Grupuje fakty potrzebne do decyzji i następny krok. Na desktopie wspiera długą lekturę, na mobile powinien wystąpić przed opisem, nie po profilu firmy.</p>
+<h3>Anatomia i części</h3>
+<p>[P] 1. Etykieta wynagrodzenia. 2. Kwota C07 lub brak. 3. Jednostka i umowa. 4. Lista par nazwa–wartość: forma, tryb, lokalizacja, poziom. 5. Primary Aplikuj, secondary Zapisz. 6. Ograniczenie demo. Drobny napis pod panelem jest sąsiadem, nie warunkiem zatrudnienia.</p>
+<h3>Warianty, stany i macierz obserwacji</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Oś</th>
+  <th>Pokazany wariant / stan</th>
+  <th>Zastosowanie, dowód i granica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Układ</td>
+  <td>Boczny sticky / w treści statyczny</td>
+  <td>S03/S04, potwierdzone A03</td>
+</tr>
+<tr>
+  <td>Płaca</td>
+  <td>Kwota / brak</td>
+  <td>S03/S14</td>
+</tr>
+<tr>
+  <td>Zapis</td>
+  <td>Nie / tak</td>
+  <td>Model A06 i C01</td>
+</tr>
+<tr>
+  <td>Aplikowanie</td>
+  <td>Demonstracyjne</td>
+  <td>S11; nie pokazano prawdziwego zewnętrznego formularza</td>
+</tr>
+</tbody>
+</table></div>
+<p>[P] Powyższe wiersze stanowią macierz rzeczywistych współwystąpień lub jawnych opisów. Nie tworzą pełnego iloczynu kombinacji.</p>
+<h3>Właściwości i atrybuty</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Cecha</th>
+  <th>Typ roboczy [R]</th>
+  <th>Wartości / zakres [P]</th>
+  <th>Domyślność, efekt i zależność</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Warunki</td>
+  <td>zestaw faktów</td>
+  <td>Zgodne z danymi tej oferty</td>
+  <td>Bez domyślnych wartości</td>
+</tr>
+<tr>
+  <td>Kwota</td>
+  <td>liczby lub brak</td>
+  <td>Jak C07</td>
+  <td>Warunki muszą być przy liczbie</td>
+</tr>
+<tr>
+  <td>Tryb panelu</td>
+  <td>zależny od szerokości</td>
+  <td>Sticky &gt;700 / static ≤700</td>
+  <td>Nie wybór ręczny w obecnym UI</td>
+</tr>
+<tr>
+  <td>Akcje</td>
+  <td>zestaw</td>
+  <td>Aplikuj + Zapisz</td>
+  <td>Aplikuj ma ograniczenie demo</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Tokeny i style</h3>
+<p>[P] Biel, obrys ink1, r24; płaca fact; pierwsze CTA action, zapis surface/fact po wyborze. Podział pod płacą ink [A03]. Wszystkie dane dotyczą trybu jasnego.</p>
+<h3>Wymiary, odległości i układ</h3>
+<p>[P, deklaracje CSS, nie pomiar bitmapy] Kolumna350px bazowo,310≤1100,285≤850. Sticky top24; mobile kolejność po headerze i brak sticky. Płaca padding28×26; lista24×26; akcje0 26px 24px. Mobile płaca23×23 i lista w2 kolumnach; przyciski50px wysokości [A03].</p>
+<h3>Typografia</h3>
+<p>[P] Płaca Arial24/600,−.7px; mobile25. Opis12; nazwy/wartości faktów12 bazowo i mobile11/13. Przyciski14/600, informacja demo10. Nie używa H dla każdej wartości [A03].</p>
+<h3>Zachowanie, treści i lokalizacja</h3>
+<p>[P, A06] Zapis jest lokalnym stanem wizyty. Aplikuj otwiera informację o ograniczeniu. Sticky kończy się w granicach gridu oferty; nie jest paskiem fixed nad stopką. Brak faktycznej wysyłki i statusu „zaaplikowano”.</p>
+<h3>Zalecane i niewskazane praktyki</h3>
+<p>Zalecane: jawny brak wynagrodzenia i umowa przy podanych widełkach. Niewskazane: CTA oznaczające wysyłkę bez działającej ścieżki lub brak adnotacji demo [R].</p>
+<h3>Dostępność</h3>
+<p>[T] A11y-1/2/3/4: lista definicyjna dla faktów, zachowana kolejność mobilna, niezasłonięty focus, możliwość przeczytania panelu w niskim oknie. Dotychczasowy smoke test sticky nie jest pełnym testem 2.4.11. Cel proponowany: WCAG 2.2 AA; zasady i wyjątki opisuje sekcja <a href="#accessibility">Dostępność</a>.</p>
+<h3>Źródła i otwarte kwestie</h3>
+<p><strong>Podstawa:</strong> S03/S04/S11/S14/S19; A03 <code>.offer-sidebar</code>, <code>.offer-action-card</code>; A06.</p>
+<p><strong>Materiały do otwarcia:</strong> <a href="evidence/S03.jpg">S03</a>, <a href="evidence/S04.jpg">S04</a>, <a href="evidence/S11.jpg">S11</a>, <a href="evidence/S14.jpg">S14</a>, <a href="evidence/S19.jpg">S19</a>.</p>
+<p><strong>[?] Luki:</strong> Wysokie panele z wieloma miastami/umowami, 320 px i poziomy telefon wymagają testu. Nie pokazano fixed CTA mobile ani prawdziwej aplikacji.</p>
+<p><a id="c22"></a></p>
+<h2 class="family-title"><span>C22</span>Sekcja treści, benefity i proces</h2>
+<h3>Przeznaczenie i wybór</h3>
+<p>[R] Porządkuje dłuższą lekturę oferty. Wariant dobieraj do informacji: akapit dla opisu, lista dla obowiązków, kafle bez ramek dla korzyści, numerowana sekwencja dla przebiegu rozmów. Nie jest to interaktywny stepper.</p>
+<h3>Anatomia i części</h3>
+<p>[P] 1. H2 sekcji. 2. Lead/akapit lub lista. 3. H3 podsekcji [opcjonalny]. 4. Szary blok „Przyda się też” [wariant callout]. 5. Korzyści: ikona, H3, opis. 6. Proces: numer kołowy, H3, opis. Sekcje dzieli separator; zawierają się w jednym białym panelu.</p>
+<h3>Warianty, stany i macierz obserwacji</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Oś</th>
+  <th>Pokazany wariant / stan</th>
+  <th>Zastosowanie, dowód i granica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Treść</td>
+  <td>Opis / lista / callout</td>
+  <td>S03/S04</td>
+</tr>
+<tr>
+  <td>Treść</td>
+  <td>Benefity w 2 kolumnach / pojedynczo</td>
+  <td>S03/S04</td>
+</tr>
+<tr>
+  <td>Treść</td>
+  <td>Proces 01–03</td>
+  <td>Statyczna uporządkowana lista; S03</td>
+</tr>
+<tr>
+  <td>Zakończenie</td>
+  <td>H2 + opis + CTA demo</td>
+  <td>Na końcu czytania; ponownie używa C01</td>
+</tr>
+</tbody>
+</table></div>
+<p>[P] Powyższe wiersze stanowią macierz rzeczywistych współwystąpień lub jawnych opisów. Nie tworzą pełnego iloczynu kombinacji.</p>
+<h3>Właściwości i atrybuty</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Cecha</th>
+  <th>Typ roboczy [R]</th>
+  <th>Wartości / zakres [P]</th>
+  <th>Domyślność, efekt i zależność</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Nagłówek / treść</td>
+  <td>teksty</td>
+  <td>Zależne od roli i kategorii</td>
+  <td>Brak domyślnej długości</td>
+</tr>
+<tr>
+  <td>Rodzaj bloku</td>
+  <td>wybór roboczy</td>
+  <td>paragraph / list / callout / benefits / process</td>
+  <td>[R] Nazwy dokumentacyjne, nie API</td>
+</tr>
+<tr>
+  <td>Elementy</td>
+  <td>lista</td>
+  <td>3 etapy, 4 korzyści w przykładzie</td>
+  <td>Nie są limitami systemowymi</td>
+</tr>
+<tr>
+  <td>Ikona / numer</td>
+  <td>symbol lub porządek</td>
+  <td>Zależne od rodzaju</td>
+  <td>Nie status ukończenia</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Tokeny i style</h3>
+<p>[P] Biały panel z ink1 i r24; wewnątrz separator line, callout papier z r18. Numery z cienkim konturem i papierem. Tekst muted, tytuły ink [A03]. Wszystkie dane dotyczą trybu jasnego.</p>
+<h3>Wymiary, odległości i układ</h3>
+<p>[P, deklaracje CSS, nie pomiar bitmapy] Kolumna czytania: padding34×36; mobile28px 23px 30px. Następna sekcja: margin-top34 i padding-top32, mobile29/28. Lista gap15 i wcięcie23/20. Benefity gap30×28, przy ≤850 pojedyncza kolumna. Numer39×39 desktop /34×34 mobile, gap18/14 [A03].</p>
+<h3>Typografia</h3>
+<p>[P] H2 36/400 desktop,33 mobile; H3 27/400 lub26 mobile; benefity24, proces25. Lead21/1.5, mobile20; akapit15/1.85, mobile15/1.8. Wszystkie H są Geist Serif; akapity Arial. Nie zakładać jednego H3 dla każdego podwariantu.</p>
+<h3>Zachowanie, treści i lokalizacja</h3>
+<p>[P, A06] Statyczna treść przewijana i kotwice C13. Nie ma akordeonu, rozwijania list ani oznaczania zakończonych etapów. Opisy procesów i pracodawców są fikcyjną treścią demonstracji. RTL i edytor treści [?].</p>
+<h3>Zalecane i niewskazane praktyki</h3>
+<p>Zalecane: oddzielne wymagania i obowiązki, etapy jako kolejność rozmów. Niewskazane: klikalne kółka 01–03 bez funkcji, nadmiar ramek wokół każdego zdania albo mniejszy font tylko dla dłuższego akapitu [R].</p>
+<h3>Dostępność</h3>
+<p>[T] A11y-1/3/4: hierarchia H1→H2→H3, semantyczne listy, logiczna kolejność benefitów po zmianie kolumn. Numery nie mogą być jedynym opisem etapu. Ikony dekoracyjne nie powinny powtarzać całego tekstu. Test przy nadpisaniu odstępów i zoomie. Cel proponowany: WCAG 2.2 AA; zasady i wyjątki opisuje sekcja <a href="#accessibility">Dostępność</a>.</p>
+<h3>Źródła i otwarte kwestie</h3>
+<p><strong>Podstawa:</strong> S03/S04, opis i dolne sekcje; A03 <code>.offer-section</code>, <code>.offer-benefits</code>, <code>.offer-process</code>; A06.</p>
+<p><strong>Materiały do otwarcia:</strong> <a href="evidence/S03.jpg">S03</a>, <a href="evidence/S04.jpg">S04</a>.</p>
+<p><strong>[?] Luki:</strong> Nie ma potwierdzonego rich-text API, tabel w opisie, multimediów, rozwijania treści, timeline ze stanem aktywnym ani limitu długości. Pozostawić jako luki.</p>
+<p><a id="review"></a></p>
+<h2>Pokrycie, rozbieżności i decyzje do oceny</h2>
+<h3>Macierz pokrycia</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Rodziny</th>
+  <th>Pokryte osie i kombinacje</th>
+  <th>Co nie zostało dowiedzione</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>C01–C04 — kontrolki</td>
+  <td>primary/secondary/text/icon; search/number; lokalizacja/sort; zaznaczony checkbox, focus liczby i selecta</td>
+  <td>Loading, custom error i disabled dla każdej kontrolki; pełna obsługa technologii asystujących.</td>
+</tr>
+<tr>
+  <td>C05–C07 — wybór i informacje</td>
+  <td>All/Build/Apply/Lead, liczba 0, ciemne wybranie, aktywne kryterium, płaca/tag/licznik, brak płacy</td>
+  <td>Nie każda wartość w każdym rozmiarze i stanie; siedem tagów, dwa kontrakty.</td>
+</tr>
+<tr>
+  <td>C08–C10 — tożsamość i wyniki</td>
+  <td>Cztery tła znaków, inicjały, długa firma; listing/related; zapis; długi tytuł; dwie strony i niedostępne kierunki</td>
+  <td>Prawdziwy obraz logo, wygaśnięcie roli, bardzo duża liczba stron.</td>
+</tr>
+<tr>
+  <td>C11–C16 — nawigacja i wyszukiwanie</td>
+  <td>Header/footer desktop/mobile, powrót i kotwice, pasek dwu-/jednorzędowy, filtry w kolumnie/dialogu, skompaktowana ilustracja</td>
+  <td>Mobilne pełne menu, draft filtrów, dynamiczna bieżąca sekcja, RTL.</td>
+</tr>
+<tr>
+  <td>C17–C19 — informowanie</td>
+  <td>Zero wyników, brak zapisanych, błędny adres; info/demo/mobile filter dialog; zapisany toast</td>
+  <td>Awaria serwera, alert krytyczny, fallback kopiowania jako obraz, pełny focus cycle/czytnik.</td>
+</tr>
+<tr>
+  <td>C20–C22 — strona roli</td>
+  <td>Krótki/długi tytuł, pełne/brakujące warunki, boczny/static panel, akapit/lista/callout/benefity/proces</td>
+  <td>Realna rekrutacja, formularz wysyłki, podwójne umowy, edytor rich text i media.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Warianty opisane tylko w A01–A06 są wyraźnie odróżnione od utrwalonych obrazów. Wszystkie rozpoznane rodziny mają karty. Wszystkie 19 zrzutów przejrzano; nie jest to dowód pokrycia całego produktu. Brak zrzutu stanu nie oznacza automatycznie, że implementacja go nie obsługuje.</p>
+<h3>Zarejestrowane rozbieżności — bez zmiany strony</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Temat</th>
+  <th>Obserwacja [P]</th>
+  <th>Decyzja / rekomendacja</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Starszy kierunek</td>
+  <td>Początkowy skill opisywał małe promienie i neutralne sans; późniejsza uwaga użytkownika zmieniła je na większe i Geist Serif dla H.</td>
+  <td>Aktualne S01–S04 i A01–A03 mają pierwszeństwo. Nie przywracać starych zasad przez samą nazwę skilla.</td>
+</tr>
+<tr>
+  <td>Skala tytułu karty</td>
+  <td>28 px &gt;1100; 26 px przy 851–1100; 28 px przy 601–850; 26 px ≤600.</td>
+  <td>[?] Czy pośrednia zmiana ma być świadomym kontraktem? [R] Ewentualne uproszczenie dopiero jako osobna decyzja.</td>
+</tr>
+<tr>
+  <td>Promienie</td>
+  <td>Główne 10/18/24, ale istnieją lokalne 3/5/8/14/16/999.</td>
+  <td>[R] Nazwać wyjątki lub je ujednolicić po ocenie. Dokumentacja nie przerabia ich na fikcyjne tokeny.</td>
+</tr>
+<tr>
+  <td>Sekcje roli</td>
+  <td>Kreska znajduje się na pierwszym linku niezależnie od kotwicy i scrolla.</td>
+  <td>[?] Zachować prostą nawigację bez wskaźnika bieżącego stanu czy wdrożyć rzeczywiste wskazanie?</td>
+</tr>
+<tr>
+  <td>Zapis</td>
+  <td>Aktualny opis akcji zmienia się wraz z aria-pressed. Header listingu jest przełącznikiem; na ofercie prowadzi do innej strony.</td>
+  <td>[?] Ustalić docelowy model semantyczny zapisu według C01, nie tylko wygląd zakładki.</td>
+</tr>
+<tr>
+  <td>Mobilne filtry</td>
+  <td>Zmiany obowiązują od razu, × i Escape ich nie cofają. Reset jest dostępny w desktopowej główce, która w dialogu znika.</td>
+  <td>[?] Czy zachować ten model? [R] Jeżeli powstanie draft, dodać odrębne znaczenie zastosowania i anulowania.</td>
+</tr>
+<tr>
+  <td>Drobny tekst</td>
+  <td>Pomocnicze informacje miejscami mają 9–11 px. Matematyczny kontrast części par jest dobry.</td>
+  <td>[R] Rozważyć większe metadane/stopkę; kontrast nie rozstrzyga wygody czytania. Brak minimalnej wielkości fontu nie oznacza komfortu.</td>
+</tr>
+<tr>
+  <td>Prawdziwe aplikowanie</td>
+  <td>Różowy przycisk otwiera informację o fikcyjnej ofercie.</td>
+  <td>[?] Przed realnym produktem osobno zaprojektować i zweryfikować ścieżkę aplikacji oraz jej błędy. Nie dokumentować jej jako istniejącej.</td>
+</tr>
+<tr>
+  <td>Stany produkcyjne</td>
+  <td>Brak pokazanego loadingu, awarii API, potwierdzonej palety error/warning i trybu ciemnego.</td>
+  <td>[?] Uzupełniać tylko zgodnie z potrzebą produktu. Nie doprojektowywać w tym wydaniu jako stanu źródłowego.</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Lista testów przed uznaniem systemu za gotowy do wdrożenia</h3>
+<p><strong>[T]</strong> Czytnik ekranu: nazwy i stany zapisu, grup filtrów, selectów, statusów, kolejność treści oferty. Klawiatura: widoczny focus, pełne cykle dialogów, usuwanie chipa, wymiana paginacji, poziomy rząd kategorii. Widoki: 320 CSS px, powiększenie 200/400%, niski viewport i nadpisane odstępy tekstu. Cele: rzeczywiste obszary labeli, ikon i zaokrąglonych przycisków wraz z wyjątkami 2.5.8. Dane: dwa kontrakty, brak logo graficznego, wiele lokalizacji, bardzo długie tłumaczenia. To lista dalszych testów, nie raport ich zaliczenia.</p>
+<h2>Status wersji i przekazanie</h2>
+<p><strong>v1 — pełna dokumentacja dla designerów, do oceny.</strong> Obejmuje fundamenty, 22 karty, macierze wariantów, materiały źródłowe i konkretne luki. Nie zmieniono projektu strony, nie wyeksportowano dokumentacji do narzędzia projektowego i nie przygotowano pakietu implementacyjnego dla agenta. Kolejna wersja może uwzględnić uwagi do nazw rodzin, szczegółowości i decyzji z powyższej tabeli.</p>
+</article><section id="evidence-gallery"><h2 class="gallery-heading">Galeria źródeł</h2><p>Każdy kadr otwiera zachowany obraz w pełnej rozdzielczości. Miniatury pokazują fragment; źródła nie zostały retuszowane. Pełne zrzuty nie są pomiarem wysokości viewportu.</p><div class="gallery"><figure><a href="evidence/S01.jpg" target="_blank" rel="noopener"><div class="image-wrap "><img src="evidence/S01.jpg" alt="Listing — wszystkie oferty, desktop" loading="lazy"></div></a><figcaption><b>S01</b> Listing — wszystkie oferty, desktop<small>Viewport 1280×720 CSS px · bitmapa 1280×3271 px · pełna strona</small></figcaption></figure><figure><a href="evidence/S02.jpg" target="_blank" rel="noopener"><div class="image-wrap mobile-shot"><img src="evidence/S02.jpg" alt="Listing — wszystkie oferty, mobile" loading="lazy"></div></a><figcaption><b>S02</b> Listing — wszystkie oferty, mobile<small>Viewport 390×844 CSS px · bitmapa 390×4140 px · pełna strona</small></figcaption></figure><figure><a href="evidence/S03.jpg" target="_blank" rel="noopener"><div class="image-wrap "><img src="evidence/S03.jpg" alt="Pełna oferta — desktop" loading="lazy"></div></a><figcaption><b>S03</b> Pełna oferta — desktop<small>Viewport 1280×720 CSS px · bitmapa 1280×3968 px · pełna strona</small></figcaption></figure><figure><a href="evidence/S04.jpg" target="_blank" rel="noopener"><div class="image-wrap mobile-shot"><img src="evidence/S04.jpg" alt="Pełna oferta — mobile" loading="lazy"></div></a><figcaption><b>S04</b> Pełna oferta — mobile<small>Viewport 390×844 CSS px · bitmapa 390×5880 px · pełna strona</small></figcaption></figure><figure><a href="evidence/S05.jpg" target="_blank" rel="noopener"><div class="image-wrap "><img src="evidence/S05.jpg" alt="Wybrana kategoria, checkbox i aktywny filtr" loading="lazy"></div></a><figcaption><b>S05</b> Wybrana kategoria, checkbox i aktywny filtr<small>Viewport 1280×720 CSS px · bitmapa 1280×1930 px · pełna strona</small></figcaption></figure><figure><a href="evidence/S06.jpg" target="_blank" rel="noopener"><div class="image-wrap "><img src="evidence/S06.jpg" alt="Brak wyników wyszukiwania" loading="lazy"></div></a><figcaption><b>S06</b> Brak wyników wyszukiwania<small>Viewport 1280×720 CSS px · bitmapa 1280×1534 px · pełna strona</small></figcaption></figure><figure><a href="evidence/S07.jpg" target="_blank" rel="noopener"><div class="image-wrap "><img src="evidence/S07.jpg" alt="Zapisana karta i komunikat potwierdzenia" loading="lazy"></div></a><figcaption><b>S07</b> Zapisana karta i komunikat potwierdzenia<small>Viewport 1280×720 CSS px · bitmapa 1280×1930 px · pełna strona</small></figcaption></figure><figure><a href="evidence/S08.jpg" target="_blank" rel="noopener"><div class="image-wrap "><img src="evidence/S08.jpg" alt="Pusta lista zapisanych ofert" loading="lazy"></div></a><figcaption><b>S08</b> Pusta lista zapisanych ofert<small>Viewport 1280×720 CSS px · bitmapa 1280×1534 px · pełna strona</small></figcaption></figure><figure><a href="evidence/S09.jpg" target="_blank" rel="noopener"><div class="image-wrap mobile-shot"><img src="evidence/S09.jpg" alt="Mobilne filtry — górna część i wybrany checkbox" loading="lazy"></div></a><figcaption><b>S09</b> Mobilne filtry — górna część i wybrany checkbox<small>Viewport 390×844 CSS px · bitmapa 390×844 px · viewport</small></figcaption></figure><figure><a href="evidence/S10.jpg" target="_blank" rel="noopener"><div class="image-wrap "><img src="evidence/S10.jpg" alt="Okno informacji o demonstracji" loading="lazy"></div></a><figcaption><b>S10</b> Okno informacji o demonstracji<small>Viewport 1280×720 CSS px · bitmapa 1280×720 px · viewport</small></figcaption></figure><figure><a href="evidence/S11.jpg" target="_blank" rel="noopener"><div class="image-wrap "><img src="evidence/S11.jpg" alt="Okno aplikowania w demonstracji" loading="lazy"></div></a><figcaption><b>S11</b> Okno aplikowania w demonstracji<small>Viewport 1280×720 CSS px · bitmapa 1280×720 px · viewport</small></figcaption></figure><figure><a href="evidence/S12.jpg" target="_blank" rel="noopener"><div class="image-wrap "><img src="evidence/S12.jpg" alt="Nieprawidłowy adres oferty" loading="lazy"></div></a><figcaption><b>S12</b> Nieprawidłowy adres oferty<small>Viewport 1280×720 CSS px · bitmapa 1280×720 px · viewport</small></figcaption></figure><figure><a href="evidence/S13.jpg" target="_blank" rel="noopener"><div class="image-wrap mobile-shot"><img src="evidence/S13.jpg" alt="Długi tytuł i inicjały firmy — mobile" loading="lazy"></div></a><figcaption><b>S13</b> Długi tytuł i inicjały firmy — mobile<small>Viewport 390×844 CSS px · bitmapa 390×5755 px · pełna strona</small></figcaption></figure><figure><a href="evidence/S14.jpg" target="_blank" rel="noopener"><div class="image-wrap mobile-shot"><img src="evidence/S14.jpg" alt="Brak wynagrodzenia — mobile" loading="lazy"></div></a><figcaption><b>S14</b> Brak wynagrodzenia — mobile<small>Viewport 390×844 CSS px · bitmapa 390×5397 px · pełna strona</small></figcaption></figure><figure><a href="evidence/S15.jpg" target="_blank" rel="noopener"><div class="image-wrap "><img src="evidence/S15.jpg" alt="Focus klawiatury — pole lokalizacji" loading="lazy"></div></a><figcaption><b>S15</b> Focus klawiatury — pole lokalizacji<small>Viewport 1280×720 CSS px · bitmapa 1280×720 px · viewport</small></figcaption></figure><figure><a href="evidence/S16.jpg" target="_blank" rel="noopener"><div class="image-wrap mobile-shot"><img src="evidence/S16.jpg" alt="Mobilne filtry — pole wynagrodzenia i dolna akcja" loading="lazy"></div></a><figcaption><b>S16</b> Mobilne filtry — pole wynagrodzenia i dolna akcja<small>Viewport 390×844 CSS px · bitmapa 390×844 px · viewport</small></figcaption></figure><figure><a href="evidence/S18.jpg" target="_blank" rel="noopener"><div class="image-wrap "><img src="evidence/S18.jpg" alt="Druga strona wyników i niedostępna następna strona" loading="lazy"></div></a><figcaption><b>S18</b> Druga strona wyników i niedostępna następna strona<small>Viewport 1280×720 CSS px · bitmapa 1280×3252 px · pełna strona</small></figcaption></figure><figure><a href="evidence/S19.jpg" target="_blank" rel="noopener"><div class="image-wrap "><img src="evidence/S19.jpg" alt="Profil firmy i ilustracja po przewinięciu" loading="lazy"></div></a><figcaption><b>S19</b> Profil firmy i ilustracja po przewinięciu<small>Viewport 1280×720 CSS px · bitmapa 1280×720 px · viewport</small></figcaption></figure><figure><a href="evidence/S20.jpg" target="_blank" rel="noopener"><div class="image-wrap "><img src="evidence/S20.jpg" alt="Potwierdzenie zapisu — rzeczywisty viewport" loading="lazy"></div></a><figcaption><b>S20</b> Potwierdzenie zapisu — rzeczywisty viewport<small>Viewport 1280×720 CSS px · bitmapa 1280×720 px · viewport</small></figcaption></figure></div></section><footer class="doc-end">v1 · Dokumentacja do oceny. Źródła produktowe zachowane. Brak eksportu do narzędzia projektowego i brak pakietu implementacyjnego.</footer></main></div></body></html>

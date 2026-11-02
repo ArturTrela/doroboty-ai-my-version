@@ -14,8 +14,8 @@ export function JobPagination({
   const { page, totalPages, total, start, end } = pagination;
   if (!total) return null;
   return (
-    <div className="mt-[var(--gui-space-l)] flex flex-col items-center gap-[var(--gui-space-m)]">
-      <p className="text-sm text-muted-foreground" data-job-page-summary>
+    <div className="pp-pagination">
+      <p className="pp-page-summary" data-job-page-summary>
         Oferty {start}–{end} z {total}
       </p>
       {totalPages > 1 && (
@@ -55,6 +55,7 @@ export function JobPagination({
                   aria-current={page === number ? "page" : undefined}
                   className={buttonVariants({
                     variant: page === number ? "default" : "ghost",
+                    className: "pp-page-button",
                     size: "icon-sm",
                   })}
                 >

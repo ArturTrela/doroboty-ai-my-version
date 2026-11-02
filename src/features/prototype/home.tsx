@@ -1,11 +1,13 @@
 import { Link } from "react-router";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { JobCard } from "@/features/jobs/job-card";
 import { usePrototype } from "./store";
 import { publishedJobs } from "./model";
 import { cn } from "@/lib/utils";
+
+import peopleArt from "../../../docs/design-system/agent-kit/assets/people.png";
 
 const categories = [
   {
@@ -31,11 +33,11 @@ export default function HomePage() {
 
   return (
     <>
-      <section className="bg-muted/25 shadow-[var(--gui-divider-bottom-shadow)]">
+      <section className="home-intro bg-muted/25 shadow-[var(--gui-divider-bottom-shadow)]">
         <div className="mx-auto grid max-w-[1360px] gap-12 px-5 py-16 lg:grid-cols-[1.3fr_0.7fr] lg:px-8 lg:py-24">
           <div>
             <Badge variant="secondary" className="px-3 py-1 text-xs">
-              Practice over theory
+              Dobra robota. Z AI w środku.
             </Badge>
             <h1 className="mt-6 max-w-4xl text-5xl leading-[var(--gui-leading-xxl)] font-semibold tracking-[var(--gui-tracking-xs)] sm:text-6xl lg:text-7xl">
               Praca dla ludzi, którzy dowożą z AI.
@@ -56,14 +58,7 @@ export default function HomePage() {
               </Link>
             </div>
           </div>
-          <aside className="self-end rounded-xl bg-background p-6 shadow-[var(--gui-shadow-m)] lg:p-8">
-            <CheckCircle2 className="size-6 text-[var(--gui-success)]" />
-            <p className="mt-5 text-sm font-semibold">Nie szukamy operatorów narzędzi</p>
-            <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-              Szukamy ról dla osób, które potrafią znaleźć wartościowe zastosowanie AI, wdrożyć je i
-              połączyć z mierzalnym efektem.
-            </p>
-          </aside>
+          <img className="people-art" src={peopleArt} alt="Dwie osoby pracujące razem z laptopem" />
         </div>
       </section>
 
@@ -76,7 +71,7 @@ export default function HomePage() {
         </h2>
         <div className="mt-8 grid gap-5 md:grid-cols-3">
           {categories.map((category, index) => (
-            <article key={category.slug} className="rounded-xl bg-card p-6">
+            <article key={category.slug} className="prototype-panel">
               <span className="text-xs font-medium text-muted-foreground">0{index + 1}</span>
               <h3 className="mt-3 text-xl font-semibold">{category.label}</h3>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
@@ -111,7 +106,7 @@ export default function HomePage() {
               Wszystkie oferty <ArrowRight className="size-4" />
             </Link>
           </div>
-          <div className="mt-8 shadow-[var(--gui-divider-top-shadow)]">
+          <div className="mt-8 pp-job-list">
             {latestJobs.map((job) => (
               <JobCard key={job.id} job={job} />
             ))}

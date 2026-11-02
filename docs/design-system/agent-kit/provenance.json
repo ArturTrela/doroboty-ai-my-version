@@ -1,0 +1,94 @@
+{
+  "version": "1.0.0",
+  "sourceCommit": "6f1cd9e6980f40546d80732e228f39d2ad89fc3a",
+  "sourceFiles": [
+    {
+      "path": "dist/assets/tokens.css",
+      "sha256": "78b74e721ccca3218f295c829647198284ebeec7f3f64b6a1f5de5e83e229ff1"
+    },
+    {
+      "path": "dist/assets/styles.css",
+      "sha256": "9b1463d8cff018cc0b06afe929618aea0225dd3f1a69de46ad1157d433a87f34"
+    },
+    {
+      "path": "dist/assets/offer.css",
+      "sha256": "ea914ba1dac9b12a3d255d50d6726e86972b6953ef5574d568e007b27a67db3c"
+    },
+    {
+      "path": "dist/assets/ui.js",
+      "sha256": "19bdaf7700f96aa2cd66f2fde751f1195fa38f242458f1905b6c5f6b91c0260c"
+    },
+    {
+      "path": "dist/assets/app.js",
+      "sha256": "769feb1a640f8c166594796d8b10fbec1ef04bac12ec540c94b8fe6dd51e9109"
+    },
+    {
+      "path": "dist/assets/offer.js",
+      "sha256": "6cbb39bd2397035c4775f142591dbf9199692f4da7d8b86d742355f548c7463b"
+    },
+    {
+      "path": "dist/assets/jobs.js",
+      "sha256": "6577bc522f245f959bf0be8aed2dd316a7eb186c7284777b0192675a5953b089"
+    },
+    {
+      "path": "dist/index.html",
+      "sha256": "20ab6f8175f842df484017e0dfb6bf7e61143a7c06f8c03587feb7bd3bfa0d70"
+    },
+    {
+      "path": "dist/oferta.html",
+      "sha256": "8d4979801bfe49efa763ad200f59c63a2f634697a0f67683f3337672162a6c62"
+    }
+  ],
+  "cssRules": {
+    "foundation": 24,
+    "components": 234,
+    "listing": 49
+  },
+  "excludedRetiredSelectors": [
+    ".job-dialog",
+    ".job-dialog-header",
+    ".job-dialog-header .icon-button",
+    ".dialog-company",
+    ".dialog-company .company-logo",
+    ".job-dialog-header h2",
+    ".dialog-tag-row",
+    ".dialog-tag-row span",
+    ".dialog-tag-row .icon",
+    ".job-dialog-body",
+    ".role-copy",
+    ".role-copy h3",
+    ".role-copy h3:first-child",
+    ".role-copy ul",
+    ".role-copy li",
+    ".role-copy>p",
+    ".detail-fact-panel",
+    ".detail-fact-panel>div",
+    ".detail-fact-panel .panel-label",
+    ".detail-fact-panel .panel-value",
+    ".detail-fact-panel .button",
+    ".detail-fact-panel>div:last-child",
+    ".detail-demo",
+    ".job-dialog-footer",
+    ".job-dialog-footer .button",
+    ".job-dialog",
+    ".job-dialog-header",
+    ".job-dialog-header .icon-button",
+    ".dialog-company",
+    ".job-dialog-header h2",
+    ".dialog-tag-row",
+    ".job-dialog-body",
+    ".detail-fact-panel",
+    ".detail-fact-panel>div",
+    ".role-copy",
+    ".role-copy h3",
+    ".job-dialog-footer",
+    ".job-dialog-footer .button"
+  ],
+  "decisions": [
+    "Split existing CSS into foundation, components and page compositions.",
+    "Keep existing public classes and JavaScript export signatures.",
+    "Stable accessible save labels paired with aria-pressed.",
+    "Escape fixture-only card strings; whitelist logo tone and href schemes.",
+    "No hosting manifest, Git metadata, credentials or runtime state copied."
+  ]
+}
