@@ -212,7 +212,7 @@ test("map, hash deep links and unknown records work without external requests", 
   await page.goto("/#/oferty/missing");
   await expect(page.getByRole("heading", { name: "Nie znaleziono strony" })).toBeVisible();
 });
-test("mobile navigation, light/dark appearance and keyboard person selection", async ({ page }) => {
+test("mobile navigation, light-only appearance and keyboard person selection", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await page.goto("/#/auth/sign-in");
   const anna = page.getByRole("button", { name: "Wejdź jako Anna Kowalska", exact: true });
@@ -225,11 +225,12 @@ test("mobile navigation, light/dark appearance and keyboard person selection", a
   await page.screenshot({ path: "artifacts/profile-mobile.png", fullPage: true });
   await page.getByRole("button", { name: "Otwórz menu" }).click();
   await page.getByRole("link", { name: "Ustawienia", exact: true }).click();
-  await page.getByRole("combobox", { name: "Motyw" }).click();
-  await page.getByRole("option", { name: "Ciemny", exact: true }).click();
+  await page.emulateMedia({ colorScheme: "dark" });
   await page.reload();
-  await expect(page.locator("html")).toHaveClass(/dark/);
-  await page.screenshot({ path: "artifacts/settings-mobile-dark.png", fullPage: true });
+  await expect(page.getByRole("combobox", { name: "Motyw" })).toHaveCount(0);
+  await expect(page.locator("html")).not.toHaveClass(/dark/);
+  await expect(page.locator("body")).toHaveCSS("background-color", "rgb(255, 255, 255)");
+  await page.screenshot({ path: "artifacts/settings-mobile-light.png", fullPage: true });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
 test("core screens have no serious accessibility violations", async ({ page }) => {
@@ -251,4 +252,127 @@ test("public home and filters reflow at 320px with no external requests", async 
   await page.goto("/#/oferty");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: "artifacts/jobs-mobile.png", fullPage: true });
+});
+
+test("application submission explains short answers and missing approval without losing input", async ({
+  page,
+}) => {
+  await choose(page, "Anna Kowalska");
+  await page.goto("/#/aplikuj/ai-product-manager");
+  const answer = page.getByLabel("Dlaczego pasujesz do tej roli?");
+  const send = page.getByRole("button", { name: "Wyślij aplikację", exact: true });
+  await page.getByLabel("Twoje notatki do aplikacji (opcjonalnie)").fill("Moje notatki źródłowe");
+  await answer.fill("krótka odpowiedź");
+  await page.getByRole("checkbox").check();
+  await expect(send).toBeEnabled();
+  await send.click();
+  await expect(page.getByRole("alert")).toContainText("Odpowiedź jest za krótka");
+  await expect(answer).toBeFocused();
+  await expect(answer).toHaveAttribute("aria-invalid", "true");
+  await expect(page.getByRole("checkbox")).toBeChecked();
+  await expect(page.getByLabel("Twoje notatki do aplikacji (opcjonalnie)")).toHaveValue(
+    "Moje notatki źródłowe",
+  );
+  await answer.fill("Moje doświadczenie pasuje do odpowiedzialności opisanej w tej ofercie.");
+  await send.click();
+  await expect(page.getByRole("alert")).toHaveText(
+    "Zatwierdź treść aplikacji i jej przesłanie pracodawcy.",
+  );
+  await expect(page.getByRole("checkbox")).toBeFocused();
+  await page.getByRole("checkbox").check();
+  await send.click();
+  await expect(page.getByText("Aplikacja została wysłana.", { exact: false })).toBeVisible();
+});
+
+test("legacy dark preference keeps scenario data and renders the light interface", async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: "dark" });
+  const legacy = { ...initialState(), activePersonId: "candidate-anna", theme: "dark" };
+  legacy.people[0].bio = "Zachowaj mój profil";
+  await page.goto("/");
+  await page.evaluate(({ key, raw }) => localStorage.setItem(key, raw), {
+    key: STORAGE_KEY,
+    raw: JSON.stringify(legacy),
+  });
+  await page.reload();
+  await page.goto("/#/app/profil");
+  await expect(page.getByRole("textbox", { name: "O mnie", exact: true })).toHaveValue(
+    "Zachowaj mój profil",
+  );
+  await expect(page.locator("html")).not.toHaveClass(/dark/);
+  await expect(page.locator("body")).toHaveCSS("background-color", "rgb(255, 255, 255)");
+  await page.getByRole("button", { name: "Zapisz profil", exact: true }).click();
+  expect(
+    await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!).theme, STORAGE_KEY),
+  ).toBeUndefined();
+});
+
+test("public job keeps the original constrained hero, facts column and actions below the description", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await choose(page, "Anna Kowalska");
+  await page.goto("/#/oferty/ai-product-manager");
+  const article = page.locator("main article");
+  const hero = article.locator("header");
+  await expect(hero).toContainText(
+    "Poprowadź produkt od problemu operacyjnego do mierzalnego wdrożenia AI.",
+  );
+  await expect(hero.getByText("Senior", { exact: true })).toHaveCount(0);
+  const facts = article.getByRole("complementary");
+  await expect(facts.getByRole("heading", { name: "Konkrety", exact: true })).toBeVisible();
+  await expect(facts).toContainText("Wynagrodzenie");
+  const description = article.locator("[data-job-description]");
+  const heroBox = await hero.locator(":scope > div").boundingBox();
+  const descriptionBox = await description.boundingBox();
+  const factsBox = await facts.boundingBox();
+  expect(heroBox!.width).toBeLessThanOrEqual(1024);
+  expect(factsBox!.x).toBeGreaterThan(descriptionBox!.x + descriptionBox!.width);
+  const apply = article.getByRole("link", { name: "Aplikuj", exact: true });
+  const applyBox = await apply.boundingBox();
+  expect(applyBox!.y).toBeGreaterThan(descriptionBox!.y + descriptionBox!.height);
+  await page.screenshot({ path: "artifacts/original-job-layout-desktop.png", fullPage: true });
+  const nav = page.getByRole("navigation", { name: "Główna nawigacja" });
+  await expect(nav.getByRole("link", { name: "Aplikacje", exact: true })).toBeVisible();
+  await expect(nav.getByRole("link", { name: "Profil", exact: true })).toBeVisible();
+  await page.setViewportSize({ width: 375, height: 812 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  expect((await facts.boundingBox())!.y).toBeGreaterThan((await description.boundingBox())!.y);
+  await page.screenshot({ path: "artifacts/original-job-layout-mobile.png", fullPage: true });
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await nav.getByRole("link", { name: "Dla firm", exact: true }).click();
+  await expect(
+    page.getByRole("heading", { name: "Karolina Wiśniewska", exact: true }),
+  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Anna Kowalska", exact: true })).toHaveCount(0);
+});
+
+test("restored company and public navigation keep their structure across screen sizes", async ({
+  page,
+}) => {
+  await choose(page, "Anna Kowalska");
+  await page.goto("/#/firmy/brightlabs");
+  await expect(page.getByRole("heading", { name: "BrightLabs", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Otwarte role", exact: true })).toBeVisible();
+  await expect(page.locator("main")).toContainText("51–200 osób");
+  await expect(page.getByRole("link", { name: "Strona firmy", exact: false })).toHaveAttribute(
+    "href",
+    "https://example.com/brightlabs",
+  );
+  await page.screenshot({ path: "artifacts/original-company-layout-desktop.png", fullPage: true });
+  for (const width of [320, 640, 768, 1024]) {
+    await page.setViewportSize({ width, height: 900 });
+    const nav = await page.getByRole("navigation", { name: "Główna nawigacja" }).boundingBox();
+    expect(nav!.x + nav!.width).toBeLessThanOrEqual(width);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+      true,
+    );
+  }
+  await page.goto("/#/oferty");
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await expect(page.getByRole("heading", { name: "Oferty pracy z AI", exact: true })).toBeVisible();
+  await expect(page.getByText("Aktualizacja", { exact: false })).toBeVisible();
+  await expect(page.locator("[data-job-page-summary]")).toHaveText("Oferty 1–6 z 6");
+  await page.screenshot({ path: "artifacts/original-list-layout-desktop.png", fullPage: true });
 });

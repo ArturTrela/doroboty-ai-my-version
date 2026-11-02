@@ -62,4 +62,10 @@ describe("browser persistence and recovery", () => {
     expect(() => parseState(JSON.stringify(s))).toThrow("Dotychczasowy stan");
     expect(() => parseState(" ".repeat(MAX_IMPORT_BYTES + 1))).toThrow("za duży");
   });
+  it("accepts legacy appearance preferences without changing scenario data", () => {
+    const state = initialState();
+    for (const theme of ["dark", "system", "light"]) {
+      expect(parseState(JSON.stringify({ ...state, theme }))).toEqual(state);
+    }
+  });
 });

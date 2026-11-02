@@ -980,11 +980,14 @@ code {
 }
 
 /* Frontend prototype compositions using the existing Untitled theme. */
-.prototype-section {
-  max-width: 1360px;
-  margin-inline: auto;
-  padding: var(--gui-space-xl) var(--gui-space-m);
+@layer components {
+  .prototype-section {
+    max-width: 1360px;
+    margin-inline: auto;
+    padding: var(--gui-space-xl) var(--gui-space-m);
+  }
 }
+
 .prototype-panel {
   background: var(--card);
   border-radius: var(--gui-radius-m);

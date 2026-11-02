@@ -1,4 +1,4 @@
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from "react-router";
 import { CheckCircle2, FileText } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import {
   draftAnswer,
   nextStages,
   stageLabels,
+  MIN_APPLICATION_ANSWER_LENGTH,
   type Application,
 } from "./model";
 import { PageTitle, Empty, NotFound, Notice } from "./shell";
@@ -31,6 +32,11 @@ export function PersonPicker() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const next = params.get("next");
+  const audience = params.get("audience");
+  const people =
+    audience === "candidate" || audience === "employer"
+      ? state.people.filter((person) => person.role === audience)
+      : state.people;
   const safeNext = next && /^\/(?!\/)/.test(next) && !next.startsWith("/auth") ? next : null;
   return (
     <section className="prototype-section max-w-4xl">
@@ -39,7 +45,7 @@ export function PersonPicker() {
         Wybierz profil, z którego chcesz korzystać w prototypie. Hasło nie jest potrzebne.
       </p>
       <div className="grid gap-5 sm:grid-cols-2">
-        {state.people.map((person) => (
+        {people.map((person) => (
           <article key={person.id} className="prototype-panel">
             <h2 className="text-xl">{person.name}</h2>
             <p className="my-4 text-muted-foreground">{person.headline}</p>
@@ -245,6 +251,11 @@ export function ApplyPage() {
   const [answer, setAnswer] = useState(draft?.answer ?? "");
   const [consent, setConsent] = useState(false);
   const [message, setMessage] = useState("");
+  const [attempted, setAttempted] = useState(false);
+  const answerInput = useRef<HTMLTextAreaElement>(null);
+  const answerLength = answer.trim().length;
+  const answerInvalid = attempted && answerLength < MIN_APPLICATION_ANSWER_LENGTH;
+  const consentInvalid = attempted && !consent;
   if (!job) return <NotFound />;
   const existing = state.applications.find(
     (x) => x.jobId === job.id && x.candidateId === person.id,
@@ -260,6 +271,15 @@ export function ApplyPage() {
     );
   function submit(e: FormEvent) {
     e.preventDefault();
+    setAttempted(true);
+    if (answerLength < MIN_APPLICATION_ANSWER_LENGTH) {
+      answerInput.current?.focus();
+      return;
+    }
+    if (!consent) {
+      document.getElementById("application-consent")?.focus();
+      return;
+    }
     if (run({ type: "submit", jobId: job!.id, notes, generated, answer, consent }))
       navigate("/app/aplikacje?wyslano=1");
   }
@@ -272,7 +292,7 @@ export function ApplyPage() {
       <p className="my-4 text-muted-foreground">
         {job.company.name} · {person.name}
       </p>
-      <form onSubmit={submit} className="prototype-form mt-6">
+      <form noValidate onSubmit={submit} className="prototype-form mt-6">
         <section className="prototype-panel">
           <h2 className="mb-4">Twoje CV</h2>
           <p className="whitespace-pre-wrap text-sm leading-relaxed">{person.cv}</p>
@@ -320,9 +340,12 @@ export function ApplyPage() {
         )}
         <Field label="Dlaczego pasujesz do tej roli?">
           <Textarea
+            ref={answerInput}
             required
-            minLength={20}
+            minLength={MIN_APPLICATION_ANSWER_LENGTH}
             maxLength={12000}
+            aria-invalid={answerInvalid || undefined}
+            aria-describedby="application-answer-help"
             value={answer}
             onChange={(e) => {
               setAnswer(e.target.value);
@@ -330,20 +353,35 @@ export function ApplyPage() {
             }}
           />
         </Field>
+        <p
+          id="application-answer-help"
+          role={answerInvalid ? "alert" : undefined}
+          className={answerInvalid ? "error-message" : "text-sm text-muted-foreground"}
+        >
+          {answerInvalid
+            ? `Odpowiedź jest za krótka. Wpisz co najmniej ${MIN_APPLICATION_ANSWER_LENGTH} znaków (obecnie: ${answerLength}).`
+            : `Minimum ${MIN_APPLICATION_ANSWER_LENGTH} znaków. Obecnie: ${answerLength}.`}
+        </p>
         <label className="flex items-start gap-3">
           <Checkbox
+            id="application-consent"
             checked={consent}
             onCheckedChange={(v) => setConsent(v)}
+            aria-invalid={consentInvalid || undefined}
+            aria-describedby={consentInvalid ? "application-consent-error" : undefined}
             aria-label="Zatwierdzam treść i przesłanie aplikacji"
           />
           <span>
             Zatwierdzam treść aplikacji i przesłanie profilu oraz przykładowego CV pracodawcy.
           </span>
         </label>
+        {consentInvalid && (
+          <p id="application-consent-error" className="error-message" role="alert">
+            Zatwierdź treść aplikacji i jej przesłanie pracodawcy.
+          </p>
+        )}
         <div className="flex flex-wrap gap-3">
-          <Button type="submit" disabled={!consent || answer.trim().length < 20}>
-            Wyślij aplikację
-          </Button>
+          <Button type="submit">Wyślij aplikację</Button>
           <Button
             type="button"
             variant="outline"

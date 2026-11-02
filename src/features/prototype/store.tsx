@@ -52,16 +52,8 @@ function useStore() {
     }
   }
   useEffect(() => {
-    const query = window.matchMedia("(prefers-color-scheme: dark)");
-    const apply = () =>
-      document.documentElement.classList.toggle(
-        "dark",
-        state.theme === "dark" || (state.theme === "system" && query.matches),
-      );
-    apply();
-    query.addEventListener("change", apply);
-    return () => query.removeEventListener("change", apply);
-  }, [state.theme]);
+    document.documentElement.classList.remove("dark");
+  }, []);
   return {
     state,
     issue,

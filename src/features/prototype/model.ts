@@ -10,6 +10,7 @@ const id = z
   .regex(/^[a-zA-Z0-9][a-zA-Z0-9_-]*$/);
 const shortText = z.string().trim().min(1).max(200);
 const text = z.string().trim().max(12000);
+export const MIN_APPLICATION_ANSWER_LENGTH = 20;
 const companySchema = z.object({
   id,
   slug: id,
@@ -111,7 +112,7 @@ const applicationSchema = z.object({
   jobTitle: shortText,
   candidateName: shortText,
   cv: text.min(20),
-  answer: text.min(20),
+  answer: text.min(MIN_APPLICATION_ANSWER_LENGTH),
   sourceNotes: text,
   generatedAnswer: text,
   score: z.number().int().min(0).max(100),
@@ -133,7 +134,6 @@ export const stateSchema = z
   .object({
     version: z.literal(1),
     activePersonId: id.nullable(),
-    theme: z.enum(["light", "dark", "system"]),
     companies: z.array(companySchema).min(1).max(200),
     jobs: z.array(jobSchema).min(1).max(1000),
     people: z.array(personSchema).min(1).max(100),
@@ -199,7 +199,6 @@ export type Person = State["people"][number];
 export type Application = State["applications"][number];
 export type Action =
   | { type: "select_person"; id: string | null }
-  | { type: "theme"; value: State["theme"] }
   | { type: "profile"; value: z.infer<typeof profileSchema> }
   | { type: "toggle_saved"; jobId: string }
   | { type: "draft"; jobId: string; notes: string; generated: string; answer: string }
@@ -220,7 +219,6 @@ export function initialState(): State {
   const state = stateSchema.parse({
     version: 1,
     activePersonId: null,
-    theme: "system",
     ...marketplace,
     people,
     applications: [],
@@ -283,8 +281,8 @@ export function transition(
     if (action.id !== null && !s.people.some((x) => x.id === action.id))
       fail("Nie znaleziono osoby.");
     s.activePersonId = action.id;
-  } else if (action.type === "theme") s.theme = action.value;
-  else if (action.type === "profile") Object.assign(candidate(), profileSchema.parse(action.value));
+  } else if (action.type === "profile")
+    Object.assign(candidate(), profileSchema.parse(action.value));
   else if (action.type === "toggle_saved") {
     const p = candidate();
     if (!s.jobs.some((x) => x.id === action.jobId)) fail("Nie znaleziono oferty.");

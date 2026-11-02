@@ -1,10 +1,8 @@
 import { useState, type ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
-import { FormSelect } from "@/components/ui/form-select";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { usePrototype } from "./store";
 import { serializeState, MAX_IMPORT_BYTES } from "./storage";
-import { type State } from "./model";
 import { PageTitle } from "./shell";
 
 export function downloadText(name: string, text: string, type = "application/json") {
@@ -18,7 +16,7 @@ export function downloadText(name: string, text: string, type = "application/jso
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 export function SettingsPage() {
-  const { state, run, reset, importState, original } = usePrototype();
+  const { state, reset, importState, original } = usePrototype();
   const [pending, setPending] = useState<"reset" | "import" | null>(null);
   const [raw, setRaw] = useState("");
   const [error, setError] = useState("");
@@ -52,19 +50,6 @@ export function SettingsPage() {
     <>
       <PageTitle>Ustawienia prototypu</PageTitle>
       <section className="prototype-panel prototype-form">
-        <h2>Wygląd</h2>
-        <FormSelect
-          ariaLabel="Motyw"
-          value={state.theme}
-          onValueChange={(value) => run({ type: "theme", value: value as State["theme"] })}
-          options={[
-            { value: "system", label: "Systemowy" },
-            { value: "light", label: "Jasny" },
-            { value: "dark", label: "Ciemny" },
-          ]}
-        />
-      </section>
-      <section className="prototype-panel prototype-form mt-6">
         <h2>Dane scenariusza</h2>
         <p>
           Zmiany są zapisane tylko w tej przeglądarce. Wysłanie linku innej osobie nie przenosi
