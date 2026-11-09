@@ -44,8 +44,11 @@
   border-radius: 10px;
 }
 .pp-view-link[aria-current="page"] {
-  background: var(--pp-ink);
-  color: white;
+  background: var(--robot-pcb);
+  color: var(--robot-light);
+}
+.pp-view-link[aria-current="page"]:is(:hover, :focus-visible) {
+  background: var(--robot-selected-hover);
 }
 .pp-filter-button {
   border: 1px solid var(--pp-ink);

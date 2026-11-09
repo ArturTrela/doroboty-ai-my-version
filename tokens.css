@@ -97,7 +97,17 @@
   --gui-neutral-9: #333333;
   --gui-neutral-9-transparent: #33333333;
   --gui-neutral-10: #181818;
-  --gui-color-1: #ff90e8;
+  --robot-paper: #faf9f5;
+  --robot-ink: #182013;
+  --robot-pcb: #15370d;
+  --robot-sage: #728e6d;
+  --robot-metal: #e4d8c3;
+  --robot-gold: #e5cd82;
+  --robot-light: #fff2b4;
+  --robot-muted: #e0e8cb;
+  --robot-selected-hover: #284821;
+  --gui-color-1: var(--robot-gold);
+  --gui-primary-hover: var(--robot-light);
   --gui-color-2: #181818;
   --gui-color-2-transparent: #085e5533;
   --gui-color-3: #ffe45b;
@@ -115,11 +125,11 @@
   --gui-error: #fc032d;
   --gui-neutral-10-transparent: #00000033;
   --gui-backdrop: #18181899;
-  --gui-color-1-transparent: #ffe0f7;
+  --gui-color-1-transparent: var(--robot-light);
   --gui-success-transparent: #00906c33;
   --gui-error-transparent: #fc032d33;
 
-  --gui-canvas: #f4f4f0;
+  --gui-canvas: var(--robot-paper);
   --gui-surface: var(--gui-neutral-2);
   --gui-surface-muted: var(--gui-neutral-3);
   --gui-text: var(--gui-neutral-10);
@@ -128,7 +138,7 @@
   --gui-edge: #181818;
   --gui-accent: var(--gui-color-1);
   --gui-accent-text: #181818;
-  /* Dark labels on pink actions. */
+  /* Dark labels on gold actions. */
   --gui-accent-text-accessible: var(--gui-neutral-10);
   --gui-danger: var(--gui-error);
   --gui-focus: #181818;
@@ -250,7 +260,7 @@
   --card-foreground: var(--gui-text);
   --popover: var(--gui-neutral-1);
   --popover-foreground: var(--gui-text);
-  --primary: #ff90e8;
+  --primary: var(--gui-color-1);
   --primary-foreground: #181818;
   --secondary: var(--gui-surface-muted);
   --secondary-foreground: var(--gui-text);

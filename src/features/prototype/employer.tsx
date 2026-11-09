@@ -1,6 +1,8 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { CircuitTraces } from "@/features/public/circuit-traces";
+import { PcbLettering } from "@/features/public/pcb-lettering";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -25,7 +27,10 @@ export function EmployerJobs() {
     <>
       <PageTitle
         action={
-          <Link to="/app/oferty/nowa" className={buttonVariants()}>
+          <Link
+            to="/app/oferty/nowa"
+            className={buttonVariants({ variant: "plate", className: "robot-plate-gold" })}
+          >
             Dodaj ofertę
           </Link>
         }
@@ -35,27 +40,27 @@ export function EmployerJobs() {
       <div className="space-y-4">
         {jobs.length ? (
           jobs.map((job) => (
-            <article key={job.id} className="prototype-panel">
+            <article key={job.id} className="prototype-panel robot-pcb robot-account-job">
               <div className="flex flex-wrap justify-between gap-4">
                 <div>
-                  <Link
-                    className="text-xl font-semibold text-[var(--gui-link)]"
-                    to={`/app/oferty/${job.id}`}
-                  >
-                    {job.title}
-                  </Link>
-                  <p className="mt-3 text-muted-foreground">
+                  <h2>
+                    <Link className="block rounded-sm" to={`/app/oferty/${job.id}`}>
+                      <PcbLettering text={job.title} />
+                    </Link>
+                  </h2>
+                  <p className="robot-job-status mt-3">
                     {state.applications.filter((x) => x.jobId === job.id).length} aplikacji ·{" "}
                     {job.publicationStatus === "published" ? "Opublikowana" : "Szkic"}
                   </p>
                 </div>
                 <Link
                   to={`/oferty/${job.slug}`}
-                  className={buttonVariants({ variant: "outline", size: "sm" })}
+                  className={buttonVariants({ variant: "plate", size: "sm" })}
                 >
                   Zobacz ofertę
                 </Link>
               </div>
+              <CircuitTraces />
             </article>
           ))
         ) : (
@@ -138,7 +143,7 @@ export function EmployerJobEditor() {
   return (
     <>
       <PageTitle>{existing ? "Edytuj ofertę" : "Nowa oferta"}</PageTitle>
-      <form className="prototype-form" onSubmit={publish}>
+      <form className="prototype-panel prototype-form" onSubmit={publish}>
         <Field label="Nazwa stanowiska">
           <Input
             required
@@ -164,7 +169,7 @@ export function EmployerJobEditor() {
         <div>
           <Button
             type="button"
-            variant="outline"
+            variant="plate"
             disabled={source.trim().length < 20 || title.trim().length < 3}
             onClick={() => {
               setGenerated(
@@ -182,7 +187,7 @@ export function EmployerJobEditor() {
             <p className="whitespace-pre-wrap">{generated}</p>
             <Button
               type="button"
-              variant="outline"
+              variant="plate"
               className="mt-5"
               onClick={() => {
                 setDescription(generated);
@@ -265,7 +270,7 @@ export function EmployerJobEditor() {
             {error}
           </p>
         )}
-        <Button type="submit" disabled={!approved}>
+        <Button type="submit" variant="plate" className="robot-plate-gold" disabled={!approved}>
           Opublikuj ofertę
         </Button>
       </form>
@@ -299,7 +304,9 @@ export function CompanyEditor() {
         <Field label="Opis firmy">
           <Textarea name="description" maxLength={12000} defaultValue={company.description} />
         </Field>
-        <Button type="submit">Zapisz dane firmy</Button>
+        <Button type="submit" variant="plate" className="robot-plate-gold">
+          Zapisz dane firmy
+        </Button>
         {message && <p role="status">{message}</p>}
         <Link className="text-[var(--gui-link)]" to={`/firmy/${company.slug}`}>
           Zobacz profil firmy

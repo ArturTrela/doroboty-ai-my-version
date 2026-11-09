@@ -23,7 +23,10 @@ export function SalaryFact({ job }: { job: Job }) {
           </p>
         </>
       ) : (
-        <span className="pp-salary-missing">Nie podano wynagrodzenia</span>
+        <>
+          <span className="pp-salary-missing">Widełki niepodane</span>
+          <p className="pp-salary-description">{contractLabels[job.contract]}</p>
+        </>
       )}
     </div>
   );

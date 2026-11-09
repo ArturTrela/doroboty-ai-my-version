@@ -4,6 +4,8 @@ import { CheckCircle2, FileText } from "lucide-react";
 import { ConfettiBurst, type ConfettiOrigin } from "@/components/confetti-burst";
 import { BackLink } from "@/components/back-link";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { CircuitTraces } from "@/features/public/circuit-traces";
+import { PcbLettering } from "@/features/public/pcb-lettering";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -37,8 +39,10 @@ export function PersonPicker() {
       : state.people;
   const safeNext = next && /^\/(?!\/)/.test(next) && !next.startsWith("/auth") ? next : null;
   return (
-    <section className="prototype-section max-w-4xl">
-      <h1>Wybierz osobę</h1>
+    <section className="prototype-section robot-person-picker">
+      <h1>
+        <PcbLettering text="Wybierz osobę" />
+      </h1>
       <p className="mt-4 mb-8 text-muted-foreground">
         Wybierz profil, z którego chcesz korzystać w prototypie. Hasło nie jest potrzebne.
       </p>
@@ -48,12 +52,12 @@ export function PersonPicker() {
             <h2 className="text-xl">{person.name}</h2>
             <p className="my-4 text-muted-foreground">{person.headline}</p>
             <Button
-              variant="outline"
+              variant="plate"
               onClick={() => {
                 run({ type: "select_person", id: person.id });
                 navigate(
                   person.role === "candidate"
-                    ? (safeNext ?? "/app")
+                    ? (safeNext ?? "/app/profil")
                     : person.role === "employer"
                       ? "/app/oferty"
                       : "/app/case",
@@ -103,7 +107,7 @@ export function WorkspaceHome() {
   );
   return (
     <>
-      <PageTitle>Witaj, {person.name.split(" ")[0]}</PageTitle>
+      <PageTitle>{`Witaj, ${person.name.split(" ")[0]}`}</PageTitle>
       <div className="grid gap-5 sm:grid-cols-3">
         {[
           ["Aplikacje", applications.length],
@@ -119,18 +123,22 @@ export function WorkspaceHome() {
               .length,
           ],
         ].map(([label, value]) => (
-          <div className="prototype-panel" key={label}>
-            <p className="text-muted-foreground">{label}</p>
+          <div className="prototype-panel robot-pcb robot-account-stat" key={label}>
+            <p>{label}</p>
             <strong className="mt-3 block text-3xl">{value}</strong>
+            <CircuitTraces />
           </div>
         ))}
       </div>
       <div className="mt-8 flex flex-wrap gap-3">
-        <Link className={buttonVariants()} to={candidate ? "/oferty" : "/app/kandydaci"}>
+        <Link
+          className={buttonVariants({ variant: "plate" })}
+          to={candidate ? "/oferty" : "/app/kandydaci"}
+        >
           {candidate ? "Przeglądaj oferty" : "Przejrzyj kandydatów"}
         </Link>
         <Link
-          className={buttonVariants({ variant: "outline" })}
+          className={buttonVariants({ variant: "plate" })}
           to={candidate ? "/app/profil" : "/app/oferty"}
         >
           {candidate ? "Edytuj profil" : "Zarządzaj ofertami"}
@@ -160,12 +168,12 @@ export function ProfilePage({ preview = false }: { preview?: boolean }) {
       setMessage("Profil został zapisany.");
   }
   return (
-    <>
+    <div className="robot-profile">
       <PageTitle
         action={
           <Link
             to={preview ? "/app/profil" : "/app/profil/podglad"}
-            className={buttonVariants({ variant: "outline" })}
+            className={buttonVariants({ variant: "plate" })}
           >
             {preview ? "Edytuj profil" : "Podgląd profilu"}
           </Link>
@@ -193,18 +201,20 @@ export function ProfilePage({ preview = false }: { preview?: boolean }) {
           <Field label="O mnie">
             <Textarea name="bio" maxLength={12000} defaultValue={person.bio} />
           </Field>
-          <Button type="submit">Zapisz profil</Button>
+          <Button type="submit" variant="plate" className="robot-plate-gold">
+            Zapisz profil
+          </Button>
           {message && <p role="status">{message}</p>}
         </form>
       )}
       <section className="prototype-panel mt-6">
         <h2 className="mb-4 flex items-center gap-2">
           <FileText className="size-5" />
-          CV
+          <PcbLettering text="CV" />
         </h2>
-        <CvAttachment candidateId={person.id} fallbackText={person.cv} />
+        <CvAttachment candidateId={person.id} fallbackText={person.cv} actionVariant="plate" />
       </section>
-    </>
+    </div>
   );
 }
 export function SavedPage() {
@@ -217,11 +227,15 @@ export function SavedPage() {
     <>
       <PageTitle>Zapisane oferty</PageTitle>
       {jobs.length ? (
-        jobs.map((job) => <JobCard key={job.id} job={job} saved />)
+        <div className="pp-job-list">
+          {jobs.map((job) => (
+            <JobCard key={job.id} job={job} saved />
+          ))}
+        </div>
       ) : (
         <Empty>
           <p className="mb-4">Nie masz jeszcze zapisanych ofert.</p>
-          <Link className={buttonVariants({ variant: "outline" })} to="/oferty">
+          <Link className={buttonVariants({ variant: "plate" })} to="/oferty">
             Przeglądaj oferty
           </Link>
         </Empty>

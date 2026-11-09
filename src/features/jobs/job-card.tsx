@@ -6,10 +6,12 @@ import type { JobWithCompany } from "./types";
 import { categoryLabels, functionLabels, remoteLabels, seniorityLabels } from "./presentation";
 import { CompanyLogo } from "./company-logo";
 import { SalaryFact } from "./salary-fact";
+import { PcbLettering } from "@/features/public/pcb-lettering";
+import { CircuitTraces } from "@/features/public/circuit-traces";
 export function JobCard({ job, saved }: { job: JobWithCompany; saved?: boolean }) {
   const { run } = usePrototype();
   return (
-    <article className="pp-job-card">
+    <article className="pp-job-card robot-pcb">
       <CompanyLogo company={job.company} />
       <div className="pp-job-main">
         <div className="pp-job-topline">
@@ -20,7 +22,9 @@ export function JobCard({ job, saved }: { job: JobWithCompany; saved?: boolean }
           <span className="pp-job-category">{categoryLabels[job.category]}</span>
         </div>
         <h3 className="pp-job-title">
-          <Link to={`/oferty/${job.slug}`}>{job.title}</Link>
+          <Link to={`/oferty/${job.slug}`}>
+            <PcbLettering text={job.title} />
+          </Link>
         </h3>
         <div className="pp-job-facts">
           <span>
@@ -60,6 +64,7 @@ export function JobCard({ job, saved }: { job: JobWithCompany; saved?: boolean }
           Zobacz rolę <ArrowUpRight className="pp-icon" />
         </Link>
       </div>
+      <CircuitTraces />
     </article>
   );
 }

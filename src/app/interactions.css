@@ -26,15 +26,15 @@
     input[type="submit"],
     input[type="button"],
     input[type="reset"]
-  ):not(:disabled, [aria-disabled="true"], [data-disabled]):hover {
+  ):not(:disabled, [aria-disabled="true"], [data-disabled]):is(:hover, :focus-visible) {
   background-color: var(--control-hover-bg, var(--gui-color-1-transparent));
   color: var(--control-hover-text, var(--gui-text));
 }
 
 /* Selected navigation stays visibly selected during hover. */
-:where(.nav-active, .pp-category-tab.pp-selected, .pp-view-link[aria-current="page"]) {
-  --control-hover-bg: var(--gui-neutral-9);
-  --control-hover-text: white;
+:where(.nav-active, .pp-view-link[aria-current="page"]) {
+  --control-hover-bg: var(--robot-selected-hover);
+  --control-hover-text: var(--robot-light);
 }
 /* Preserve the checked checkbox treatment rather than replacing it with a quiet action. */
 [role="checkbox"][aria-checked="true"] {

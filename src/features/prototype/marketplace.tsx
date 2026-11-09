@@ -7,7 +7,12 @@ import { BackLink } from "@/components/back-link";
 import { ResponsivePanel } from "@/components/responsive-panel";
 import { SalaryFact } from "@/features/jobs/salary-fact";
 import { functionLabels } from "@/features/jobs/presentation";
-import peopleArt from "../../../docs/design-system/agent-kit/assets/people.png";
+import humanoid from "@/features/public/assets/humanoid-szalwia.png";
+import grippers from "@/features/public/assets/chwytaki-tablicy.png";
+import listingTitle from "@/features/public/assets/listing-ethnocentric-italic.png";
+import { OfferRobot } from "@/features/public/offer-robot";
+import { PcbLettering } from "@/features/public/pcb-lettering";
+import { CircuitTraces } from "@/features/public/circuit-traces";
 import { CompanyLogo } from "@/features/jobs/company-logo";
 import { JobCard } from "@/features/jobs/job-card";
 import { JobFiltersForm } from "@/features/jobs/job-filters";
@@ -156,9 +161,11 @@ export function JobsPage() {
           <div className="pp-intro-grid">
             <div className="pp-intro-copy">
               <h1>
-                Dobra robota.
-                <br />
-                <span>Z AI w środku.</span>
+                <img
+                  className="robot-hero-title"
+                  src={listingTitle}
+                  alt="Dobra robota. Z AI w środku."
+                />
               </h1>
               <p>
                 Dla ludzi, którzy tworzą, wdrażają i rozwijają AI.
@@ -166,11 +173,7 @@ export function JobsPage() {
                 Znajdź rolę, w której zrobisz coś dobrego.
               </p>
             </div>
-            <img
-              className="pp-people-art"
-              src={peopleArt}
-              alt="Dwie osoby pracujące razem z laptopem"
-            />
+            <img className="pp-people-art robot-listing-art" src={humanoid} alt="" />
           </div>
           <form
             key={`${filters.query ?? ""}:${filters.location ?? ""}`}
@@ -222,7 +225,11 @@ export function JobsPage() {
             ).map(([key, label, description]) => (
               <button
                 key={key}
-                className={cn("pp-category-tab", (filters.category ?? "") === key && "pp-selected")}
+                className={cn(
+                  "pp-category-tab robot-plate robot-category robot-plate-action",
+                  (filters.category ?? "") === key && "pp-selected",
+                )}
+                data-category={key || undefined}
                 aria-pressed={(filters.category ?? "") === key}
                 onClick={() => change("category", key)}
               >
@@ -238,7 +245,17 @@ export function JobsPage() {
           </div>
         </div>
       </section>
-      <section className="pp-container pp-board-layout">
+      <section className="pp-container pp-board-layout robot-board">
+        {view === "list" && jobs.length > 0 && (
+          <div className="robot-board-grippers" aria-hidden="true">
+            <div className="robot-gripper">
+              <img src={grippers} alt="" />
+            </div>
+            <div className="robot-gripper">
+              <img src={grippers} alt="" />
+            </div>
+          </div>
+        )}
         <div className="pp-filter-position">
           <ResponsivePanel
             title="Filtry"
@@ -359,45 +376,55 @@ export function JobPage() {
         <BackLink to="/oferty">Wróć do ofert</BackLink>
         <span>{job.company.name}</span>
       </nav>
-      <div className="pp-offer-grid">
-        <header className="pp-offer-hero">
-          <div className="pp-offer-identity">
-            <CompanyLogo company={job.company} />
-            <div>
-              <Link className="pp-offer-company-link" to={`/firmy/${job.company.slug}`}>
-                {job.company.name}
-                <ArrowUpRight className="pp-icon" />
-              </Link>
-              <p className="pp-offer-date">
-                Opublikowano {new Intl.DateTimeFormat("pl-PL").format(new Date(job.publishedAt))}
-              </p>
+      <div className="pp-offer-grid robot-offer-grid">
+        <div className="robot-offer-hero">
+          <OfferRobot />
+          <header className="pp-offer-hero">
+            <div className="pp-offer-identity">
+              <CompanyLogo company={job.company} />
+              <div>
+                <Link className="pp-offer-company-link" to={`/firmy/${job.company.slug}`}>
+                  {job.company.name}
+                  <ArrowUpRight className="pp-icon" />
+                </Link>
+                <p className="pp-offer-date">
+                  Opublikowano {new Intl.DateTimeFormat("pl-PL").format(new Date(job.publishedAt))}
+                </p>
+              </div>
+              <span
+                className="pp-offer-category robot-plate robot-category"
+                data-category={job.category}
+              >
+                {categoryLabels[job.category]}
+              </span>
             </div>
-            <span className="pp-offer-category">{categoryLabels[job.category]}</span>
-          </div>
-          <h1>{job.title}</h1>
-          <div className="pp-offer-key-facts">
-            <span>
-              <MapPin className="pp-icon" />
-              {job.locations.join(" / ")}
-            </span>
-            <span>
-              <Monitor className="pp-icon" />
-              {remoteLabels[job.remoteStatus]}
-            </span>
-            <span>
-              <BriefcaseBusiness className="pp-icon" />
-              {seniorityLabels[job.seniority]}
-            </span>
-          </div>
-          <div className="pp-offer-skill-row">
-            <span>{functionLabels[job.function]}</span>
-          </div>
-          <div className="pp-offer-hero-bottom">
-            <span>{job.summary}</span>
-          </div>
-        </header>
+            <h1>
+              <PcbLettering text={job.title} />
+            </h1>
+            <div className="pp-offer-key-facts">
+              <span>
+                <MapPin className="pp-icon" />
+                {job.locations.join(" / ")}
+              </span>
+              <span>
+                <Monitor className="pp-icon" />
+                {remoteLabels[job.remoteStatus]}
+              </span>
+              <span>
+                <BriefcaseBusiness className="pp-icon" />
+                {seniorityLabels[job.seniority]}
+              </span>
+            </div>
+            <div className="pp-offer-skill-row">
+              <span>{functionLabels[job.function]}</span>
+            </div>
+            <div className="pp-offer-hero-bottom">
+              <span>{job.summary}</span>
+            </div>
+          </header>
+        </div>
         <aside className="pp-offer-sidebar">
-          <div className="pp-offer-action-card">
+          <div className="pp-offer-action-card robot-pcb">
             <div className="pp-offer-pay">
               <p className="pp-offer-eyebrow">Wynagrodzenie</p>
               <SalaryFact job={job} />
@@ -408,7 +435,7 @@ export function JobPage() {
                 ["Forma współpracy", contractLabels[job.contract]],
                 ["Tryb pracy", remoteLabels[job.remoteStatus]],
                 ["Lokalizacja", job.locations.join(" / ")],
-                ["Doświadczenie", seniorityLabels[job.seniority]],
+                ["Wymiar pracy", "Nie podano"],
               ].map(([key, value]) => (
                 <div key={key}>
                   <dt>{key}</dt>
@@ -446,8 +473,9 @@ export function JobPage() {
               ) : (
                 <p>Aplikacje są dostępne z profilu kandydata.</p>
               )}
-              <p>Prototyp: aplikacja zostaje w tym przeglądarkowym scenariuszu.</p>
+              <p>Oferta demonstracyjna. Aplikacja zostaje w tym przeglądarkowym scenariuszu.</p>
             </div>
+            <CircuitTraces />
           </div>
         </aside>
         <div className="pp-offer-description">
@@ -457,8 +485,10 @@ export function JobPage() {
           </nav>
           <div className="pp-offer-reading">
             <section id="role" tabIndex={-1} className="pp-offer-section">
-              <h2>O roli</h2>
-              <JobDescription description={job.description} />
+              <h2>
+                <PcbLettering text="O roli" />
+              </h2>
+              <JobDescription description={job.description} pcbHeadings />
             </section>
           </div>
         </div>
@@ -467,7 +497,9 @@ export function JobPage() {
             <CompanyLogo company={job.company} />
             <div>
               <p className="pp-offer-eyebrow">Poznaj firmę</p>
-              <h2>{job.company.name}</h2>
+              <h2>
+                <PcbLettering text={job.company.name} />
+              </h2>
             </div>
           </div>
           <div className="pp-employer-copy">
@@ -480,14 +512,16 @@ export function JobPage() {
                 Oferty tej firmy <ArrowRight />
               </Link>
             </div>
-            <img src={peopleArt} alt="" />
+            <img className="robot-company-art" src={humanoid} alt="" loading="lazy" />
           </div>
         </section>
       </div>
       {related.length > 0 && (
         <section className="pp-offer-related">
           <div className="pp-offer-related-heading">
-            <h2>Może też Cię zainteresować</h2>
+            <h2>
+              <PcbLettering text="Może też Cię zainteresować" />
+            </h2>
             <Link to="/oferty">
               Wszystkie oferty <ArrowRight className="pp-icon" />
             </Link>

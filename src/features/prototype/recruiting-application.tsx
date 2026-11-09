@@ -37,7 +37,7 @@ export function RecruitingApplication({ application }: { application: Applicatio
                 {availableStages.map((stage) => (
                   <Button
                     key={stage}
-                    variant={stage === "rejected" ? "outline" : "default"}
+                    variant={stage === "rejected" ? "destructive" : "plate"}
                     onClick={() => {
                       if (run({ type: "stage", applicationId: application.id, stage, note })) {
                         setNote("");

@@ -1,12 +1,15 @@
 import { parseJobDescription } from "@/features/jobs/description";
 import { cn } from "@/lib/utils";
+import { PcbLettering } from "@/features/public/pcb-lettering";
 
 export function JobDescription({
   description,
   compact = false,
+  pcbHeadings = false,
 }: {
   description: string;
   compact?: boolean;
+  pcbHeadings?: boolean;
 }) {
   return (
     <div
@@ -23,7 +26,7 @@ export function JobDescription({
               key={index}
               className="pt-[var(--gui-space-xs)] font-ui text-lg font-semibold text-foreground"
             >
-              {block.text}
+              {pcbHeadings ? <PcbLettering text={block.text} /> : block.text}
             </h3>
           );
         if (block.type === "paragraph") return <p key={index}>{block.text}</p>;

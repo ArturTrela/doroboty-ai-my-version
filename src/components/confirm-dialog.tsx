@@ -46,7 +46,9 @@ export function ConfirmDialog({
           </p>
         )}
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={pending}>Anuluj</AlertDialogCancel>
+          <AlertDialogCancel variant="plate" disabled={pending}>
+            Anuluj
+          </AlertDialogCancel>
           <AlertDialogAction variant="destructive" disabled={pending} onClick={onConfirm}>
             {pending ? "Zapisywanie…" : label}
           </AlertDialogAction>

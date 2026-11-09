@@ -54,7 +54,7 @@ export function CandidateApplication({ application }: { application: Application
                   Potwierdź wycofanie
                 </Button>
                 <Button
-                  variant="outline"
+                  variant="plate"
                   onClick={() => {
                     focusAfter.current = "trigger";
                     setConfirming(false);
@@ -72,7 +72,7 @@ export function CandidateApplication({ application }: { application: Application
               <div className="record-actions">
                 <Button
                   ref={triggerRef}
-                  variant="outline"
+                  variant="plate"
                   onClick={() => {
                     focusAfter.current = "confirm";
                     setConfirming(true);

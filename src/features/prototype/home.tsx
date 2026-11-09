@@ -7,7 +7,8 @@ import { usePrototype } from "./store";
 import { publishedJobs } from "./model";
 import { cn } from "@/lib/utils";
 
-import peopleArt from "../../../docs/design-system/agent-kit/assets/people.png";
+import humanoid from "@/features/public/assets/humanoid-szalwia.png";
+import heroTitle from "@/features/public/assets/hero-ethnocentric-italic.png";
 
 const categories = [
   {
@@ -33,32 +34,40 @@ export default function HomePage() {
 
   return (
     <>
-      <section className="home-intro bg-muted/25 shadow-[var(--gui-divider-bottom-shadow)]">
+      <section className="home-intro robot-home">
         <div className="mx-auto grid max-w-[1360px] gap-12 px-5 py-16 lg:grid-cols-[1.3fr_0.7fr] lg:px-8 lg:py-24">
           <div>
             <Badge variant="secondary" className="px-3 py-1 text-xs">
               Dobra robota. Z AI w środku.
             </Badge>
-            <h1 className="mt-6 max-w-4xl text-5xl leading-[var(--gui-leading-xxl)] font-semibold tracking-[var(--gui-tracking-xs)] sm:text-6xl lg:text-7xl">
-              Praca dla ludzi, którzy dowożą z AI.
+            <h1 className="mt-6">
+              <img
+                className="robot-hero-title"
+                src={heroTitle}
+                alt="Praca dla ludzi, którzy robią AI."
+              />
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
               Wyselekcjonowane role, w których AI jest częścią odpowiedzialności, decyzji i wyniku
               pracy — nie dopiskiem w employer brandingu.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link to="/oferty" className={buttonVariants({ size: "lg" })}>
-                Zobacz oferty <ArrowRight />
+              <Link
+                to="/oferty"
+                className={cn(buttonVariants({ size: "lg" }), "robot-plate robot-cta")}
+              >
+                Przejrzyj oferty <ArrowRight />
+                <span className="robot-glint" aria-hidden="true" />
               </Link>
               <Link
                 to="/metodologia"
-                className={cn(buttonVariants({ size: "lg", variant: "outline" }))}
+                className={cn(buttonVariants({ size: "lg", variant: "plate" }))}
               >
                 Jak wybieramy role
               </Link>
             </div>
           </div>
-          <img className="people-art" src={peopleArt} alt="Dwie osoby pracujące razem z laptopem" />
+          <img className="robot-home-art" src={humanoid} alt="" />
         </div>
       </section>
 
@@ -73,7 +82,9 @@ export default function HomePage() {
           {categories.map((category, index) => (
             <article key={category.slug} className="prototype-panel">
               <span className="text-xs font-medium text-muted-foreground">0{index + 1}</span>
-              <h3 className="mt-3 text-xl font-semibold">{category.label}</h3>
+              <h3 className="robot-plate robot-category mt-3" data-category={category.slug}>
+                {category.label}
+              </h3>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                 {category.description}
               </p>

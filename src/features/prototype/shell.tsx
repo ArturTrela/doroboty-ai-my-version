@@ -14,7 +14,7 @@ import {
   Settings,
   LayoutDashboard,
 } from "lucide-react";
-import { BrandMark } from "@/features/public/brand-mark";
+import { PcbLettering } from "@/features/public/pcb-lettering";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { currentPerson } from "./model";
 import { usePrototype } from "./store";
@@ -32,10 +32,12 @@ export function Notice({ children }: { children: ReactNode }) {
     </div>
   );
 }
-export function PageTitle({ children, action }: { children: ReactNode; action?: ReactNode }) {
+export function PageTitle({ children, action }: { children: string; action?: ReactNode }) {
   return (
     <div className="page-heading">
-      <h1>{children}</h1>
+      <h1>
+        <PcbLettering text={children} />
+      </h1>
       {action}
     </div>
   );
@@ -66,6 +68,18 @@ const employerNav = [
   ["/app/kandydaci", "Kandydaci", Users],
   ["/app/organizacja", "Organizacja", Building2],
 ] as const;
+function PortalBrand() {
+  return (
+    <Link
+      to="/"
+      className="robot-plate robot-brand robot-plate-action"
+      aria-label="DoRoboty.ai — strona główna"
+    >
+      DoRoboty.ai
+    </Link>
+  );
+}
+
 export function Shell() {
   const { state, issue, error, clearError } = usePrototype();
   const person = currentPerson(state);
@@ -123,12 +137,9 @@ export function Shell() {
         Przejdź do treści
       </a>
       {workspace ? (
-        <div className="app-frame">
+        <div className="app-frame robot-account">
           <div className="mobile-header">
-            <Link to="/" className="brand">
-              <BrandMark />
-              DoRoboty.ai
-            </Link>
+            <PortalBrand />
             <Button
               aria-label={menuAt === pathname ? "Zamknij menu" : "Otwórz menu"}
               aria-expanded={menuAt === pathname}
@@ -146,10 +157,7 @@ export function Shell() {
               if (e.key === "Escape") setMenuAt(null);
             }}
           >
-            <Link className="brand" to="/">
-              <BrandMark />
-              DoRoboty.ai
-            </Link>
+            <PortalBrand />
             <div className="workspace-label">
               <span className="workspace-avatar">{person.name[0]}</span>
               <div>
@@ -195,7 +203,9 @@ export function Shell() {
                     ? "Strefa pracodawcy"
                     : "Case study"}
               </span>
-              <Link to="/auth/sign-in">{person.name}</Link>
+              <Link to="/auth/sign-in" className="robot-plate robot-plate-action">
+                {person.name}
+              </Link>
             </div>
             <main id="main" ref={main} tabIndex={-1} className="main-content outline-none">
               {content}
@@ -206,19 +216,12 @@ export function Shell() {
         <>
           <header className="bg-background/95 shadow-[var(--gui-divider-bottom-shadow)] backdrop-blur supports-[backdrop-filter]:bg-background/80">
             <div className="mx-auto flex h-16 max-w-[1360px] items-center justify-between gap-4 px-5 lg:px-8">
-              <Link
-                className="flex items-center gap-2.5 text-base font-semibold tracking-[var(--gui-tracking-s)]"
-                to="/"
-                aria-label="DoRoboty.ai — strona główna"
-              >
-                <BrandMark />
-                <span>DoRoboty.ai</span>
-              </Link>
+              <PortalBrand />
               <nav aria-label="Główna nawigacja" className="flex items-center gap-2 sm:gap-5">
                 {navigation.map((item) => (
                   <Link
                     key={item.to}
-                    className="hidden text-sm font-medium text-muted-foreground transition-colors hover:text-foreground md:inline"
+                    className="robot-public-link hidden text-sm font-medium text-muted-foreground transition-colors hover:text-foreground md:inline"
                     to={item.to}
                   >
                     {item.label}
@@ -229,13 +232,13 @@ export function Shell() {
                     {person.role === "candidate" && (
                       <>
                         <Link
-                          className="hidden text-sm font-medium text-muted-foreground md:inline"
+                          className="robot-public-link hidden text-sm font-medium text-muted-foreground md:inline"
                           to="/app/aplikacje"
                         >
                           Aplikacje
                         </Link>
                         <Link
-                          className="hidden text-sm font-medium text-muted-foreground md:inline"
+                          className="robot-public-link hidden text-sm font-medium text-muted-foreground md:inline"
                           to="/app/profil"
                         >
                           Profil
@@ -245,7 +248,7 @@ export function Shell() {
                     <Link
                       to="/app"
                       className={cn(
-                        buttonVariants({ variant: "outline", size: "lg" }),
+                        buttonVariants({ variant: "plate", size: "lg" }),
                         "text-sm font-medium max-sm:min-h-10 max-sm:px-[var(--gui-space-xs)] max-sm:text-sm",
                       )}
                     >
@@ -268,7 +271,7 @@ export function Shell() {
                     <Link
                       to="/auth/sign-in?audience=candidate"
                       className={cn(
-                        buttonVariants({ variant: "outline", size: "lg" }),
+                        buttonVariants({ variant: "plate", size: "lg" }),
                         "text-sm font-medium max-sm:min-h-10 max-sm:px-[var(--gui-space-xs)] max-sm:text-sm",
                       )}
                     >

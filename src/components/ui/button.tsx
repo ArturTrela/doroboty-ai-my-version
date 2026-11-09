@@ -8,15 +8,15 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-[var(--gui-color-1)] text-[var(--gui-text)] [--control-hover-bg:#ffacef] shadow-[var(--gui-edge-shadow)]",
+          "bg-[var(--gui-color-1)] text-[var(--gui-text)] [--control-hover-bg:var(--gui-primary-hover)] shadow-[var(--gui-edge-shadow)]",
+        plate: "robot-plate robot-plate-action",
         outline:
           "bg-white shadow-[var(--gui-edge-shadow)] text-[var(--gui-text)] [--control-hover-bg:var(--gui-color-1-transparent)] aria-expanded:bg-[var(--gui-neutral-3-transparent)]",
         secondary:
           "bg-[var(--gui-surface-muted)] text-[var(--gui-text)] [--control-hover-bg:var(--gui-neutral-4)] aria-expanded:bg-[var(--gui-neutral-4-transparent)]",
         ghost:
           "bg-transparent text-[var(--gui-text)] [--control-hover-bg:var(--gui-color-1-transparent)]",
-        destructive:
-          "bg-[var(--gui-error)] [--control-hover-bg:color-mix(in_srgb,var(--gui-error)_85%,var(--gui-text))] text-[var(--gui-neutral-10)] focus-visible:outline-[var(--gui-focus)]",
+        destructive: "robot-plate robot-plate-action robot-plate-danger",
         link: "bg-transparent px-0 text-[var(--gui-link)] underline-offset-4 hover:underline [--control-hover-bg:var(--gui-color-1-transparent)]",
       },
       size: {

@@ -1,5 +1,6 @@
 import type { ReactNode, Ref } from "react";
 import { BackLink } from "@/components/back-link";
+import { PcbLettering } from "@/features/public/pcb-lettering";
 import { ProcessTimeline } from "@/components/process-timeline";
 import { RecordSheet } from "@/components/record-sheet";
 import { CvAttachment } from "./cv-attachment";
@@ -47,7 +48,9 @@ export function ApplicationRecord({
           <span aria-hidden="true">/</span>
           <span aria-current="page">{title}</span>
         </nav>
-        <h1>{title}</h1>
+        <h1>
+          <PcbLettering text={title} />
+        </h1>
         <div className="record-meta">
           <span>
             {context} · {companyName}
@@ -88,6 +91,7 @@ export function ApplicationRecord({
                     candidateId={application.candidateId}
                     fallbackText={application.cv}
                     layout="row"
+                    actionVariant="plate"
                     preview
                   />
                 </>

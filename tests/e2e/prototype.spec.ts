@@ -97,6 +97,11 @@ test("published job → saved offer/draft → submitted application → employer
   });
   page.on("pageerror", (e) => errors.push(e.message));
   await choose(page, "Karolina Wiśniewska");
+  const menu = page.getByRole("navigation", { name: "Panel użytkownika" });
+  await expect(menu.getByRole("link", { name: "Moje oferty", exact: true })).toHaveCSS(
+    "background-color",
+    "rgb(21, 55, 13)",
+  );
   await page.getByRole("link", { name: "Dodaj ofertę", exact: true }).click();
   await page.getByLabel("Nazwa stanowiska").fill("Product Designer do automatyzacji");
   await page
@@ -193,7 +198,13 @@ test("invalid import preserves state, valid import replaces state, reset asks fo
   await choose(page, "Anna Kowalska");
   await page.goto("/#/app/settings");
   const before = await page.evaluate((key) => localStorage.getItem(key), STORAGE_KEY);
-  await page.getByLabel("Importuj plik scenariusza").setInputFiles({
+  const importButton = page.getByRole("button", { name: "Importuj dane", exact: true });
+  await importButton.focus();
+  const [chooser] = await Promise.all([
+    page.waitForEvent("filechooser"),
+    page.keyboard.press("Enter"),
+  ]);
+  await chooser.setFiles({
     name: "invalid.json",
     mimeType: "application/json",
     buffer: Buffer.from('{"version":99}'),
@@ -278,6 +289,7 @@ test("mobile navigation, light-only appearance and keyboard person selection", a
   const anna = page.getByRole("button", { name: "Wejdź jako Anna Kowalska", exact: true });
   await anna.focus();
   await page.keyboard.press("Enter");
+  await expect(page.getByRole("heading", { name: "Twój profil", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Otwórz menu" }).click();
   await page.getByRole("link", { name: "Profil", exact: true }).click();
   await expect(page.getByLabel("Imię i nazwisko")).toBeVisible();
@@ -289,7 +301,7 @@ test("mobile navigation, light-only appearance and keyboard person selection", a
   await page.reload();
   await expect(page.getByRole("combobox", { name: "Motyw" })).toHaveCount(0);
   await expect(page.locator("html")).not.toHaveClass(/dark/);
-  await expect(page.locator("body")).toHaveCSS("background-color", "rgb(244, 244, 240)");
+  await expect(page.locator("body")).toHaveCSS("background-color", "rgb(250, 249, 245)");
   await page.screenshot({ path: "artifacts/settings-mobile-light.png", fullPage: true });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
@@ -306,7 +318,9 @@ test("core screens have no serious accessibility violations", async ({ page }) =
 test("public home and filters reflow at 320px with no external requests", async ({ page }) => {
   await page.setViewportSize({ width: 1366, height: 900 });
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Praca dla ludzi");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveAccessibleName(
+    "Praca dla ludzi, którzy robią AI.",
+  );
   await page.screenshot({ path: "artifacts/home-desktop.png", fullPage: true });
   await page.setViewportSize({ width: 320, height: 740 });
   await page.goto("/#/oferty");
@@ -458,14 +472,14 @@ test("legacy dark preference keeps scenario data and renders the light interface
     "Zachowaj mój profil",
   );
   await expect(page.locator("html")).not.toHaveClass(/dark/);
-  await expect(page.locator("body")).toHaveCSS("background-color", "rgb(244, 244, 240)");
+  await expect(page.locator("body")).toHaveCSS("background-color", "rgb(250, 249, 245)");
   await page.getByRole("button", { name: "Zapisz profil", exact: true }).click();
   expect(
     await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!).theme, STORAGE_KEY),
   ).toBeUndefined();
 });
 
-test("Poster People offer keeps desktop conditions/actions and places them before mobile reading", async ({
+test("Robot-themed offer keeps desktop conditions/actions and places them before mobile reading", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
@@ -528,10 +542,22 @@ test("restored company and public navigation keep their structure across screen 
   }
   await page.goto("/#/oferty");
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Dobra robota.");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveAccessibleName(
+    "Dobra robota. Z AI w środku.",
+  );
   await expect(page.getByRole("textbox", { name: "Szukaj ofert", exact: true })).toBeVisible();
   await expect(page.locator("[data-job-page-summary]")).toHaveText("Oferty 1–6 z 6");
   await page.screenshot({ path: "artifacts/original-list-layout-desktop.png", fullPage: true });
+  const mainNav = page.getByRole("navigation", { name: "Główna nawigacja" });
+  for (const name of ["Oferty", "Metodologia", "Dla firm", "Aplikacje", "Profil"]) {
+    const link = mainNav.getByRole("link", { name, exact: true });
+    await link.hover();
+    await expect(link).toHaveCSS("background-color", "rgb(229, 205, 130)");
+  }
+  await page.goto("/#/oferty/ai-product-manager");
+  const back = page.getByRole("link", { name: "Wróć do ofert", exact: true });
+  await back.hover();
+  await expect(back).toHaveCSS("background-color", "rgb(229, 205, 130)");
 });
 
 test("mobile search stays visible and filter dialog restores focus", async ({ page }) => {
@@ -576,18 +602,18 @@ test("desktop reset synchronizes search, category and facets with the URL", asyn
   );
 });
 
-test("canonical marketplace typography and search geometry match Poster People breakpoints", async ({
+test("marketplace search, PCB lettering and robot poses adapt to screen width", async ({
   page,
 }) => {
-  for (const [width, title, card] of [
-    [1280, "72px", "28px"],
-    [1100, "58px", "26px"],
-    [850, "52px", "28px"],
-    [390, "43px", "26px"],
+  for (const [width, card] of [
+    [1280, "28px"],
+    [1100, "26px"],
+    [850, "28px"],
+    [390, "26px"],
   ] as const) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/#/oferty");
-    await expect(page.locator(".pp-intro-copy h1")).toHaveCSS("font-size", title);
+    await expect(page.getByRole("img", { name: "Dobra robota. Z AI w środku." })).toBeVisible();
     await expect(page.locator(".pp-job-title").first()).toHaveCSS("font-size", card);
     await expect(page.getByRole("textbox", { name: "Szukaj ofert", exact: true })).toBeVisible();
     if (width === 1280) {
@@ -595,16 +621,51 @@ test("canonical marketplace typography and search geometry match Poster People b
       await expect(page.locator(".pp-salary-tag").first()).toHaveCSS("font-size", "15px");
     }
   }
-  for (const [width, title, salary] of [
-    [1280, "64px", "24px"],
-    [850, "46px", "20px"],
-    [390, "47px", "25px"],
+  for (const [width, salary] of [
+    [1280, "24px"],
+    [850, "20px"],
+    [390, "25px"],
   ] as const) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/#/oferty/ai-product-manager");
-    await expect(page.locator(".pp-offer-hero h1")).toHaveCSS("font-size", title);
+    const title = page.getByRole("heading", { name: "AI Product Manager", exact: true });
+    await expect(title.locator(".robot-lettering")).toBeVisible();
+    await expect(page.locator(".robot-offer-grid .robot-pcb")).toHaveCSS(
+      "background-color",
+      "rgb(21, 55, 13)",
+    );
     await expect(page.locator(".pp-offer-pay .pp-salary-tag")).toHaveCSS("font-size", salary);
+    if (width > 850) {
+      await expect(page.locator(".robot-presenter-arm")).toHaveCSS("animation-duration", "3.6s");
+    } else {
+      await expect(page.locator(".robot-presenter-grip")).toBeVisible();
+      await expect(page.locator(".robot-blink")).toHaveCSS("animation-duration", "5.6s");
+    }
   }
+
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(page.locator(".robot-blink")).toHaveCSS("animation-name", "none");
+  await page.setViewportSize({ width: 320, height: 900 });
+  const state = initialState();
+  const job = state.jobs.find((entry) => entry.slug === "ai-product-manager")!;
+  job.title = "Łączenie rozwiązań AI — Specjalista ds. wdrożeń i automatyzacji";
+  delete job.salaryMin;
+  delete job.salaryMax;
+  await page.evaluate(({ key, raw }) => localStorage.setItem(key, raw), {
+    key: STORAGE_KEY,
+    raw: JSON.stringify(state),
+  });
+  await page.goto("/#/oferty");
+  await page.reload();
+  await expect(page.locator(".robot-board-grippers")).toBeHidden();
+  const card = page
+    .locator(".pp-job-card")
+    .filter({ has: page.getByRole("heading", { name: job.title }) });
+  await expect(card.getByText("Widełki niepodane")).toBeVisible();
+  await card.getByRole("link", { name: job.title, exact: true }).click();
+  await expect(page.getByRole("heading", { level: 1, name: job.title })).toBeVisible();
+  await expect(page.locator(".pp-offer-pay")).toContainText("Widełki niepodane");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(320);
 });
 
 test("offer section links survive copied URLs and restore section focus through history", async ({

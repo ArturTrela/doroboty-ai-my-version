@@ -115,7 +115,7 @@ footer {
   font-weight: 600;
 }
 .prototype-notice {
-  background: #ffe0f7;
+  background: var(--robot-light);
   border: 1px solid var(--foreground);
   border-radius: 18px;
   line-height: 1.6;
@@ -137,7 +137,7 @@ footer {
   padding-block: 24px;
 }
 .workspace-avatar {
-  background: #ffe0f7;
+  background: var(--robot-light);
   border-radius: 10px;
   flex-shrink: 0;
 }

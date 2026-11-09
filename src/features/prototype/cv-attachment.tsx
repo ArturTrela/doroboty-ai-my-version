@@ -14,12 +14,14 @@ export function CvAttachment({
   layout = "stack",
   preview = false,
   contextLabel = "CV z momentu aplikowania",
+  actionVariant = "outline",
 }: {
   candidateId: string;
   fallbackText: string;
   layout?: "stack" | "row";
   preview?: boolean;
   contextLabel?: string;
+  actionVariant?: "outline" | "plate";
 }) {
   const filename = candidateFiles.get(candidateId);
   const source = people.find((person) => person.id === candidateId);
@@ -59,14 +61,14 @@ export function CvAttachment({
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            className={buttonVariants({ variant: "outline", size: "sm" })}
+            className={buttonVariants({ variant: actionVariant, size: "sm" })}
           >
             Otwórz CV (PDF)<span className="sr-only"> w nowej karcie</span>
           </a>
           <a
             href={href}
             download={filename}
-            className={buttonVariants({ variant: "outline", size: "sm" })}
+            className={buttonVariants({ variant: actionVariant, size: "sm" })}
           >
             Pobierz CV (PDF)
           </a>

@@ -1,0 +1,621 @@
+/* DoRoboty.ai robot illustrations, metal plates and circuit boards. */
+main:has(.robot-home, .robot-board, .robot-offer-grid) {
+  background: var(--robot-paper);
+  color: var(--robot-ink);
+}
+
+.robot-plate {
+  --plate-metal: var(--robot-metal);
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  padding-inline: 23px;
+  border: 1px solid #585648;
+  border-radius: 5px;
+  background:
+    linear-gradient(118deg, #fff8, transparent 58%),
+    repeating-linear-gradient(0deg, #fff3 0 1px, #514b4310 1px 2px, transparent 2px 4px),
+    var(--plate-metal);
+  color: var(--robot-ink);
+  box-shadow:
+    inset 0 1px #fff9,
+    inset 0 -2px #201c192a;
+  text-shadow: 0 1px #fff9;
+}
+.robot-plate-gold {
+  --plate-metal: var(--robot-gold);
+}
+.robot-plate-action:not(:disabled, [aria-disabled="true"], [data-disabled]):is(
+    :hover,
+    :focus-visible
+  ) {
+  background-color: var(--robot-gold);
+  color: var(--robot-ink);
+}
+.robot-plate-gold.robot-plate-action:not(:disabled, [aria-disabled="true"], [data-disabled]):is(
+    :hover,
+    :focus-visible
+  ) {
+  background-color: var(--robot-light);
+}
+.robot-plate-danger {
+  --plate-metal: #ebd0b9;
+  color: #771e25;
+}
+.robot-plate-danger:not(:disabled):is(:hover, :focus-visible) {
+  color: #771e25;
+}
+.robot-plate-action:is(:disabled, [aria-disabled="true"], [data-disabled]) {
+  --plate-metal: var(--gui-control-disabled);
+  color: var(--gui-text-muted-accessible);
+  text-shadow: none;
+  box-shadow: none;
+}
+.robot-public-link,
+.back-link {
+  --control-hover-bg: var(--robot-gold);
+}
+.robot-public-link {
+  border-radius: 4px;
+  padding: 5px 6px;
+  margin-inline: -6px;
+}
+.robot-plate::before,
+.robot-plate::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  transform: translateY(-50%) rotate(-30deg);
+  border: 1px solid #585648;
+  border-radius: 50%;
+  background:
+    linear-gradient(transparent 41%, #585648 42% 58%, transparent 59%),
+    linear-gradient(#f1e8d8, #a9a48f);
+}
+.robot-plate::before {
+  left: 7px;
+}
+.robot-plate::after {
+  right: 7px;
+}
+header a.robot-brand {
+  --plate-metal: #a6ac91;
+  padding-block: 7px;
+  flex: none;
+}
+.robot-category {
+  padding-block: 5px;
+  font-family: var(--font-interface);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.robot-category[data-category="build"] {
+  --plate-metal: #a6ac91;
+}
+.robot-category[data-category="lead"] {
+  --plate-metal: #bac0a6;
+}
+.pp-category-tab.robot-category {
+  display: flex;
+  justify-content: space-between;
+  padding-inline: 23px;
+  text-transform: none;
+}
+.pp-category-tab.robot-category b {
+  text-transform: uppercase;
+}
+.pp-category-tab.robot-category small {
+  color: inherit;
+}
+.pp-category-tab.robot-category.pp-selected {
+  background-color: var(--robot-gold);
+  color: var(--robot-ink);
+  box-shadow: inset 0 0 0 2px var(--robot-ink);
+}
+.pp-category-tab.robot-category.pp-selected:is(:hover, :focus-visible) {
+  background-color: var(--robot-light);
+}
+.robot-cta {
+  --plate-metal: var(--robot-gold);
+  overflow: hidden;
+}
+.robot-cta:is(:hover, :focus-visible) {
+  background-color: var(--robot-gold);
+  color: var(--robot-ink);
+}
+.robot-glint {
+  position: absolute;
+  inset: -55% auto -55% -60%;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, #fff9, transparent);
+  transform: skewX(-25deg);
+  pointer-events: none;
+}
+.robot-cta:is(:hover, :focus-visible) .robot-glint {
+  animation: robot-glint 0.72s ease-out both;
+}
+@keyframes robot-glint {
+  to {
+    left: 130%;
+  }
+}
+
+.robot-home {
+  border-bottom: 1px solid var(--robot-ink);
+}
+.robot-home > div {
+  gap: 24px;
+  padding-block: clamp(28px, 5vw, 64px);
+}
+.robot-hero-title {
+  display: block;
+  width: min(100%, 680px);
+  height: auto;
+}
+.pp-intro-copy .robot-hero-title {
+  width: min(100%, 560px);
+}
+.robot-home-art,
+.robot-listing-art,
+.pp-employer-copy > .robot-company-art {
+  mix-blend-mode: multiply;
+  transform: scaleX(-1);
+  pointer-events: none;
+}
+.robot-home-art {
+  justify-self: center;
+  width: min(100%, 330px);
+  height: clamp(290px, 42vw, 495px);
+  object-fit: cover;
+  object-position: 50% 0;
+}
+.robot-listing-art {
+  width: min(100%, 350px);
+  height: 278px;
+  object-fit: cover;
+  object-position: 50% 0;
+}
+.pp-employer-copy > .robot-company-art {
+  object-fit: cover;
+  object-position: 50% 8%;
+}
+.pp-offer-section-nav a:first-child::after {
+  background: var(--robot-gold);
+}
+.pp-intro-section .pp-search-submit {
+  background: var(--robot-gold);
+}
+.pp-intro-section .pp-search-submit:hover {
+  background: var(--robot-light);
+}
+.robot-offer-hero .pp-offer-identity > [data-company-logo] {
+  background: var(--robot-metal);
+  border-radius: 6px;
+}
+.pp-results-title h2 {
+  font-family: var(--font-interface);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.015em;
+}
+
+.robot-board {
+  position: relative;
+}
+.robot-board-grippers {
+  display: none;
+}
+@media (min-width: 851px) {
+  .robot-board {
+    --board-margin: max(64px, (100vw - 1160px) / 2);
+    width: min(1160px, calc(100% - 128px));
+    margin-block: 28px;
+    padding: 20px 14px;
+    border: 1px solid #585648;
+    border-radius: 8px;
+    background: var(--robot-metal);
+  }
+  .robot-board-grippers {
+    display: block;
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .robot-gripper {
+    position: absolute;
+    top: 50%;
+    left: calc(8px - var(--board-margin));
+    width: calc(var(--board-margin) + 19px);
+    overflow: hidden;
+    transform: translateY(-18%);
+  }
+  .robot-gripper img {
+    display: block;
+    width: 224%;
+    max-width: none;
+    height: auto;
+  }
+  .robot-gripper:last-child {
+    left: auto;
+    right: calc(8px - var(--board-margin));
+    transform: translateY(-18%) scaleX(-1);
+  }
+  .robot-board .pp-job-card {
+    grid-template-columns: 54px minmax(0, 1fr) minmax(145px, 29%);
+  }
+}
+
+.robot-lettering {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.02em 0.34em;
+  font-family: var(--font-interface);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+.robot-lettering-word {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  max-width: 100%;
+}
+.robot-lettering svg {
+  flex: none;
+  width: 0.54em;
+  height: 1.2em;
+  overflow: visible;
+}
+.robot-lettering path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.65;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.robot-lettering circle {
+  fill: currentColor;
+}
+
+.robot-pcb,
+.robot-pcb:hover {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid #0e2409;
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 1px 1px, #a2b58b38 1px, transparent 1.4px) 0 0 / 14px 14px,
+    var(--robot-pcb);
+  color: var(--robot-light);
+  box-shadow: inset 0 0 0 3px #0e2409;
+}
+.pp-job-card.robot-pcb {
+  padding-bottom: 34px;
+}
+.robot-pcb :is(.pp-job-side, .pp-job-tags span, .pp-salary-tag) {
+  background: none;
+}
+.robot-pcb
+  :is(
+    .pp-job-facts,
+    .pp-job-tags span,
+    .pp-job-category,
+    .pp-job-side-top,
+    .pp-separator,
+    .pp-salary-description,
+    .pp-salary-missing,
+    .pp-offer-eyebrow,
+    dt,
+    .pp-offer-actions > p
+  ) {
+  color: var(--robot-muted);
+}
+.robot-pcb :is(.pp-salary-tag, .pp-salary-missing) {
+  padding: 0;
+  color: var(--robot-gold);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.robot-pcb .pp-save-button {
+  color: var(--robot-light);
+}
+.robot-pcb .pp-save-button:hover {
+  background: #ffffff25;
+}
+.robot-pcb .pp-save-button[aria-pressed="true"] .pp-icon {
+  fill: var(--robot-gold);
+}
+.robot-pcb .pp-job-side,
+.robot-pcb .pp-offer-pay {
+  border-color: #728e6d90;
+}
+.robot-pcb .pp-detail-button {
+  color: var(--robot-gold);
+}
+.robot-pcb :is(a, button):focus-visible {
+  outline-color: var(--robot-gold);
+  outline-offset: 3px;
+}
+.robot-pcb .pp-job-title a {
+  display: block;
+  border-radius: 3px;
+}
+.pp-job-card :is(.pp-job-title a, .pp-job-company, .pp-detail-button):is(:hover, :focus-visible) {
+  background-color: color-mix(in srgb, var(--robot-gold) 14%, transparent);
+  color: var(--robot-gold);
+}
+.pp-job-card.robot-pcb > [data-company-logo] {
+  background: var(--robot-metal);
+  border-color: var(--robot-sage);
+  border-radius: 6px;
+}
+
+.robot-circuit {
+  --mount: radial-gradient(
+    circle,
+    var(--robot-ink) 1.5px,
+    var(--robot-gold) 2px 4px,
+    transparent 4.5px
+  );
+  position: absolute;
+  z-index: -1;
+  inset: 8px;
+  pointer-events: none;
+  background:
+    var(--mount) left top / 9px 9px no-repeat,
+    var(--mount) right top / 9px 9px no-repeat,
+    var(--mount) left bottom / 9px 9px no-repeat,
+    var(--mount) right bottom / 9px 9px no-repeat;
+}
+.robot-traces {
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  inset: auto 15px 0;
+  height: 25px;
+  color: #a7b98e;
+}
+.robot-traces svg {
+  width: min(48%, 255px);
+  height: 100%;
+  overflow: visible;
+}
+.robot-traces svg:last-child {
+  transform: scaleX(-1);
+}
+.robot-traces path,
+.robot-traces circle {
+  stroke: currentColor;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.robot-traces path {
+  fill: none;
+}
+.robot-traces circle {
+  fill: var(--robot-pcb);
+}
+.robot-traces-lit {
+  visibility: hidden;
+  color: var(--robot-gold);
+}
+.robot-traces-lit path {
+  stroke-width: 5.5;
+}
+.robot-pcb:is(:hover, :focus-within) .robot-traces-lit {
+  visibility: visible;
+  animation: robot-trace-reveal 2.5s linear both;
+}
+@keyframes robot-trace-reveal {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+
+.robot-offer-hero {
+  grid-area: hero;
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+}
+.robot-offer-hero .pp-offer-hero {
+  position: relative;
+  z-index: 1;
+  border-radius: 8px;
+  background: #fffdf8;
+}
+.robot-offer-hero .pp-offer-identity {
+  flex-wrap: wrap;
+}
+.robot-offer-hero .pp-offer-identity > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.robot-offer-hero .pp-offer-hero-bottom > span {
+  display: block;
+  max-width: none;
+  font-size: 13px;
+}
+.robot-offer-hero h1 {
+  font-size: clamp(31px, 4vw, 55px);
+  margin-block: 18px;
+}
+.robot-presenter {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+.robot-presenter img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.robot-presenter-desktop,
+.robot-presenter-mobile,
+.robot-presenter-desktop .robot-presenter-arm {
+  display: none;
+}
+@media (min-width: 851px) {
+  .robot-offer-hero {
+    --robot-gutter: clamp(165px, 18vw, 254px);
+    padding-left: var(--robot-gutter);
+    min-height: calc((var(--robot-gutter) + 20px) * 1.5 + 6px);
+  }
+  .robot-presenter-desktop {
+    display: block;
+    z-index: 2;
+    width: calc(var(--robot-gutter) + 20px);
+    top: 6px;
+  }
+}
+@media (min-width: 851px) and (prefers-reduced-motion: no-preference) {
+  .robot-presenter-desktop .robot-presenter-body {
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% 21%,
+      69% 21%,
+      55% 35%,
+      56% 42%,
+      100% 43%,
+      100% 100%,
+      0 100%
+    );
+  }
+  .robot-presenter-desktop .robot-presenter-arm {
+    display: block;
+    position: absolute;
+    inset: 0;
+    clip-path: polygon(100% 21%, 69% 21%, 54% 35%, 55% 43%, 100% 43%);
+    transform-origin: 55% 37.5%;
+    animation: robot-present-offer 3.6s ease-in-out infinite;
+  }
+}
+@keyframes robot-present-offer {
+  0%,
+  100% {
+    transform: rotate(-8deg);
+  }
+  50% {
+    transform: rotate(6deg);
+  }
+}
+@media (max-width: 850px) {
+  .robot-offer-hero {
+    --robot-mobile-width: clamp(190px, 61vw, 260px);
+    padding-top: calc(var(--robot-mobile-width) * 0.61);
+  }
+  .robot-presenter-mobile {
+    display: block;
+    left: 4px;
+    width: var(--robot-mobile-width);
+  }
+  .robot-presenter-grip {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    clip-path: polygon(66% 100%, 69% 91%, 75% 84%, 84% 81%, 93% 84%, 96% 100%);
+  }
+  .robot-blink {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
+}
+@media (max-width: 850px) and (prefers-reduced-motion: no-preference) {
+  .robot-blink {
+    animation: robot-blink 5.6s infinite;
+  }
+}
+@keyframes robot-blink {
+  0%,
+  65%,
+  69%,
+  100% {
+    opacity: 0;
+  }
+  66%,
+  68% {
+    opacity: 1;
+  }
+}
+.robot-offer-grid .pp-offer-action-card {
+  padding-bottom: 22px;
+}
+.robot-offer-grid .pp-offer-actions a {
+  background: var(--robot-gold);
+  color: var(--robot-ink);
+  border-color: var(--robot-gold);
+}
+.robot-offer-grid .pp-offer-actions a:hover {
+  background: var(--robot-light);
+}
+.robot-offer-grid :is(.pp-offer-description, .pp-offer-employer) {
+  background: #fffdf8;
+  border-radius: 8px;
+}
+.robot-offer-grid :is(.pp-offer-section, .pp-employer-copy) {
+  font-family: var(--font-interface);
+}
+.pp-offer-related-heading h2 {
+  min-width: 0;
+}
+
+@media (max-width: 1024px) {
+  header a.robot-brand {
+    font-size: 20px;
+  }
+}
+@media (max-width: 700px) {
+  header a.robot-brand {
+    padding-inline: 18px;
+    font-size: 16px;
+    letter-spacing: -0.055em;
+  }
+  .robot-home-art {
+    width: min(100%, 300px);
+    height: 265px;
+  }
+  .robot-listing-art {
+    width: 128px;
+    height: 136px;
+  }
+  .robot-board .pp-sort-label {
+    display: none;
+  }
+  .pp-results-title h2 {
+    font-size: clamp(22px, 6vw, 30px);
+  }
+  .robot-pcb .pp-job-facts {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .robot-offer-hero h1 {
+    font-size: clamp(30px, 8vw, 48px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .robot-pcb:is(:hover, :focus-within) .robot-traces-lit {
+    animation: none;
+  }
+  .robot-cta:is(:hover, :focus-visible) .robot-glint {
+    animation: none;
+    left: 50%;
+  }
+}

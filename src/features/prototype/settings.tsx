@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent } from "react";
+import { useRef, useState, type ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { usePrototype } from "./store";
@@ -19,6 +19,7 @@ export function SettingsPage() {
   const { state, reset, importState, original } = usePrototype();
   const [pending, setPending] = useState<"reset" | "import" | null>(null);
   const [raw, setRaw] = useState("");
+  const importInput = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   async function readFile(e: ChangeEvent<HTMLInputElement>) {
@@ -57,24 +58,26 @@ export function SettingsPage() {
         </p>
         <div className="flex flex-wrap gap-3">
           <Button
-            variant="outline"
+            variant="plate"
             onClick={() => downloadText("doroboty-scenariusz.json", serializeState(state))}
           >
             Eksportuj dane
           </Button>
-          <Button variant="outline" render={<label />}>
+          <Button variant="plate" onClick={() => importInput.current?.click()}>
             Importuj dane
-            <input
-              className="sr-only"
-              type="file"
-              accept="application/json,.json"
-              aria-label="Importuj plik scenariusza"
-              onChange={readFile}
-            />
           </Button>
+          <input
+            ref={importInput}
+            className="sr-only"
+            tabIndex={-1}
+            type="file"
+            accept="application/json,.json"
+            aria-label="Importuj plik scenariusza"
+            onChange={readFile}
+          />
           {original !== null && (
             <Button
-              variant="outline"
+              variant="plate"
               onClick={() =>
                 downloadText("doroboty-zapis-do-odzyskania.txt", original, "text/plain")
               }

@@ -6,9 +6,9 @@
   --pp-ink: #181818;
   --pp-muted: #5e5a5c;
   --pp-line: #d8d5d1;
-  --pp-action: #ff90e8;
-  --pp-action-hover: #ffacef;
-  --pp-fact: #ffe0f7;
+  --pp-action: var(--robot-gold);
+  --pp-action-hover: var(--robot-light);
+  --pp-fact: var(--robot-light);
   --pp-yellow: #ffe45b;
   --pp-surface-hover: #fffefa;
   --pp-radius: 18px;
