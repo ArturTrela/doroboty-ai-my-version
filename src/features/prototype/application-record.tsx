@@ -4,6 +4,7 @@ import { PcbLettering } from "@/features/public/pcb-lettering";
 import { ProcessTimeline } from "@/components/process-timeline";
 import { RecordSheet } from "@/components/record-sheet";
 import { CvAttachment } from "./cv-attachment";
+import { ExperienceCard } from "./experience-card";
 import { MatchScore } from "./match-score";
 import { stageLabels, type Application, type Stage } from "./model";
 
@@ -25,7 +26,15 @@ export function ApplicationRecord({
 }: {
   application: Pick<
     Application,
-    "candidateId" | "candidateName" | "jobTitle" | "stage" | "answer" | "cv" | "score" | "summary"
+    | "candidateId"
+    | "candidateName"
+    | "jobTitle"
+    | "stage"
+    | "answer"
+    | "cv"
+    | "score"
+    | "summary"
+    | "experience"
   >;
   companyName: string;
   audience: "candidate" | "employer";
@@ -76,6 +85,9 @@ export function ApplicationRecord({
               label: "Odpowiedź",
               content: (
                 <>
+                  {application.experience?.length ? (
+                    <ExperienceCard entries={application.experience} />
+                  ) : null}
                   <h3>Przesłana aplikacja</h3>
                   <p>{application.answer}</p>
                 </>

@@ -299,3 +299,109 @@
   background: var(--gui-color-1);
   color: var(--gui-text);
 }
+
+.experience-fields {
+  display: grid;
+  gap: 12px;
+  margin-block: 12px;
+}
+.experience-fields fieldset {
+  min-width: 0;
+}
+.experience-fields legend {
+  font-weight: 650;
+}
+.experience-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+.experience-options label {
+  position: relative;
+}
+.experience-options span {
+  display: block;
+  padding: 6px 10px;
+  border: 1px solid #817b72;
+  border-radius: 999px;
+  color: #211f20;
+  background: #efe9e2;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+.experience-options [data-level="independent"] span {
+  background: #e3ebda;
+}
+.experience-options [data-level="contributed"] span {
+  background: #f2ead5;
+}
+.experience-options [data-level="theory"] span {
+  background: #e9e4ef;
+}
+.experience-options label:hover span,
+.experience-options input:checked + span {
+  box-shadow: inset 0 0 0 1px currentColor;
+}
+.experience-options input:checked + span {
+  font-weight: 750;
+  text-decoration: underline;
+}
+.experience-options input:focus-visible + span {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+.experience-options input:disabled + span {
+  cursor: default;
+}
+.experience-result {
+  border: 1px solid currentColor;
+  border-radius: 12px;
+  padding: 12px;
+}
+.experience-result[data-status="below"] {
+  background: #f9e5e8;
+  color: #532630;
+}
+.experience-result[data-status="equal"] {
+  background: #edf3e7;
+  color: #20371e;
+}
+.experience-result[data-status="above"] {
+  background: #20532b;
+  color: white;
+}
+
+.application-form-presenter {
+  --application-robot-width: clamp(166px, 42vw, 235px);
+  position: relative;
+  isolation: isolate;
+  padding-top: calc(var(--application-robot-width) * 0.61);
+}
+.application-form-presenter .robot-presenter-mobile {
+  display: block;
+  left: clamp(10px, 4vw, 38px);
+  width: var(--application-robot-width);
+}
+.application-form-presenter .application-form {
+  position: relative;
+  z-index: 1;
+}
+.application-form-presenter .robot-presenter-grip {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  clip-path: polygon(66% 100%, 69% 91%, 75% 84%, 84% 81%, 93% 84%, 96% 100%);
+}
+.application-form-presenter .robot-blink {
+  display: none;
+}
+
+@media (min-width: 851px) {
+  .application-form-presenter {
+    padding-top: 0;
+  }
+  .application-form-presenter .robot-presenter-mobile {
+    top: calc(var(--application-robot-width) * -0.61);
+  }
+}

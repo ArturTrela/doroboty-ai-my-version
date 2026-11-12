@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { initialState, transition, type Action, type State } from "./model";
-import { parseState, readState, saveState, type StoragePort } from "./storage";
+import { parseState, readState, saveState, STORAGE_KEY, type StoragePort } from "./storage";
 function browserStorage(): StoragePort | null {
   try {
     return window.localStorage;
@@ -15,23 +15,43 @@ function useStore() {
   const [error, setError] = useState("");
   const [blocked, setBlocked] = useState(loaded.blocked);
   const latest = useRef(state);
-  function commit(next: State, replace = false) {
-    latest.current = next;
-    setState(next);
-    setError("");
-    if (blocked && !replace) return;
-    try {
-      saveState(browserStorage(), next);
-      setIssue("");
-      if (replace) setBlocked(false);
-    } catch (e) {
-      setIssue((e as Error).message);
-    }
-  }
-  function run(action: Action) {
-    try {
-      commit(transition(latest.current, action));
+  const saved = useRef(loaded.raw);
+  const protectedSave = useRef(loaded.blocked);
+
+  async function update(makeNext: () => State, replace = false) {
+    function apply() {
+      const storage = browserStorage();
+      const locks = navigator.locks;
+      if (storage && locks && readState(storage).raw !== saved.current) {
+        throw new Error(
+          "Zapis zmienił się w innej karcie. Skopiuj niezapisane zmiany lub wyeksportuj dane, odśwież stronę i spróbuj ponownie.",
+        );
+      }
+      const next = makeNext();
+      latest.current = next;
+      setState(next);
+      setError("");
+      if (protectedSave.current && !replace) return true;
+      try {
+        if (!locks)
+          throw new Error(
+            "Przeglądarka nie obsługuje bezpiecznego zapisu. Wyeksportuj zmiany przed zamknięciem strony.",
+          );
+        saved.current = saveState(storage, next);
+        setIssue("");
+        if (replace) {
+          protectedSave.current = false;
+          setBlocked(false);
+        }
+      } catch (e) {
+        setIssue((e as Error).message);
+      }
       return true;
+    }
+
+    try {
+      const locks = navigator.locks;
+      return locks ? await locks.request(STORAGE_KEY, apply) : apply();
     } catch (e) {
       setError(
         e instanceof Error && e.name !== "ZodError"
@@ -41,15 +61,13 @@ function useStore() {
       return false;
     }
   }
+
+  function run(action: Action) {
+    return update(() => transition(latest.current, action));
+  }
+
   function importState(raw: string) {
-    try {
-      const next = parseState(raw);
-      commit(next, true);
-      return true;
-    } catch (e) {
-      setError((e as Error).message);
-      return false;
-    }
+    return update(() => parseState(raw), true);
   }
   useEffect(() => {
     document.documentElement.classList.remove("dark");
@@ -63,7 +81,7 @@ function useStore() {
     run,
     importState,
     clearError: () => setError(""),
-    reset: () => commit(initialState(), true),
+    reset: () => update(initialState, true),
   };
 }
 type Store = ReturnType<typeof useStore>;

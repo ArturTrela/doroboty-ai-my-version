@@ -38,11 +38,15 @@ export function RecruitingApplication({ application }: { application: Applicatio
                   <Button
                     key={stage}
                     variant={stage === "rejected" ? "destructive" : "plate"}
-                    onClick={() => {
-                      if (run({ type: "stage", applicationId: application.id, stage, note })) {
+                    onClick={async () => {
+                      pendingFocus.current = true;
+                      if (
+                        await run({ type: "stage", applicationId: application.id, stage, note })
+                      ) {
                         setNote("");
                         setAnnouncement(`Zapisano etap: ${stageLabels[stage]}.`);
-                        pendingFocus.current = true;
+                      } else {
+                        pendingFocus.current = false;
                       }
                     }}
                   >
