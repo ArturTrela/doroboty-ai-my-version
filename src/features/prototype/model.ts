@@ -1,4 +1,11 @@
 import { z } from "zod";
+import {
+  experienceChoices,
+  experienceSnapshot,
+  expectedLevel,
+  skillsForOffer,
+  type ExperienceChoices,
+} from "./experience";
 import marketplace from "./data/marketplace.json" with { type: "json" };
 import people from "./data/people.json" with { type: "json" };
 import type { JobWithCompany } from "@/features/jobs/types";
@@ -31,6 +38,7 @@ export const jobSchema = z
     slug: id,
     companyId: id,
     title: shortText,
+    experienceExpectations: experienceChoices.optional(),
     summary: text.min(10),
     description: text.min(30),
     category: z.enum(["build", "apply", "lead"]),
@@ -113,6 +121,7 @@ const applicationSchema = z.object({
   candidateName: shortText,
   cv: text.min(20),
   answer: text.min(MIN_APPLICATION_ANSWER_LENGTH),
+  experience: experienceSnapshot.optional(),
   sourceNotes: text,
   generatedAnswer: text,
   score: z.number().int().min(0).max(100),
@@ -129,6 +138,7 @@ const draftSchema = z.object({
   notes: text,
   generated: text,
   answer: text,
+  experience: experienceChoices.optional(),
 });
 export const stateSchema = z
   .object({
@@ -201,7 +211,14 @@ export type Action =
   | { type: "select_person"; id: string | null }
   | { type: "profile"; value: z.infer<typeof profileSchema> }
   | { type: "toggle_saved"; jobId: string }
-  | { type: "draft"; jobId: string; notes: string; generated: string; answer: string }
+  | {
+      type: "draft";
+      jobId: string;
+      notes: string;
+      generated: string;
+      answer: string;
+      experience?: ExperienceChoices;
+    }
   | {
       type: "submit";
       jobId: string;
@@ -209,6 +226,7 @@ export type Action =
       generated: string;
       answer: string;
       consent: boolean;
+      experience?: ExperienceChoices;
     }
   | { type: "stage"; applicationId: string; stage: Stage; note: string }
   | { type: "withdraw"; applicationId: string }
@@ -298,6 +316,8 @@ export function transition(
     if (!action.consent) fail("Zatwierdź treść i zgodę na przesłanie aplikacji.");
     if (s.applications.some((x) => x.candidateId === p.id && x.jobId === job.id))
       fail("Aplikacja na tę ofertę została już wysłana.");
+    const skills = skillsForOffer(job.id);
+    const declarations = experienceChoices.parse(action.experience ?? {});
     s.applications.push(
       applicationSchema.parse({
         id: newId,
@@ -308,6 +328,13 @@ export function transition(
         candidateName: p.name,
         cv: p.cv,
         answer: action.answer,
+        experience: skills.length
+          ? skills.map((id) => ({
+              skill: id,
+              expected: expectedLevel(job.experienceExpectations, id),
+              declared: declarations[id],
+            }))
+          : undefined,
         sourceNotes: action.notes,
         generatedAnswer: action.generated,
         score: p.exampleScore,

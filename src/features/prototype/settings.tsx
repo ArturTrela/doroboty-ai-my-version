@@ -38,11 +38,10 @@ export function SettingsPage() {
       setError("Nie udało się odczytać pliku.");
     }
   }
-  function confirm() {
+  async function confirm() {
     if (pending === "reset") {
-      reset();
-      setMessage("Przywrócono scenariusz początkowy.");
-    } else if (importState(raw)) {
+      if (await reset()) setMessage("Przywrócono scenariusz początkowy.");
+    } else if (await importState(raw)) {
       setMessage("Dane zostały zaimportowane.");
     }
     setPending(null);

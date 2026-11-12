@@ -1056,3 +1056,39 @@ test("candidate snapshot supports custom CV and long content at desktop and mobi
     record.answer,
   );
 });
+
+test("concurrent tabs preserve the winning draft and keep the losing edit in the form", async ({
+  page,
+  context,
+}) => {
+  await choose(page, "Anna Kowalska");
+  const route = "/#/aplikuj/staff-ai-engineer";
+  await page.goto(route);
+  const other = await context.newPage();
+  await other.goto(route);
+  const firstAnswer = "Pierwszy szkic zawiera niezależną odpowiedź kandydata.";
+  const secondAnswer = "Drugi szkic zawiera inną odpowiedź tego samego kandydata.";
+  const answerLabel = "Dlaczego pasujesz do tej roli?";
+  await page.getByLabel(answerLabel).fill(firstAnswer);
+  await other.getByLabel(answerLabel).fill(secondAnswer);
+  await Promise.all(
+    [page, other].map((tab) => tab.getByRole("button", { name: "Zapisz szkic" }).click()),
+  );
+  const results = await Promise.all(
+    [page, other].map(async (tab) => {
+      await expect(
+        tab.getByText(/Szkic został zapisany|Zapis zmienił się w innej karcie/),
+      ).toBeVisible();
+      return tab.getByText("Szkic został zapisany.").isVisible();
+    }),
+  );
+  expect(results.filter(Boolean)).toHaveLength(1);
+  const losingTab = results[0] ? other : page;
+  await expect(losingTab.getByLabel(answerLabel)).toHaveValue(
+    results[0] ? secondAnswer : firstAnswer,
+  );
+  await losingTab.reload();
+  await expect(losingTab.getByLabel(answerLabel)).toHaveValue(
+    results[0] ? firstAnswer : secondAnswer,
+  );
+});

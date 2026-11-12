@@ -1,3 +1,5 @@
+import { ExperienceFields } from "./experience-card";
+import { expectedLevel, skillsForOffer, type ExperienceChoices } from "./experience";
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -76,6 +78,12 @@ export function EmployerJobEditor() {
   const person = currentPerson(state)!;
   const navigate = useNavigate();
   const existing = state.jobs.find((x) => x.id === id && x.companyId === person.companyId);
+  const skills = skillsForOffer(existing?.id);
+  const [experience, setExperience] = useState<ExperienceChoices>(() =>
+    Object.fromEntries(
+      skills.map((id) => [id, expectedLevel(existing?.experienceExpectations, id)]),
+    ),
+  );
   const [title, setTitle] = useState(existing?.title ?? "");
   const [summary, setSummary] = useState(existing?.summary ?? "");
   const [description, setDescription] = useState(existing?.description ?? "");
@@ -84,7 +92,7 @@ export function EmployerJobEditor() {
   const [approved, setApproved] = useState(false);
   const [error, setError] = useState("");
   if (id !== "nowa" && !existing) return <NotFound />;
-  function publish(e: FormEvent<HTMLFormElement>) {
+  async function publish(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError("");
     if (!approved) {
@@ -100,6 +108,7 @@ export function EmployerJobEditor() {
       title,
       summary,
       description,
+      experienceExpectations: skills.length ? experience : undefined,
       sourceBrief: source,
       generatedDescription: generated,
       category: data.get("category"),
@@ -138,7 +147,7 @@ export function EmployerJobEditor() {
       );
       return;
     }
-    if (run({ type: "publish", job: parsed.data })) navigate("/app/oferty");
+    if (await run({ type: "publish", job: parsed.data })) navigate("/app/oferty");
   }
   return (
     <>
@@ -223,6 +232,19 @@ export function EmployerJobEditor() {
             }}
           />
         </Field>
+        {skills.length > 0 && (
+          <section aria-label="Oczekiwane doświadczenie">
+            <h2>Oczekiwane doświadczenie</h2>
+            <ExperienceFields
+              skills={skills}
+              values={experience}
+              onChange={(choices) => {
+                setExperience(choices);
+                setApproved(false);
+              }}
+            />
+          </section>
+        )}
         <div className="grid gap-4 sm:grid-cols-2">
           {(
             [
@@ -282,11 +304,11 @@ export function CompanyEditor() {
   const person = currentPerson(state)!;
   const company = state.companies.find((x) => x.id === person.companyId)!;
   const [message, setMessage] = useState("");
-  function save(e: FormEvent<HTMLFormElement>) {
+  async function save(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     if (
-      run({
+      await run({
         type: "company",
         name: String(data.get("name")),
         description: String(data.get("description")),
