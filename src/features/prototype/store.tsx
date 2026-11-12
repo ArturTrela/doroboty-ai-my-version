@@ -1,6 +1,28 @@
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
-import { initialState, transition, type Action, type State } from "./model";
+import posthog from "posthog-js";
+import {
+  currentPerson,
+  initialState,
+  transition,
+  type Action,
+  type Person,
+  type State,
+} from "./model";
 import { parseState, readState, saveState, STORAGE_KEY, type StoragePort } from "./storage";
+
+export const posthogConfigured = Boolean(
+  import.meta.env.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN && import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
+);
+
+function identifyPerson(person: Person) {
+  if (!posthogConfigured) return;
+
+  posthog.identify(person.id, {
+    name: person.name,
+    role: person.role,
+    ...(person.companyId ? { company_id: person.companyId } : {}),
+  });
+}
 function browserStorage(): StoragePort | null {
   try {
     return window.localStorage;
@@ -17,6 +39,7 @@ function useStore() {
   const latest = useRef(state);
   const saved = useRef(loaded.raw);
   const protectedSave = useRef(loaded.blocked);
+  const initialPerson = useRef(currentPerson(loaded.state));
 
   async function update(makeNext: () => State, replace = false) {
     function apply() {
@@ -62,15 +85,29 @@ function useStore() {
     }
   }
 
+  async function updateWithIdentity(makeNext: () => State, replace = false) {
+    const previousPerson = currentPerson(latest.current);
+    const updated = await update(makeNext, replace);
+    const nextPerson = currentPerson(latest.current);
+
+    if (updated && previousPerson?.id !== nextPerson?.id) {
+      if (previousPerson && posthogConfigured) posthog.reset();
+      if (nextPerson) identifyPerson(nextPerson);
+    }
+
+    return updated;
+  }
+
   function run(action: Action) {
-    return update(() => transition(latest.current, action));
+    return updateWithIdentity(() => transition(latest.current, action));
   }
 
   function importState(raw: string) {
-    return update(() => parseState(raw), true);
+    return updateWithIdentity(() => parseState(raw), true);
   }
   useEffect(() => {
     document.documentElement.classList.remove("dark");
+    if (initialPerson.current) identifyPerson(initialPerson.current);
   }, []);
   return {
     state,
@@ -81,7 +118,7 @@ function useStore() {
     run,
     importState,
     clearError: () => setError(""),
-    reset: () => update(initialState, true),
+    reset: () => updateWithIdentity(initialState, true),
   };
 }
 type Store = ReturnType<typeof useStore>;

@@ -1,12 +1,14 @@
 import { useLayoutEffect, useRef, useState } from "react";
+import { usePostHog } from "@posthog/react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ApplicationRecord } from "./application-record";
 import { nextStages, stageLabels, type Application } from "./model";
-import { usePrototype } from "./store";
+import { posthogConfigured, usePrototype } from "./store";
 
 export function RecruitingApplication({ application }: { application: Application }) {
   const { state, run } = usePrototype();
+  const posthog = usePostHog();
   const [note, setNote] = useState("");
   const [announcement, setAnnouncement] = useState("");
   const statusRef = useRef<HTMLSpanElement>(null);
@@ -43,6 +45,12 @@ export function RecruitingApplication({ application }: { application: Applicatio
                       if (
                         await run({ type: "stage", applicationId: application.id, stage, note })
                       ) {
+                        if (posthogConfigured)
+                          posthog.capture("application_stage_changed", {
+                            previous_stage: application.stage,
+                            stage,
+                            has_note: Boolean(note.trim()),
+                          });
                         setNote("");
                         setAnnouncement(`Zapisano etap: ${stageLabels[stage]}.`);
                       } else {
