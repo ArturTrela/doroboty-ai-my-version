@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { usePostHog } from "@posthog/react";
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from "react-router";
 import { CheckCircle2, FileText } from "lucide-react";
 import { ConfettiBurst, type ConfettiOrigin } from "@/components/confetti-burst";
@@ -12,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { JobCard } from "@/features/jobs/job-card";
 import { ApplicationOfferPreview } from "@/features/jobs/application-offer-preview";
-import { usePrototype } from "./store";
+import { posthogConfigured, usePrototype } from "./store";
 import { currentPerson, publishedJobs, stageLabels, MIN_APPLICATION_ANSWER_LENGTH } from "./model";
 import { PageTitle, Empty, NotFound, Notice } from "./shell";
 import { CvAttachment } from "./cv-attachment";
@@ -32,6 +33,7 @@ export function Field({ label, children }: { label: string; children: ReactNode 
 }
 export function PersonPicker() {
   const { state, run } = usePrototype();
+  const posthog = usePostHog();
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const next = params.get("next");
@@ -58,6 +60,7 @@ export function PersonPicker() {
               variant="plate"
               onClick={async () => {
                 if (!(await run({ type: "select_person", id: person.id }))) return;
+                if (posthogConfigured) posthog.capture("person_selected", { role: person.role });
                 navigate(
                   person.role === "candidate"
                     ? (safeNext ?? "/app/profil")
@@ -152,6 +155,7 @@ export function WorkspaceHome() {
 }
 export function ProfilePage({ preview = false }: { preview?: boolean }) {
   const { state, run } = usePrototype();
+  const posthog = usePostHog();
   const person = currentPerson(state)!;
   const [message, setMessage] = useState("");
   async function save(e: FormEvent<HTMLFormElement>) {
@@ -167,8 +171,10 @@ export function ProfilePage({ preview = false }: { preview?: boolean }) {
           location: String(data.get("location")),
         },
       })
-    )
+    ) {
+      if (posthogConfigured) posthog.capture("candidate_profile_saved");
       setMessage("Profil został zapisany.");
+    }
   }
   return (
     <div className="robot-profile">
@@ -253,6 +259,7 @@ export function ApplyPage() {
 
 function ApplicationForm({ slug }: { slug?: string }) {
   const { state, run } = usePrototype();
+  const posthog = usePostHog();
   const person = currentPerson(state)!;
   const navigate = useNavigate();
   const job = publishedJobs(state).find((x) => x.slug === slug);
@@ -317,6 +324,13 @@ function ApplicationForm({ slug }: { slug?: string }) {
         experience: skills.length ? experience : undefined,
       })
     ) {
+      if (posthogConfigured)
+        posthog.capture("application_submitted", {
+          job_category: job!.category,
+          job_function: job!.function,
+          remote_status: job!.remoteStatus,
+          has_experience_requirements: skills.length > 0,
+        });
       setSubmitted(true);
       if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
         const rect = sendButton.current?.getBoundingClientRect();
@@ -455,8 +469,13 @@ function ApplicationForm({ slug }: { slug?: string }) {
                         answer,
                         experience: skills.length ? experience : undefined,
                       })
-                    )
+                    ) {
+                      if (posthogConfigured)
+                        posthog.capture("application_draft_saved", {
+                          has_experience_requirements: skills.length > 0,
+                        });
                       setMessage("Szkic został zapisany.");
+                    }
                   }}
                 >
                   Zapisz szkic

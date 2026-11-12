@@ -1,5 +1,6 @@
 import { Link, useLocation, useParams, useSearchParams } from "react-router";
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { usePostHog } from "@posthog/react";
 import { ArrowUpRight, Users, MapPin, BriefcaseBusiness, Bookmark } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Search, ArrowRight, Monitor, X } from "lucide-react";
@@ -27,9 +28,10 @@ import {
   contractLabels,
 } from "@/features/jobs/presentation";
 import type { JobWithCompany } from "@/features/jobs/types";
-import { usePrototype } from "./store";
+import { posthogConfigured, usePrototype } from "./store";
 import { currentPerson, publishedJobs } from "./model";
 import { NotFound } from "./shell";
+import { posthogLog } from "@/lib/posthog-logger";
 import { cn } from "@/lib/utils";
 
 function LocalMap({ jobs }: { jobs: JobWithCompany[] }) {
@@ -103,6 +105,7 @@ function LocalMap({ jobs }: { jobs: JobWithCompany[] }) {
 }
 export function JobsPage() {
   const { state } = usePrototype();
+  const posthog = usePostHog();
   const person = currentPerson(state);
   const [params, setParams] = useSearchParams();
   const filters = parseJobFilters(Object.fromEntries(params));
@@ -150,6 +153,21 @@ export function JobsPage() {
       const value = String(data.get(key) ?? "").trim();
       if (value) next.set(key, value);
       else next.delete(key);
+    }
+    const searchFilters = parseJobFilters(Object.fromEntries(next));
+    if (posthogConfigured) {
+      const resultCount = filterJobs(all, searchFilters).length;
+      posthog.capture("job_search_submitted", {
+        has_query: Boolean(searchFilters.query),
+        has_location: Boolean(searchFilters.location),
+        result_count: resultCount,
+      });
+      posthogLog("job search completed", {
+        event: "job_search_completed",
+        has_query: Boolean(searchFilters.query),
+        has_location: Boolean(searchFilters.location),
+        result_count: resultCount,
+      });
     }
     setParams(next);
   }
@@ -359,6 +377,7 @@ export function JobPage() {
     return () => cancelAnimationFrame(frame);
   }, [location.hash, location.key, slug]);
   const { state, run } = usePrototype();
+  const posthog = usePostHog();
   const person = currentPerson(state);
   const job = publishedJobs(state).find((x) => x.slug === slug);
   if (!job) return <NotFound />;
@@ -457,7 +476,15 @@ export function JobPage() {
                     variant="outline"
                     aria-label="Zapisz ofertę"
                     aria-pressed={saved}
-                    onClick={() => run({ type: "toggle_saved", jobId: job.id })}
+                    onClick={async () => {
+                      if (!(await run({ type: "toggle_saved", jobId: job.id }))) return;
+                      if (posthogConfigured)
+                        posthog.capture(saved ? "job_unsaved" : "job_saved", {
+                          job_category: job.category,
+                          job_function: job.function,
+                          remote_status: job.remoteStatus,
+                        });
+                    }}
                   >
                     <Bookmark className={cn(saved && "fill-current")} />
                     Zapisz ofertę
